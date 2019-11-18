@@ -1,6 +1,6 @@
 {
     "version": 3,
-    "mappings": "AAsBA,AAAA,IAAI,AAAC,CACJ,gBAAgB,CAvBP,OAAO,CAwBhB",
+    "mappings": "AAsBA,AAAA,IAAI,AAAC,CACJ,gBAAgB,CAvBP,OAAO,CAwBhB,AACD,AAAA,EAAE,AAAC,CACF,KAAK,CAPM,IAAI,CAQf,AAID,AAAA,MAAM,AAAC,CACN,UAAU,CA7BA,iDAAiD,CA8B3D",
     "sources": [
         "sailor_day.scss"
     ],

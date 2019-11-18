@@ -23,7 +23,12 @@ $textWhite: #fff;
 body {
 	background-color: $bgColor;
 }
-
+h1 {
+	color: $textWhite;
+}
 // Components
 
 // Page Specific Sections
+header {
+	background: $gradient;
+}
