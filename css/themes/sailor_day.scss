@@ -1,0 +1,34 @@
+$bgColor: #fff4fd;
+$bgGray: #e6e6e6;
+
+$gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
+
+$colorPrimary: #f7c9f3;
+$colorPrimaryHover: #e6bbe2;
+
+$colorSecondary: #fff;
+$colorSecondaryHover: #fff;
+
+$colorTertiary: #fff;
+$colorTertiaryHover: #fff;
+
+$colorQuaternary: #fff;
+$colorQuaternaryHover: #fff;
+
+$textDark: #110038;
+$textClear: #b4b4b4;
+$textWhite: #fff;
+
+// General element styles
+body {
+	background-color: $bgColor;
+}
+h1 {
+	color: $textWhite;
+}
+// Components
+
+// Page Specific Sections
+header {
+	background: $gradient;
+}
