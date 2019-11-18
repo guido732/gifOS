@@ -1,5 +1,4 @@
 @import "reset";
-@import "variables";
 @import "mixins";
 @import "extends";
 
@@ -8,8 +7,9 @@
 	@include flexCenter();
 }
 
-// Utility Classes
-
 // Components
+body {
+	@extend %fontStack;
+}
 
 // Animations
