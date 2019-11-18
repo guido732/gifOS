@@ -7,9 +7,13 @@
 	@include flexCenter();
 }
 
-// Components
+// General element styles
 body {
 	@extend %fontStack;
 }
+
+// Components
+
+// Page Specific Sections
 
 // Animations
