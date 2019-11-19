@@ -6,18 +6,49 @@ $gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
-$colorSecondary: #fff;
-$colorSecondaryHover: #fff;
 
-$colorTertiary: #fff;
-$colorTertiaryHover: #fff;
+$colorSecondary: #fff4fd;
+$colorSecondaryHover: #f0e5ee;
 
-$colorQuaternary: #fff;
-$colorQuaternaryHover: #fff;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
+
+// Utility
+.underline {
+	border-bottom-color: $textDark;
+}
+
+// Components
+.btn-primary {
+	background: $colorPrimary;
+	border: 1px solid $textDark;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	span {
+		border: 1px dotted $colorPrimaryHover;
+	}
+	&:hover {
+		background: $colorPrimaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.dropdown-btn:hover {
+	* {
+		background: $colorPrimaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn-link {
+	border: 1px dotted transparent;
+	&:hover {
+		border: 1px dotted $textDark;
+	}
+}
 
 // General element styles
 body {
@@ -26,9 +57,34 @@ body {
 h1 {
 	color: $textWhite;
 }
-// Components
+p,
+a {
+	color: $textDark;
+}
+
 
 // Page Specific Sections
 header {
 	background: $gradient;
+}
+.brand-container {
+	width: 6.25rem;
+	height: 4rem;
+	background-image: url(../../assets/img/gifOF_logo.png);
+	background-size: auto;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.dropdown-list {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.dropdown-list-item {
+		background: #f0f0f0;
+		border: 1px solid #808080;
+		box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+		&:hover {
+			background-color: #fff4fd;
+			border: 1px solid #cca6c9;
+		}
+	}
 }

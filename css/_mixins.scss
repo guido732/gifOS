@@ -1,6 +1,6 @@
-@mixin flexCenter($direction: row) {
+@mixin flexCenter($direction: row, $wrap: wrap) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-flow: $direction wrap;
+	flex-flow: $direction $wrap;
 }
