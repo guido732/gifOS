@@ -44,6 +44,9 @@ h1 {
   font-weight: normal;
   padding: 0.25rem 0.5rem;
 }
+button {
+  cursor: pointer;
+}
 
 // Page Specific Sections
 header {
@@ -69,7 +72,6 @@ header {
   .dropdown-container-outer {
     position: relative;
     .dropdown-btn {
-      cursor: pointer;
       @include flexCenter(row nowrap);
       border: none;
       text-align: center;
