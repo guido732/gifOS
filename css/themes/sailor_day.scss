@@ -41,7 +41,12 @@ $textWhite: #fff;
 		}
 	}
 }
-
+.btn-link {
+	border: 1px dotted transparent;
+	&:hover {
+		border: 1px dotted $textDark;
+	}
+}
 // General element styles
 body {
 	background-color: $bgColor;
@@ -57,13 +62,6 @@ a {
 // Page Specific Sections
 header {
 	background: $gradient;
-}
-
-a.nav-item:last-child {
-	border: 1px dotted transparent;
-	&:hover {
-		border: 1px dotted $textDark;
-	}
 }
 .brand-container {
 	width: 6.25rem;
@@ -83,7 +81,6 @@ a.nav-item:last-child {
 		&:hover {
 			background-color: #fff4fd;
 			border: 1px solid #cca6c9;
-			box-shadow: inset -1px -1px 0 0 #e6dce4, inset 1px 1px 0 0 #ffffff;
 		}
 	}
 }

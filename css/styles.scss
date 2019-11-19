@@ -20,14 +20,14 @@
 	padding: 2px;
 	span {
 		display: inline-block;
-		padding: 0.5rem 1.5rem;
+		padding: 0.25rem 1.5rem;
 	}
 }
 .btn-primary.arrow {
 	@include flexCenter();
 	padding: 2px;
 	span {
-		padding: 0.75rem 0.75rem;
+		padding: 0rem 0.75rem;
 		@include flexCenter();
 	}
 	img {
@@ -55,15 +55,20 @@ header {
 	margin-top: 2.25rem;
 	@include flexCenter(row);
 	justify-content: space-between;
+
 	.nav-item-container {
 		@include flexCenter(row nowrap);
 		.nav-item {
 			margin-left: 1rem;
 		}
+		.btn-link {
+			padding: 0.35rem 0.5rem 0.35rem 0;
+		}
 	}
 	.dropdown-container-outer {
 		position: relative;
 		.dropdown-btn {
+			cursor: pointer;
 			@include flexCenter(row nowrap);
 			div:last-child {
 				align-self: stretch;
@@ -75,7 +80,7 @@ header {
 		.dropdown-list {
 			display: none;
 			position: absolute;
-			top: 2.85rem;
+			top: 2.4rem;
 			left: 0;
 			width: 100%;
 			.dropdown-list-item {
