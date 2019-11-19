@@ -4,93 +4,95 @@
 
 // Uitlity Classes
 .flex-center {
-	@include flexCenter();
+  @include flexCenter();
 }
 .container {
-	max-width: 1600px;
-	margin: 0 4rem;
+  max-width: 1600px;
+  margin: 0 4rem;
 }
 .underline {
-	border-bottom: 1px solid;
+  border-bottom: 1px solid;
 }
 
 // Components
 .btn-primary {
-	display: inline-block;
-	padding: 2px;
-	span {
-		display: inline-block;
-		padding: 0.25rem 1.5rem;
-	}
+  display: inline-block;
+  padding: 2px;
+  span {
+    display: inline-block;
+    padding: 0.25rem 1.5rem;
+  }
 }
 .btn-primary.arrow {
-	@include flexCenter();
-	padding: 2px;
-	span {
-		padding: 0rem 0.75rem;
-		@include flexCenter();
-	}
-	img {
-		min-width: 10px;
-	}
+  @include flexCenter();
+  padding: 2px;
+  span {
+    padding: 0rem 0.75rem;
+    @include flexCenter();
+  }
+  img {
+    min-width: 10px;
+  }
 }
 
 // General element styles
 body {
-	@extend %fontStack;
+  @extend %fontStack;
 }
 h1 {
-	font-size: 0.75rem;
-	font-weight: normal;
-	padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  padding: 0.25rem 0.5rem;
 }
 
 // Page Specific Sections
 header {
-	margin-top: 1px;
-	box-shadow: 0 1px 0 0 #110038;
+  margin-top: 1px;
+  box-shadow: 0 1px 0 0 #110038;
 }
 
 // TODO reusable dropdown section
 .navbar {
-	margin-top: 2.25rem;
-	@include flexCenter(row);
-	justify-content: space-between;
+  margin-top: 2.25rem;
+  @include flexCenter(row);
+  justify-content: space-between;
 
-	.nav-item-container {
-		@include flexCenter(row nowrap);
-		.nav-item {
-			margin-left: 1rem;
-		}
-		.btn-link {
-			padding: 0.35rem 0.5rem 0.35rem 0;
-		}
-	}
-	.dropdown-container-outer {
-		position: relative;
-		.dropdown-btn {
-			cursor: pointer;
-			@include flexCenter(row nowrap);
-			div:last-child {
-				align-self: stretch;
-				span {
-					align-self: stretch;
-				}
-			}
-		}
-		.dropdown-list {
-			display: none;
-			position: absolute;
-			top: 2.4rem;
-			left: 0;
-			width: 100%;
-			.dropdown-list-item {
-				display: block;
-				margin: 0.625rem;
-				padding: 0.5rem 0 0.5rem 1rem;
-			}
-		}
-	}
+  .nav-item-container {
+    @include flexCenter(row nowrap);
+    .nav-item {
+      margin-left: 1rem;
+    }
+    .btn-link {
+      padding: 0.35rem 0.5rem 0.35rem 0;
+    }
+  }
+  .dropdown-container-outer {
+    position: relative;
+    .dropdown-btn {
+      cursor: pointer;
+      @include flexCenter(row nowrap);
+      border: none;
+      text-align: center;
+      div:last-child {
+        align-self: stretch;
+        span {
+          align-self: stretch;
+        }
+      }
+    }
+    .dropdown-list {
+      display: none;
+      position: absolute;
+      top: 2.4rem;
+      left: 0;
+      width: 100%;
+      .dropdown-list-item {
+        display: block;
+        margin: 0.625rem;
+        padding: 0.5rem 0 0.5rem 1rem;
+      }
+    }
+  }
 }
 
 // Animations
