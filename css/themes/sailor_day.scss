@@ -6,18 +6,33 @@ $gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
-$colorSecondary: #fff;
-$colorSecondaryHover: #fff;
+$colorSecondary: #fff4fd;
+$colorSecondaryHover: #f0e5ee;
 
-$colorTertiary: #fff;
-$colorTertiaryHover: #fff;
-
-$colorQuaternary: #fff;
-$colorQuaternaryHover: #fff;
+// TODO Replace with single use variables as $gradient
+$colorUpload: #ff6161; // Upload button
+$colorUploadBorder: #993a3a; // Upload border
+$colorGray1: #e6e6e6; //
+$colorGray2: #b4b4b4;
+$colorGray3: #808080;
+$colorGray4: #979797; // busqueda
+$colorGray5: #999999; // Progress bar
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
+
+// Utility
+.underline {
+	border-bottom-color: $textDark;
+}
+
+// Components
+.btn-primary {
+	background: $colorPrimary;
+	border: 1px solid $textDark;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+}
 
 // General element styles
 body {
@@ -26,9 +41,21 @@ body {
 h1 {
 	color: $textWhite;
 }
-// Components
+
+p,
+a {
+	color: $textDark;
+}
 
 // Page Specific Sections
 header {
 	background: $gradient;
+}
+nav .brand-container {
+	width: 6.25rem;
+	height: 4rem;
+	background-image: url(../../assets/img/gifOF_logo.png);
+	background-size: auto;
+	background-position: center;
+	background-repeat: no-repeat;
 }
