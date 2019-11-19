@@ -17,11 +17,19 @@
 // Components
 .btn-primary {
 	display: inline-block;
-	padding: 0.5rem 1.5rem;
+	padding: 2px;
+	span {
+		display: inline-block;
+		padding: 0.5rem 1.5rem;
+	}
 }
 .btn-primary.arrow {
-	padding: 0rem 0.75rem;
 	@include flexCenter();
+	padding: 2px;
+	span {
+		padding: 0.75rem 0.75rem;
+		@include flexCenter();
+	}
 	img {
 		min-width: 10px;
 	}
@@ -59,15 +67,18 @@ header {
 			@include flexCenter(row nowrap);
 			div:last-child {
 				align-self: stretch;
+				span {
+					align-self: stretch;
+				}
 			}
 		}
 		.dropdown-list {
 			display: none;
 			position: absolute;
-			top: 2.45rem;
+			top: 2.85rem;
 			left: 0;
 			width: 100%;
-			.btn-dropdown {
+			.dropdown-list-item {
 				display: block;
 				margin: 0.625rem;
 				padding: 0.5rem 0 0.5rem 1rem;

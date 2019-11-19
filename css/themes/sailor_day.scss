@@ -9,15 +9,6 @@ $colorPrimaryHover: #e6bbe2;
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
 
-// TODO Replace with single use variables as $gradient
-$colorUpload: #ff6161; // Upload button
-$colorUploadBorder: #993a3a; // Upload border
-$colorGray1: #e6e6e6; //
-$colorGray2: #b4b4b4;
-$colorGray3: #808080;
-$colorGray4: #979797; // busqueda
-$colorGray5: #999999; // Progress bar
-
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
@@ -31,7 +22,24 @@ $textWhite: #fff;
 .btn-primary {
 	background: $colorPrimary;
 	border: 1px solid $textDark;
-	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	span {
+		border: 1px dotted $colorPrimaryHover;
+	}
+	&:hover {
+		background: $colorPrimaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.dropdown-btn:hover {
+	* {
+		background: $colorPrimaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
 }
 
 // General element styles
@@ -41,7 +49,6 @@ body {
 h1 {
 	color: $textWhite;
 }
-
 p,
 a {
 	color: $textDark;
@@ -51,7 +58,14 @@ a {
 header {
 	background: $gradient;
 }
-nav .brand-container {
+
+a.nav-item:last-child {
+	border: 1px dotted transparent;
+	&:hover {
+		border: 1px dotted $textDark;
+	}
+}
+.brand-container {
 	width: 6.25rem;
 	height: 4rem;
 	background-image: url(../../assets/img/gifOF_logo.png);
@@ -62,7 +76,7 @@ nav .brand-container {
 .dropdown-list {
 	background: #e6e6e6;
 	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.btn-dropdown {
+	.dropdown-list-item {
 		background: #f0f0f0;
 		border: 1px solid #808080;
 		box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
