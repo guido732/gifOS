@@ -6,8 +6,10 @@ $gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
+
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
+
 
 $textDark: #110038;
 $textClear: #b4b4b4;
@@ -47,6 +49,7 @@ $textWhite: #fff;
 		border: 1px dotted $textDark;
 	}
 }
+
 // General element styles
 body {
 	background-color: $bgColor;
@@ -58,6 +61,7 @@ p,
 a {
 	color: $textDark;
 }
+
 
 // Page Specific Sections
 header {
