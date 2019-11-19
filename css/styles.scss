@@ -26,14 +26,6 @@
 		min-width: 10px;
 	}
 }
-.btn-dropdown {
-	display: block;
-	margin: 0.625rem;
-	padding: 1rem;
-	&:hover {
-		background-color: white;
-	}
-}
 
 // General element styles
 body {
@@ -70,19 +62,15 @@ header {
 			}
 		}
 		.dropdown-list {
-			// display: none;
+			display: none;
 			position: absolute;
 			top: 2.45rem;
 			left: 0;
 			width: 100%;
-			background-color: gray;
 			.btn-dropdown {
 				display: block;
 				margin: 0.625rem;
-				padding: 1rem;
-				&:hover {
-					background-color: white;
-				}
+				padding: 0.5rem 0 0.5rem 1rem;
 			}
 		}
 	}

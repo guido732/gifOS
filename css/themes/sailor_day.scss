@@ -59,3 +59,17 @@ nav .brand-container {
 	background-position: center;
 	background-repeat: no-repeat;
 }
+.dropdown-list {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.btn-dropdown {
+		background: #f0f0f0;
+		border: 1px solid #808080;
+		box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+		&:hover {
+			background-color: #fff4fd;
+			border: 1px solid #cca6c9;
+			box-shadow: inset -1px -1px 0 0 #e6dce4, inset 1px 1px 0 0 #ffffff;
+		}
+	}
+}
