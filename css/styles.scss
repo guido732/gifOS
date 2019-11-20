@@ -34,7 +34,9 @@
 		min-width: 10px;
 	}
 }
-
+.btn-search {
+	@extend .btn-primary;
+}
 // General element styles
 body {
 	@extend %fontStack;

@@ -6,10 +6,11 @@ $gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
-
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
 
+$colorSearch: #f0f0f0;
+$colorSearchHover: #e6e6e6;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
@@ -30,6 +31,20 @@ $textWhite: #fff;
 	}
 	&:hover {
 		background: $colorPrimaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn-search {
+	background: $colorSearch;
+	border: 1px solid #808080;
+	box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+	span {
+		border: 1px dotted $colorSearch;
+	}
+	&:hover {
+		background: $colorSearchHover;
 		span {
 			border: 1px dotted $textDark;
 		}
@@ -61,7 +76,6 @@ p,
 a {
 	color: $textDark;
 }
-
 
 // Page Specific Sections
 header {
