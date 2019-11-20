@@ -1,7 +1,5 @@
 /design
+*.map
 */styles.css
-*/styles.css.map
 */themes/*.css
-*/themes/*.map
-!*/themes/*.min.css
-!*/themes/*.min.css.map
+!**/*.min.css
