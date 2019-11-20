@@ -13,3 +13,10 @@ document.onclick = function(e) {
     $dropdownList.style.display = "none";
   }
 };
+
+// Closes dropdown on click outside
+document.onclick = function(e) {
+	if (e.target === document.querySelector("body")) {
+		$dropdownList.style.display = "none";
+	}
+};
