@@ -127,26 +127,22 @@ header {
 			}
 		}
 		button[type="submit"] {
-			span {
-				p::before {
-					content: "";
-					background: url(../../assets/icons/lupa.svg) no-repeat;
-					width: 1rem;
-					height: 1rem;
-					margin-right: 0.5rem;
-				}
+			p::before {
+				content: "";
+				background: url(../../assets/icons/lupa.svg) no-repeat;
+				width: 1rem;
+				height: 1rem;
+				margin-right: 0.5rem;
 			}
 		}
 		input:placeholder-shown ~ button[type="submit"] {
 			background: #e6e6e6;
 			border: 1px solid #808080;
 			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
-			span {
-				p {
-					color: #b4b4b4;
-					&::before {
-						background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
-					}
+			p {
+				color: #b4b4b4;
+				&::before {
+					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
 				}
 			}
 		}
