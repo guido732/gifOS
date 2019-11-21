@@ -136,4 +136,8 @@ header {
 			}
 		}
 	}
+	.search-results {
+		background: $colorSearchHover;
+		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	}
 }
