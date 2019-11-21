@@ -49,6 +49,9 @@ $textWhite: #fff;
 			border: 1px dotted $textDark;
 		}
 	}
+	&:active {
+		background: #dbdbdb;
+	}
 }
 .dropdown-btn:hover {
 	* {
@@ -115,24 +118,36 @@ header {
 	form {
 		background: #e6e6e6;
 		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-		button[type="submit"] {
-			span {
-				p::before {
-					content: "";
-					background: url("icon.jpg") no-repeat;
-					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
-					width: 1rem;
-					height: 1rem;
-					margin-right: 0.5rem;
-				}
-			}
-		}
 		input {
 			background: #ffffff;
 			border: 1px solid #979797;
 			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
 			&::placeholder {
 				color: #b4b4b4;
+			}
+		}
+		button[type="submit"] {
+			span {
+				p::before {
+					content: "";
+					background: url(../../assets/icons/lupa.svg) no-repeat;
+					width: 1rem;
+					height: 1rem;
+					margin-right: 0.5rem;
+				}
+			}
+		}
+		input:placeholder-shown ~ button[type="submit"] {
+			background: #e6e6e6;
+			border: 1px solid #808080;
+			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+			span {
+				p {
+					color: #b4b4b4;
+					&::before {
+						background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
+					}
+				}
 			}
 		}
 	}

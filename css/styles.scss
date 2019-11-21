@@ -48,6 +48,7 @@
 // General element styles
 body {
 	@extend %fontStack;
+	margin: 0 auto;
 }
 h1 {
 	font-size: 0.75rem;
@@ -113,8 +114,16 @@ header {
 	}
 	form {
 		@include flexCenter(row nowrap);
+		justify-content: flex-start;
+		padding: 0.75rem 1rem;
+		input {
+			width: 90%;
+			background: #ffffff;
+			padding: 0.8rem 1rem;
+			margin-right: 0.5rem;
+		}
 		button[type="submit"] {
-			margin-right: 1rem;
+			flex-grow: 1;
 			span {
 				padding: 0.25rem 0.5rem;
 				p {
@@ -125,17 +134,12 @@ header {
 				}
 			}
 		}
-		input {
-			width: 90%;
-			margin: 0.75rem 1rem;
-			background: #ffffff;
-			padding: 0.8rem 1rem;
-		}
 	}
 	.search-results {
 		padding: 1rem;
 		.search-element {
 			margin-bottom: 0.5rem;
+			// width: 90%;
 			&:last-child {
 				margin-bottom: 0rem;
 			}
