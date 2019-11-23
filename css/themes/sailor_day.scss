@@ -52,7 +52,7 @@ $textWhite: #fff;
 		}
 	}
 }
-.btn-search-result {
+.btn-search-suggestion {
 	background: $colorSearch;
 	border: 1px solid #808080;
 	box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
@@ -167,7 +167,7 @@ header {
 			}
 		}
 	}
-	.search-results {
+	.search-suggestions {
 		background: $colorSearchHover;
 		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
 	}

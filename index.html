@@ -51,32 +51,39 @@
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search">
-				<div class="search-header">
-					<!-- ! review - header bottom border color -->
-					Buscar
-				</div>
-				<form>
-					<!-- TODO boton de Limpiar búsqueda -->
-					<input type="search" id="search-bar" placeholder="Busca gifs, hashtags, temas, busca lo que quieras…" />
-					<button type="submit" id="search-button" disabled class="btn-primary submit">
-						<span><p>Buscar</p> </span>
-					</button>
-				</form>
-				<div class="search-result-container">
-					<div class="search-results">
+			<section class="search-container">
+				<div class="search">
+					<div class="search-header">
+						<!-- ! review - header bottom border color -->
+						Buscar
+					</div>
+					<form>
+						<!-- TODO boton de Limpiar búsqueda -->
+						<input type="search" id="search-bar" placeholder="Busca gifs, hashtags, temas, busca lo que quieras…" />
+						<button type="submit" id="search-button" disabled class="btn-primary submit">
+							<span><p>Buscar</p> </span>
+						</button>
+					</form>
+					<div class="search-suggestions" style="display: none;">
 						<!-- TODO make this hide/show and show suggestions -->
 						<!-- ! revisar review - width of elements -->
-						<button class="search-element btn-search-result"><span>Resultado de búsqueda sugerido</span></button>
-						<button class="search-element btn-search-result"><span>Resultado de búsqueda sugerido</span></button>
-					</div>
-					<div class="tags">
-						<button type="button" class="btn-primary tag"><span>#Un Ejemplo</span></button>
-						<button type="button" class="btn-primary tag"><span>#Un asd</span></button>
+						<button class="search-element btn-search-suggestion"><span>Resultado de búsqueda sugerido</span></button>
+						<button class="search-element btn-search-suggestion"><span>Resultado de búsqueda sugerido</span></button>
 					</div>
 				</div>
+				<div class="search-tags">
+					<button type="button" class="btn-primary tag"><span>#Un Ejemplo</span></button>
+					<button type="button" class="btn-primary tag"><span>#Un asd</span></button>
+				</div>
 			</section>
-			<!-- TODO Grid for images -->
+			<section class="search-results">
+				<input
+					type="text"
+					name="search-results-input"
+					id="search-results-input"
+					placeholder="Texto de prueba placeholder <SACAR>"
+				/>
+			</section>
 		</main>
 		<footer></footer>
 		<script src="./js/main.js"></script>

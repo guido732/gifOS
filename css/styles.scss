@@ -45,7 +45,7 @@
 		padding: 0.25rem;
 	}
 }
-.btn-search-result {
+.btn-search-suggestion {
 	text-align: left;
 	width: 100%;
 	display: inline-block;
@@ -147,22 +147,21 @@ header {
 			}
 		}
 	}
-	.search-result-container {
-		position: absolute;
-		width: 100%;
-	}
-	.search-results {
+	.search-suggestions {
 		padding: 1rem;
 		display: block;
-		margin-bottom: 0.75rem;
+		position: absolute;
+		width: 100%;
 		.search-element {
 			margin-bottom: 0.5rem;
-			// width: 90%;
 			&:last-child {
 				margin-bottom: 0rem;
 			}
 		}
 	}
+}
+.search-tags {
+	margin-top: 0.75rem;
 }
 
 // Animations
