@@ -1,70 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>gifOS - Gifs Gifs Gifs!</title>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>gifOS - Gifs Gifs Gifs!</title>
 
-    <!-- TODO Favicon -->
+		<!-- TODO Favicon -->
 
-    <!-- StyleSheets -->
-    <link rel="stylesheet" href="./css/styles.min.css" />
-    <link rel="stylesheet" href="./css/themes/sailor_day.min.css" />
+		<!-- StyleSheets -->
+		<link rel="stylesheet" href="./css/styles.min.css" />
+		<link rel="stylesheet" href="./css/themes/sailor_day.min.css" />
 
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Chakra+Petch:400,700&display=swap"
-      rel="stylesheet"
-    />
+		<!-- Google Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Chakra+Petch:400,700&display=swap" rel="stylesheet" />
 
-    <!-- FontAwesome -->
-    <script
-      src="https://kit.fontawesome.com/f49d5ad486.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body>
-    <header>
-      <h1>
-        ¡Bienvenidos/as a Guifos.com! ——————Donde los gifs están.////// Número
-        de visitas: 12.765.803
-      </h1>
-    </header>
-    <nav class="container navbar">
-      <a href="#">
-        <div class="brand-container"></div>
-      </a>
-      <div class="nav-item-container">
-        <button href="#" class="btn-primary nav-item">
-          <span>Crear Guifos</span>
-        </button>
-        <div class="nav-item dropdown-container-outer">
-          <!-- TODO reusable dropdown section -->
-          <button class="dropdown-btn" id="dropdown-btn">
-            <div class="btn-primary"><span>Elegir Tema</span></div>
-            <div class="btn-primary arrow">
-              <span>
-                <img src="./assets/icons/dropdown.svg" alt="Dropdown Arrow" />
-              </span>
-            </div>
-          </button>
-          <div class="dropdown-list" id="dropdown-list">
-            <a href="#" class="dropdown-list-item" id="dropdown-list-item"
-              >Sailor Day</a
-            >
-            <a href="#" class="dropdown-list-item">Sailor Night</a>
-          </div>
-        </div>
-        <a href="#" class="nav-item btn-link"
-          ><span class="underline">M</span>is Guifos</a
-        >
-      </div>
-    </nav>
-    <main class="container">
-      <!-- TODO Grid for images -->
-    </main>
-    <footer></footer>
-    <script src="./js/main.js"></script>
-  </body>
+		<!-- FontAwesome -->
+		<script src="https://kit.fontawesome.com/f49d5ad486.js" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<header>
+			<h1>
+				¡Bienvenidos/as a Guifos.com! ——————Donde los gifs están.////// Número de visitas: 12.765.803
+			</h1>
+		</header>
+		<nav class="container navbar">
+			<a href="#">
+				<div class="brand-container"></div>
+			</a>
+			<div class="nav-item-container">
+				<button href="#" class="btn-primary nav-item">
+					<span>Crear Guifos</span>
+				</button>
+				<div class="nav-item dropdown-container-outer">
+					<!-- TODO reusable dropdown section -->
+					<button class="dropdown-btn" id="dropdown-btn">
+						<div class="btn-primary"><span>Elegir Tema</span></div>
+						<div class="btn-primary arrow">
+							<span>
+								<img src="./assets/icons/dropdown.svg" alt="Dropdown Arrow" />
+							</span>
+						</div>
+					</button>
+					<div class="dropdown-list" id="dropdown-list">
+						<a href="#" class="dropdown-list-item" id="dropdown-list-item">Sailor Day</a>
+						<a href="#" class="dropdown-list-item">Sailor Night</a>
+					</div>
+				</div>
+				<a href="#" class="nav-item btn-link"><span class="underline">M</span>is Guifos</a>
+			</div>
+		</nav>
+		<main class="container">
+			<section class="search">
+				<div class="search-header">
+					<!-- ! review - header bottom border color -->
+					Buscar
+				</div>
+				<form>
+					<!-- TODO boton de Limpiar búsqueda -->
+					<input type="search" id="search-bar" placeholder="Busca gifs, hashtags, temas, busca lo que quieras…" />
+					<button type="submit" id="search-button" disabled class="btn-primary submit">
+						<span><p>Buscar</p> </span>
+					</button>
+				</form>
+				<div class="search-result-container">
+					<div class="search-results">
+						<!-- TODO make this hide/show and show suggestions -->
+						<!-- ! revisar review - width of elements -->
+						<button class="search-element btn-search-result"><span>Resultado de búsqueda sugerido</span></button>
+						<button class="search-element btn-search-result"><span>Resultado de búsqueda sugerido</span></button>
+					</div>
+					<div class="tags">
+						<button type="button" class="btn-primary tag"><span>#Un Ejemplo</span></button>
+						<button type="button" class="btn-primary tag"><span>#Un asd</span></button>
+					</div>
+				</div>
+			</section>
+			<!-- TODO Grid for images -->
+		</main>
+		<footer></footer>
+		<script src="./js/main.js"></script>
+	</body>
 </html>
