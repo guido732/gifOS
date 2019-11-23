@@ -12,3 +12,12 @@ document.onclick = function(e) {
 		$dropdownList.style.display = "none";
 	}
 };
+
+document.querySelector("#search-bar").oninput = function(e) {
+	const $searchButton = document.querySelector("#search-button");
+	if (e.target.value !== "") {
+		$searchButton.disabled = false;
+	} else {
+		$searchButton.disabled = true;
+	}
+};
