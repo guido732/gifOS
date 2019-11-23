@@ -36,7 +36,7 @@ $textWhite: #fff;
 		}
 	}
 }
-.btn-search {
+.btn-search-result {
 	background: $colorSearch;
 	border: 1px solid #808080;
 	box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
@@ -135,12 +135,14 @@ header {
 				margin-right: 0.5rem;
 			}
 		}
-		input:placeholder-shown ~ button[type="submit"],
-		button:disabled {
+		input:placeholder-shown ~ button[type="submit"] {
 			cursor: default;
 			background: #e6e6e6;
 			border: 1px solid #808080;
 			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+			span {
+				border: 1px solid #e6e6e6;
+			}
 			p {
 				color: #b4b4b4;
 				&::before {

@@ -8,7 +8,10 @@
 }
 .container {
 	max-width: 1600px;
-	margin: 0 4rem;
+	margin: 0 2rem;
+	@media screen and (min-width: 968px) {
+		margin: 0 4rem;
+	}
 }
 .underline {
 	border-bottom: 1px solid;
@@ -34,7 +37,7 @@
 		min-width: 10px;
 	}
 }
-.btn-search {
+.btn-search-result {
 	text-align: left;
 	width: 100%;
 	display: inline-block;
@@ -114,18 +117,17 @@ header {
 	}
 	form {
 		@include flexCenter(row nowrap);
-		justify-content: flex-start;
+		justify-content: space-between;
 		padding: 0.75rem 1rem;
 		input {
-			width: 90%;
-			background: #ffffff;
+			width: 100%;
 			padding: 0.8rem 1rem;
 			margin-right: 0.5rem;
 		}
 		button[type="submit"] {
 			flex-grow: 1;
+			max-width: fit-content;
 			span {
-				padding: 0.25rem 0.5rem;
 				p {
 					display: flex;
 					justify-content: center;

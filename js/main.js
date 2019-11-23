@@ -13,6 +13,7 @@ document.onclick = function(e) {
 	}
 };
 
+// Disables submit button if search bar is empty
 document.querySelector("#search-bar").oninput = function(e) {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
