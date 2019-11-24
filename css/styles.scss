@@ -19,7 +19,7 @@
 }
 .item-double {
 	grid-column: span 1;
-	@media screen and (min-width: 576px) {
+	@include screen-size("sm") {
 		grid-column: span 2;
 	}
 }
