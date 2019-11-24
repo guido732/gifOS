@@ -103,6 +103,14 @@ $textWhite: #fff;
 		}
 	}
 }
+.input-title-bar {
+	background: #fffafe;
+	border: 1px solid #e6bbe2;
+	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
+	&::placeholder {
+		color: $textDark;
+	}
+}
 
 // General element styles
 body {
@@ -189,15 +197,5 @@ header {
 	.search-suggestions {
 		background: $colorSearchHover;
 		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	}
-}
-.search-results {
-	input {
-		background: #fffafe;
-		border: 1px solid #e6bbe2;
-		box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
-		&::placeholder {
-			color: $textDark;
-		}
 	}
 }

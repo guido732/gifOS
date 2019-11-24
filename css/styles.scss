@@ -17,6 +17,9 @@
 .underline {
 	border-bottom: 1px solid;
 }
+.item-double {
+	grid-column: span 2;
+}
 
 // Components
 .btn-primary {
@@ -58,6 +61,12 @@
 		padding: 0.375rem 1rem;
 		width: 100%;
 	}
+}
+.input-title-bar {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.875rem;
+	margin-bottom: 1rem;
 }
 .window-item {
 	padding: 2px;
@@ -106,14 +115,14 @@ h1 {
 button {
 	cursor: pointer;
 }
+section {
+	margin-bottom: 4rem;
+}
 
 // Page Specific Sections
 header {
 	margin-top: 1px;
 	box-shadow: 0 1px 0 0 #110038;
-}
-section {
-	margin-bottom: 4rem;
 }
 
 // TODO reusable dropdown section
@@ -207,30 +216,46 @@ section {
 }
 
 .search-results {
-	input {
-		width: 100%;
-		padding: 0.5rem;
-		font-size: 0.875rem;
-		margin-bottom: 1rem;
-	}
 	.result-container {
 		display: grid;
-		grid-template: auto 1fr / 1fr;
+		grid-template: 1fr / 1fr;
 		gap: 1rem;
 	}
 	@media screen and (min-width: 576px) {
 		.result-container {
-			grid-template: auto 1fr / repeat(2, 1fr);
+			grid-template: 1fr / repeat(2, 1fr);
 		}
 	}
 	@media screen and (min-width: 768px) {
 		.result-container {
-			grid-template: auto 1fr / repeat(3, 1fr);
+			grid-template: 1fr / repeat(3, 1fr);
 		}
 	}
 	@media screen and (min-width: 992px) {
 		.result-container {
-			grid-template: auto 1fr / repeat(4, 1fr);
+			grid-template: 1fr / repeat(4, 1fr);
+		}
+	}
+}
+.trends {
+	.trend-grid-container {
+		display: grid;
+		grid-template: 1fr / 1fr;
+		gap: 1rem;
+	}
+	@media screen and (min-width: 576px) {
+		.trend-grid-container {
+			grid-template: 1fr / repeat(2, 1fr);
+		}
+	}
+	@media screen and (min-width: 768px) {
+		.trend-grid-container {
+			grid-template: 1fr / repeat(3, 1fr);
+		}
+	}
+	@media screen and (min-width: 992px) {
+		.trend-grid-container {
+			grid-template: 1fr / repeat(4, 1fr);
 		}
 	}
 }
