@@ -90,6 +90,18 @@ $textWhite: #fff;
 		color: $textWhite;
 		font-weight: 700;
 	}
+	.img-container {
+		border: 1px dotted transparent;
+		.btn-primary.tag span {
+			border: 1px dotted transparent;
+		}
+		&:hover {
+			border: 1px dotted #110038;
+			.btn-primary.tag span {
+				border: 1px dotted #110038;
+			}
+		}
+	}
 }
 
 // General element styles
