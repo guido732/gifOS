@@ -18,7 +18,10 @@
 	border-bottom: 1px solid;
 }
 .item-double {
-	grid-column: span 2;
+	grid-column: span 1;
+	@media screen and (min-width: 576px) {
+		grid-column: span 2;
+	}
 }
 
 // Components
@@ -241,6 +244,7 @@ header {
 	.trend-grid-container {
 		display: grid;
 		grid-template: 1fr / 1fr;
+		grid-auto-flow: dense;
 		gap: 1rem;
 	}
 	@media screen and (min-width: 576px) {
