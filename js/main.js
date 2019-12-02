@@ -26,13 +26,45 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Fetch new items on page load for trending section
 window.onload = () => {
 	fetchTrending(4);
+	fetchSuggestions(4);
 };
 
-function fetchTrending(amount) {
-	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+function fetchTrending(limit) {
 	const $suggestedGifsContainer = document.querySelector("#suggested-container");
 	const gifOffset = Math.floor(Math.random() * 50);
-	fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amount}&rating=r&offset=${gifOffset}`)
+	fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&rating=r&offset=${gifOffset}`)
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			data.data.forEach(gif => {
+				const newGif = newGifItem("window", gif);
+				$suggestedGifsContainer.append(newGif);
+			});
+		})
+		.catch(error => {
+			return error;
+		});
+}
+
+function fetchSuggestions(limit) {
+	const $suggestedGifsContainer = document.querySelector("#suggested-container");
+	const suggestionArray = [
+		"fun",
+		"puppy",
+		"random",
+		"oh+shit",
+		"kitten",
+		"rick+morty",
+		"sillicon+valley",
+		"cute",
+		"lol"
+	];
+	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
+	fetch(
+		`http://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}&rating=r`
+	)
 		.then(response => {
 			return response.json();
 		})
