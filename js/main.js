@@ -23,45 +23,44 @@ document.querySelector("#search-bar").oninput = function(e) {
 	}
 };
 
+// Fetch new items on page load for trending section
 window.onload = () => {
+	fetchTrending(4);
+};
+
+function fetchTrending(amount) {
 	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 	const $suggestedGifsContainer = document.querySelector("#suggested-container");
-	const gifOffset = Math.floor(Math.rand * 100);
-
-	const trendingGifs = fetch(
-		`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=4&rating=r&offset=${gifOffset}`
-	)
+	const gifOffset = Math.floor(Math.random() * 50);
+	fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amount}&rating=r&offset=${gifOffset}`)
 		.then(response => {
 			return response.json();
 		})
 		.then(data => {
-			console.log(data.data[0]);
 			data.data.forEach(gif => {
-				const $newContainer = document.createElement("div");
-				const $newElement = `
-				<div class="window-item">
+				const newGif = newGifItem("window", gif);
+				$suggestedGifsContainer.append(newGif);
+			});
+		})
+		.catch(error => {
+			return error;
+		});
+}
+
+function newGifItem(type, gif) {
+	if (type === "window") {
+		const $container = document.createElement("div");
+		const $element = `<div class="window-item">
 				<div class="wi-header">
 					${gif.title}
 					<button class="remove-element"></button>
 				</div>
 				<div class="img-container">
 					<img class="img-element" src="${gif.images.original.url}" />
-					<button type="button" class="btn-primary tag"><span>Ver más...</span></button>
+					<a href="${gif.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 				</div>
 			</div>`;
-
-				$newContainer.innerHTML = $newElement;
-				$suggestedGifsContainer.append($newContainer.firstChild);
-			});
-			// return data;
-		})
-		.catch(error => {
-			console.log("error");
-			return error;
-		});
-};
-
-function newGifItem(type, url) {
-	if (type === "window") {
+		$container.innerHTML = $element;
+		return $container.firstChild;
 	}
 }
