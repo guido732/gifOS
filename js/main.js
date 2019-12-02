@@ -25,13 +25,13 @@ document.querySelector("#search-bar").oninput = function(e) {
 
 // Fetch new items on page load for trending section
 window.onload = () => {
-	fetchTrending(4);
+	fetchTrending(20);
 	fetchSuggestions(4);
 };
 
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 function fetchTrending(limit) {
-	const $suggestedGifsContainer = document.querySelector("#suggested-container");
+	const $suggestedGifsContainer = document.querySelector("#trend-grid");
 	const gifOffset = Math.floor(Math.random() * 50);
 	fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&rating=r&offset=${gifOffset}`)
 		.then(response => {
@@ -39,7 +39,11 @@ function fetchTrending(limit) {
 		})
 		.then(data => {
 			data.data.forEach(gif => {
-				const newGif = newGifItem("window", gif);
+				let aspectRatio = "";
+				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5
+					? (aspectRatio = "item-double")
+					: (aspectRatio = "");
+				const newGif = newGifItem("window", gif, aspectRatio);
 				$suggestedGifsContainer.append(newGif);
 			});
 		})
@@ -59,7 +63,9 @@ function fetchSuggestions(limit) {
 		"rick+morty",
 		"sillicon+valley",
 		"cute",
-		"lol"
+		"lol",
+		"wtf",
+		"game+of+thrones"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 	fetch(
@@ -79,10 +85,10 @@ function fetchSuggestions(limit) {
 		});
 }
 
-function newGifItem(type, gif) {
+function newGifItem(type, gif, ratio = "") {
 	if (type === "window") {
 		const $container = document.createElement("div");
-		const $element = `<div class="window-item">
+		const $element = `<div class="window-item ${ratio}">
 				<div class="wi-header">
 					${gif.title}
 					<button class="remove-element"></button>
