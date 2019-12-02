@@ -22,3 +22,25 @@ document.querySelector("#search-bar").oninput = function(e) {
 		$searchButton.disabled = true;
 	}
 };
+
+window.onload = () => {
+	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+	const $suggestedGifsContainer = document.querySelector("#suggested-container");
+
+	const trendingGifs = fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=4&rating=r`)
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			return data;
+		})
+		.catch(error => {
+			return error;
+		});
+
+	$suggestedGifsContainer.appendChild();
+};
+
+function newGifItem (type, url){
+	
+}
