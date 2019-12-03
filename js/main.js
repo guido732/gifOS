@@ -101,14 +101,18 @@ function newGifItem(type, gif, ratio = "") {
 		$container.innerHTML = $element;
 		return $container.firstChild;
 	} else if (type === "trend") {
-		console.log(gif);
-
+		// console.log(gif);
+		var titleToArray = gif.title.split(" ");
+		var titleArrayToTags = "";
+		titleToArray.forEach(word => {
+			titleArrayToTags += `#${word} `;
+		});
 		const $container = document.createElement("div");
 		const $element = `<div class="trend-item ${ratio}">
 			<a href="${gif.bitly_url}" target="_blank">
 				<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
 				<div class="trend-header">
-					${gif.title}
+					${titleArrayToTags}
 				</div>
 			</a>
 		</div>
