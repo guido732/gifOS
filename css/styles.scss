@@ -76,9 +76,15 @@
 .window-item {
 	padding: 2px;
 	width: 100%;
+	// display: relative;
 	.wi-header {
-		// @include flexCenter(row nowrap);
-		// justify-content: space-between;
+		// display: absolute;
+		// left: 0;
+		// right: 0;
+		// top: 0;
+		// z-index: 1;
+		// margin: 3px;
+
 		padding: 0.375rem;
 		font-size: 0.875rem;
 		margin-bottom: 0.125rem;

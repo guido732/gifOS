@@ -55,17 +55,16 @@ function fetchTrending(limit) {
 function fetchSuggestions(limit) {
 	const $suggestedGifsContainer = document.querySelector("#suggested-container");
 	const suggestionArray = [
-		"fun",
+		"baby+yoda",
 		"puppy",
-		"random",
-		"oh+shit",
 		"kitten",
+		"oh+shit",
 		"rick+morty",
+		"the+office",
 		"sillicon+valley",
-		"cute",
 		"lol",
 		"wtf",
-		"game+of+thrones"
+		"shocked"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 	fetch(
