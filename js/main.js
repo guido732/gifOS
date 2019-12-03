@@ -86,6 +86,7 @@ function fetchSuggestions(limit) {
 }
 
 function newGifItem(type, gif, ratio = "") {
+	gif.title === "" ? (gif.title = "&emsp;") : null;
 	if (type === "window") {
 		const $container = document.createElement("div");
 		const $element = `<div class="window-item ${ratio}">
@@ -101,9 +102,11 @@ function newGifItem(type, gif, ratio = "") {
 		$container.innerHTML = $element;
 		return $container.firstChild;
 	} else if (type === "trend") {
+		console.log(gif);
+
 		const $container = document.createElement("div");
 		const $element = `<div class="trend-item ${ratio}">
-			<a href="">
+			<a href="${gif.bitly_url}" target="_blank">
 				<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
 				<div class="trend-header">
 					${gif.title}
