@@ -80,9 +80,16 @@
 				<input
 					type="text"
 					name="search-results-input"
-					id="search-results-input"
-					placeholder="Texto de prueba placeholder <SACAR>"
+					class="input-title-bar"
+					placeholder="Hoy te sugerimos:"
+					disabled
 				/>
+				<div class="result-container" id="suggested-container"></div>
+			</section>
+			<section class="trends">
+				<input type="text" name="search-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
+				<!-- TODO make buttons and styles for this other grid -->
+				<div class="trend-grid" id="trend-grid"></div>
 			</section>
 		</main>
 		<footer></footer>
