@@ -25,8 +25,8 @@ document.querySelector("#search-bar").oninput = function(e) {
 
 // Fetch new items on page load for trending section
 window.onload = () => {
-	fetchTrending(20);
 	fetchSuggestions(4);
+	// fetchTrending(20);
 };
 
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";

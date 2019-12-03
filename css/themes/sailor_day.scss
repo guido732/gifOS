@@ -103,6 +103,22 @@ $textWhite: #fff;
 		}
 	}
 }
+.trend-item {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.trend-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: bold;
+		margin: 0.1875rem;
+	}
+	.img-element {
+		border: 1px solid #e6e6e6;
+		&:hover {
+			border: 1px dotted #110038;
+		}
+	}
+}
 .input-title-bar {
 	background: #fffafe;
 	border: 1px solid #e6bbe2;
