@@ -26,7 +26,7 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Fetch new items on page load for trending section
 window.onload = () => {
 	fetchSuggestions(4);
-	// fetchTrending(20);
+	fetchTrending(20);
 };
 
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
@@ -43,7 +43,7 @@ function fetchTrending(limit) {
 				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5
 					? (aspectRatio = "item-double")
 					: (aspectRatio = "");
-				const newGif = newGifItem("window", gif, aspectRatio);
+				const newGif = newGifItem("trend", gif, aspectRatio);
 				$suggestedGifsContainer.append(newGif);
 			});
 		})
@@ -98,6 +98,19 @@ function newGifItem(type, gif, ratio = "") {
 					<a href="${gif.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 				</div>
 			</div>`;
+		$container.innerHTML = $element;
+		return $container.firstChild;
+	} else if (type === "trend") {
+		const $container = document.createElement("div");
+		const $element = `<div class="trend-item ${ratio}">
+			<a href="">
+				<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
+				<div class="trend-header">
+					${gif.title}
+				</div>
+			</a>
+		</div>
+	</div>`;
 		$container.innerHTML = $element;
 		return $container.firstChild;
 	}
