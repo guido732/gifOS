@@ -78,18 +78,28 @@
 					<button type="button" class="btn-primary tag"><span>#Un asd</span></button>
 				</div>
 			</section>
-			<section class="search-results">
+			<section class="search-results" id="search-results" style="display: none">
 				<input
 					type="text"
 					name="search-results-input"
+					class="input-title-bar"
+					placeholder="Resultados de búsqueda:"
+					disabled
+				/>
+				<div class="result-container" id="search-result-container"></div>
+			</section>
+			<section class="suggestions" id="suggestions">
+				<input
+					type="text"
+					name="suggestion-results-input"
 					class="input-title-bar"
 					placeholder="Hoy te sugerimos:"
 					disabled
 				/>
 				<div class="result-container" id="suggested-container"></div>
 			</section>
-			<section class="trends">
-				<input type="text" name="search-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
+			<section class="trends" id="trends">
+				<input type="text" name="suggestion-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
 				<div class="trend-grid" id="trend-grid"></div>
 			</section>
 		</main>

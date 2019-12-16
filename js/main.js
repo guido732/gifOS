@@ -2,8 +2,8 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
-	// fetchSuggestions(4);
-	// fetchTrending(20);
+	fetchSuggestions(4);
+	fetchTrending(20);
 };
 
 // Dropdown list visibility toggle
@@ -42,8 +42,10 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Gets search results from form submission
 document.searchform.onsubmit = e => {
 	e.preventDefault();
-	fetchSearchResults(40);
+	fetchSearchResults(40, document.querySelector("#search-bar").value);
 };
+
+// TODO onclick de search suggestions / titles
 
 // Generic fetch function
 function fetchURL(url) {
@@ -113,15 +115,23 @@ async function fetchSearchTitles(limit, keywords) {
 }
 
 async function fetchSearchResults(limit, keywords) {
-	const $searchSuggestions = document.querySelector("#search-suggestions");
+	const $searchResults = document.querySelector("#search-results");
+	const $searchResultsContainer = document.querySelector("#search-result-container");
 	processedKeywords = keywords.split(" ").join("+");
 
 	searchResults = await fetchURL(
 		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
-	$searchSuggestions.innerHTML = "";
-	searchResults.data.forEach(searchTitle => {
-		$searchSuggestions.append(newElement("searchTitle", searchTitle));
+
+	$searchResultsContainer.innerHTML = "";
+	$searchResults.style.display = "block";
+	document.querySelector("#trends").style.display = "none";
+	document.querySelector("#suggestions").style.display = "none";
+
+	searchResults.data.forEach(gif => {
+		let aspectRatio = "";
+		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
 	});
 }
 
