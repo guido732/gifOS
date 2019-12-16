@@ -244,6 +244,7 @@ header {
 			display: block;
 			position: absolute;
 			width: 100%;
+			z-index: 1;
 			.search-element {
 				margin-bottom: 0.5rem;
 				&:last-child {
@@ -262,6 +263,7 @@ header {
 	.result-container {
 		display: grid;
 		grid-template: 1fr / minmax(0, 1fr);
+		grid-auto-flow: row dense;
 		gap: 1rem;
 	}
 	@media screen and (min-width: 576px) {
