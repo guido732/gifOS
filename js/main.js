@@ -1,5 +1,3 @@
-const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-
 // Dropdown list visibility toggle
 document.querySelector("#dropdown-btn").onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -25,36 +23,41 @@ document.querySelector("#search-bar").oninput = function(e) {
 	}
 };
 
-// Fetch new items on page load for trending section
+// Fetch new items on page load for trending and suggestions section
 window.onload = () => {
-	fetchSuggestions(4);
-	fetchTrending(20);
+	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+	fetchSuggestions(4, APIkey);
+	fetchTrending(20, APIkey);
 };
 
-function fetchTrending(limit) {
-	const $suggestedGifsContainer = document.querySelector("#trend-grid");
-	const gifOffset = Math.floor(Math.random() * 50);
-	fetch(`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&rating=r&offset=${gifOffset}`)
+// Generic fetch function
+function fetchURL(url) {
+	const fetchData = fetch(url)
 		.then(response => {
 			return response.json();
-		})
-		.then(data => {
-			data.data.forEach(gif => {
-				let aspectRatio = "";
-				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5
-					? (aspectRatio = "item-double")
-					: (aspectRatio = "");
-				const newGif = newGifItem("trend", gif, aspectRatio);
-				$suggestedGifsContainer.append(newGif);
-			});
 		})
 		.catch(error => {
 			return error;
 		});
+	return fetchData;
 }
 
-function fetchSuggestions(limit) {
-	const $suggestedGifsContainer = document.querySelector("#suggested-container");
+async function fetchTrending(limit, APIkey) {
+	const $trendingGifs = document.querySelector("#trend-grid");
+	const gifOffset = Math.floor(Math.random() * 50);
+
+	gifsTrending = await fetchURL(
+		`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&rating=r&offset=${gifOffset}`
+	);
+	gifsTrending.data.forEach(gif => {
+		let aspectRatio = "";
+		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+		$trendingGifs.append(newGifItem("trend", gif, aspectRatio));
+	});
+}
+
+async function fetchSuggestions(limit, APIkey) {
+	const $suggestedGifs = document.querySelector("#suggested-container");
 	const suggestionArray = [
 		"baby+yoda",
 		"puppy",
@@ -64,32 +67,30 @@ function fetchSuggestions(limit) {
 		"the+office",
 		"sillicon+valley",
 		"lol",
+		"the+mandalorian",
+		"pulp+fiction",
+		"fight+club",
 		"wtf",
 		"shocked"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
-	fetch(
+
+	gifsSuggestions = await fetchURL(
 		`http://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}&rating=r`
-	)
-		.then(response => {
-			return response.json();
-		})
-		.then(data => {
-			data.data.forEach(gif => {
-				const newGif = newGifItem("window", gif);
-				$suggestedGifsContainer.append(newGif);
-			});
-		})
-		.catch(error => {
-			return error;
-		});
+	);
+
+	gifsSuggestions.data.forEach(gif => {
+		$suggestedGifs.append(newGifItem("window", gif));
+	});
 }
 
 function newGifItem(type, gif, ratio = "") {
-	gif.title === "" ? (gif.title = "&emsp;") : null;
-	if (type === "window") {
-		const $container = document.createElement("div");
-		const $element = `<div class="window-item ${ratio}">
+	// gif.title === "" ? (gif.title = "&emsp;") : null;
+	const $container = document.createElement("div");
+	let $element = "";
+	switch (type) {
+		case "window":
+			$element = `<div class="window-item ${ratio}">
 				<div class="wi-header">
 						${gif.title}
 					<button class="remove-element"></button>
@@ -99,26 +100,24 @@ function newGifItem(type, gif, ratio = "") {
 					<a href="${gif.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 				</div>
 			</div>`;
-		$container.innerHTML = $element;
-		return $container.firstChild;
-	} else if (type === "trend") {
-		// console.log(gif);
-		var titleToArray = gif.title.split(" ");
-		var titleArrayToTags = "";
-		titleToArray.forEach(word => {
-			titleArrayToTags += `#${word} `;
-		});
-		const $container = document.createElement("div");
-		const $element = `<div class="trend-item ${ratio}">
-			<a href="${gif.bitly_url}" target="_blank">
-				<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
-				<div class="trend-header">
-					${titleArrayToTags}
-				</div>
-			</a>
-		</div>
-	</div>`;
-		$container.innerHTML = $element;
-		return $container.firstChild;
+			$container.innerHTML = $element;
+			return $container.firstChild;
+		case "trend":
+			const titleToArray = gif.title.split(" ");
+			let titleArrayToTags = "";
+			titleToArray.forEach(word => {
+				titleArrayToTags += `#${word} `;
+			});
+			$element = `<div class="trend-item ${ratio}">
+				<a href="${gif.bitly_url}" target="_blank">
+					<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
+					<div class="trend-header">
+						${titleArrayToTags}
+					</div>
+				</a>
+			</div>
+		</div>`;
+			$container.innerHTML = $element;
+			return $container.firstChild;
 	}
 }
