@@ -27,12 +27,7 @@ document.querySelector("#search-bar").oninput = function(e) {
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
 		document.querySelector("#search-suggestions").style.display = "block";
-		fetchSearchTitles(5, document.querySelector("#search-bar").value);
-		/* 
-		Hacer fetch de resultados de búsqueda parciales
-		Mostrar tab de resultados de búsqueda al recibir los resultados
-		Mostrar resultados en forma de título
-		*/
+		fetchSearchTitles(7, document.querySelector("#search-bar").value);
 	} else {
 		$searchButton.disabled = true;
 		document.querySelector("#search-suggestions").style.display = "none";
@@ -44,8 +39,6 @@ document.searchform.onsubmit = e => {
 	e.preventDefault();
 	fetchSearchResults(40, document.querySelector("#search-bar").value);
 };
-
-// TODO onclick de search suggestions / titles
 
 // Generic fetch function
 function fetchURL(url) {
@@ -108,6 +101,13 @@ async function fetchSearchTitles(limit, keywords) {
 	$searchSuggestions.innerHTML = "";
 	searchResults.data.forEach(searchTitle => {
 		$searchSuggestions.append(newElement("searchTitle", searchTitle));
+	});
+
+	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
+	$searchSuggestionsBtn.forEach(element => {
+		element.onclick = e => {
+			fetchSearchResults(40, element.innerText);
+		};
 	});
 }
 
