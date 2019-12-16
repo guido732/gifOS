@@ -1,3 +1,5 @@
+const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+
 // Dropdown list visibility toggle
 document.querySelector("#dropdown-btn").onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -29,7 +31,6 @@ window.onload = () => {
 	fetchTrending(20);
 };
 
-const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 function fetchTrending(limit) {
 	const $suggestedGifsContainer = document.querySelector("#trend-grid");
 	const gifOffset = Math.floor(Math.random() * 50);
@@ -90,7 +91,7 @@ function newGifItem(type, gif, ratio = "") {
 		const $container = document.createElement("div");
 		const $element = `<div class="window-item ${ratio}">
 				<div class="wi-header">
-					${gif.title}
+						${gif.title}
 					<button class="remove-element"></button>
 				</div>
 				<div class="img-container">
