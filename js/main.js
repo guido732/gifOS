@@ -37,7 +37,7 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Gets search results from form submission
 document.searchform.onsubmit = e => {
 	e.preventDefault();
-	fetchSearchResults(40, document.querySelector("#search-bar").value);
+	fetchSearchResults(20, document.querySelector("#search-bar").value);
 };
 
 // Generic fetch function
@@ -100,13 +100,13 @@ async function fetchSearchTitles(limit, keywords) {
 	);
 	$searchSuggestions.innerHTML = "";
 	searchResults.data.forEach(searchTitle => {
-		$searchSuggestions.append(newElement("searchTitle", searchTitle));
+		searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
 	});
 
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
 	$searchSuggestionsBtn.forEach(element => {
 		element.onclick = e => {
-			fetchSearchResults(40, element.innerText);
+			fetchSearchResults(20, element.innerText);
 		};
 	});
 }
