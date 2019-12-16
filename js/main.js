@@ -77,18 +77,15 @@ async function fetchSuggestions(limit) {
 	const $suggestedGifs = document.querySelector("#suggested-container");
 	const suggestionArray = [
 		"baby+yoda",
-		"puppy",
-		"kitten",
+		"adventure+time",
 		"oh+shit",
 		"rick+morty",
 		"the+office",
 		"sillicon+valley",
-		"lol",
 		"the+mandalorian",
 		"pulp+fiction",
 		"fight+club",
-		"wtf",
-		"shocked"
+		"wtf"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 
@@ -127,6 +124,7 @@ async function fetchSearchResults(limit, keywords) {
 	$searchResults.style.display = "block";
 	document.querySelector("#trends").style.display = "none";
 	document.querySelector("#suggestions").style.display = "none";
+	document.querySelector("#search-suggestions").style.display = "none";
 
 	searchResults.data.forEach(gif => {
 		let aspectRatio = "";
