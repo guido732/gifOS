@@ -1,3 +1,5 @@
+const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+
 // Dropdown list visibility toggle
 document.querySelector("#dropdown-btn").onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -25,11 +27,10 @@ document.querySelector("#search-bar").oninput = function(e) {
 
 // Fetch new items on page load for trending section
 window.onload = () => {
-	fetchTrending(20);
 	fetchSuggestions(4);
+	fetchTrending(20);
 };
 
-const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 function fetchTrending(limit) {
 	const $suggestedGifsContainer = document.querySelector("#trend-grid");
 	const gifOffset = Math.floor(Math.random() * 50);
@@ -43,7 +44,7 @@ function fetchTrending(limit) {
 				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5
 					? (aspectRatio = "item-double")
 					: (aspectRatio = "");
-				const newGif = newGifItem("window", gif, aspectRatio);
+				const newGif = newGifItem("trend", gif, aspectRatio);
 				$suggestedGifsContainer.append(newGif);
 			});
 		})
@@ -55,17 +56,16 @@ function fetchTrending(limit) {
 function fetchSuggestions(limit) {
 	const $suggestedGifsContainer = document.querySelector("#suggested-container");
 	const suggestionArray = [
-		"fun",
+		"baby+yoda",
 		"puppy",
-		"random",
-		"oh+shit",
 		"kitten",
+		"oh+shit",
 		"rick+morty",
+		"the+office",
 		"sillicon+valley",
-		"cute",
 		"lol",
 		"wtf",
-		"game+of+thrones"
+		"shocked"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 	fetch(
@@ -86,11 +86,12 @@ function fetchSuggestions(limit) {
 }
 
 function newGifItem(type, gif, ratio = "") {
+	gif.title === "" ? (gif.title = "&emsp;") : null;
 	if (type === "window") {
 		const $container = document.createElement("div");
 		const $element = `<div class="window-item ${ratio}">
 				<div class="wi-header">
-					${gif.title}
+						${gif.title}
 					<button class="remove-element"></button>
 				</div>
 				<div class="img-container">
@@ -98,6 +99,25 @@ function newGifItem(type, gif, ratio = "") {
 					<a href="${gif.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 				</div>
 			</div>`;
+		$container.innerHTML = $element;
+		return $container.firstChild;
+	} else if (type === "trend") {
+		// console.log(gif);
+		var titleToArray = gif.title.split(" ");
+		var titleArrayToTags = "";
+		titleToArray.forEach(word => {
+			titleArrayToTags += `#${word} `;
+		});
+		const $container = document.createElement("div");
+		const $element = `<div class="trend-item ${ratio}">
+			<a href="${gif.bitly_url}" target="_blank">
+				<img src="${gif.images.original.url}" alt="${gif.title}" class="img-element" />
+				<div class="trend-header">
+					${titleArrayToTags}
+				</div>
+			</a>
+		</div>
+	</div>`;
 		$container.innerHTML = $element;
 		return $container.firstChild;
 	}
