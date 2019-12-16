@@ -59,16 +59,19 @@
 					</div>
 					<form>
 						<!-- TODO boton de Limpiar búsqueda -->
-						<input type="search" id="search-bar" placeholder="Busca gifs, hashtags, temas, busca lo que quieras…" />
+						<input
+							type="search"
+							id="search-bar"
+							placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
+							autocomplete="off"
+						/>
 						<button type="submit" id="search-button" disabled class="btn-primary submit">
 							<span><p>Buscar</p> </span>
 						</button>
 					</form>
-					<div class="search-suggestions" style="display: none;">
+					<div class="search-suggestions" id="search-suggestions" style="display: none;">
 						<!-- TODO make this hide/show and show suggestions -->
 						<!-- ! revisar review - width of elements -->
-						<button class="search-element btn-search-suggestion"><span>Resultado de búsqueda sugerido</span></button>
-						<button class="search-element btn-search-suggestion"><span>Resultado de búsqueda sugerido</span></button>
 					</div>
 				</div>
 				<div class="search-tags">
