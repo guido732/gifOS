@@ -37,8 +37,15 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Gets search results from form submission
 document.searchform.onsubmit = e => {
 	e.preventDefault();
-	fetchSearchResults(20, document.querySelector("#search-bar").value);
+	const searchValue = document.querySelector("#search-bar").value;
+	fetchSearchResults(20, searchValue);
+	replaceSearchText(searchValue);
 };
+
+function replaceSearchText(newText) {
+	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
+	document.querySelector("#search-bar").value = "";
+}
 
 // Generic fetch function
 function fetchURL(url) {
@@ -78,6 +85,7 @@ async function fetchSuggestions(limit) {
 		"the+mandalorian",
 		"pulp+fiction",
 		"fight+club",
+		"it",
 		"wtf"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
@@ -106,6 +114,7 @@ async function fetchSearchTitles(limit, keywords) {
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
 	$searchSuggestionsBtn.forEach(element => {
 		element.onclick = e => {
+			replaceSearchText(element.innerText);
 			fetchSearchResults(20, element.innerText);
 		};
 	});
