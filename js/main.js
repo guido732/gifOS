@@ -42,11 +42,22 @@ document.searchform.onsubmit = e => {
 };
 
 async function handleSearchFunctionality(searchValue) {
-	replaceSearchText(searchValue);
+	const $searchResults = document.querySelector("#search-results");
+	const $searchResultsContainer = document.querySelector("#search-result-container");
 
+	replaceSearchText(searchValue);
+	showElements($searchResults);
 	document.querySelector("#search-button").disabled = true;
 
+	$searchResultsContainer.innerHTML = "";
+	hideElements(
+		document.querySelector("#trends"),
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-suggestions")
+	);
+
 	await fetchSearchResults(20, searchValue);
+
 	/* 
 		ocultar elementos sugerencias y trends
 		limpiar gifs anteriores en contenedor
@@ -136,30 +147,18 @@ async function fetchSearchTitles(limit, keywords) {
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
 	$searchSuggestionsBtn.forEach(element => {
 		element.onclick = e => {
-			replaceSearchText(element.innerText);
-			fetchSearchResults(20, element.innerText);
-			document.querySelector("#search-button").disabled = true;
+			handleSearchFunctionality(element.innerText);
 		};
 	});
 }
 
 async function fetchSearchResults(limit, keywords) {
-	const $searchResults = document.querySelector("#search-results");
 	const $searchResultsContainer = document.querySelector("#search-result-container");
 	processedKeywords = keywords.split(" ").join("+");
-
 	searchResults = await fetchURL(
 		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
-
-	$searchResultsContainer.innerHTML = "";
-	showElements($searchResults);
-	hideElements(
-		document.querySelector("#trends"),
-		document.querySelector("#suggestions"),
-		document.querySelector("#search-suggestions")
-	);
-	searchResults.data.forEach(gif => {
+	await searchResults.data.forEach(gif => {
 		let aspectRatio = "";
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
