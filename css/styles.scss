@@ -5,9 +5,6 @@
 // TODO replace media queries for mixins
 
 // Uitlity Classes
-.flex-center {
-	@include flexCenter();
-}
 .container {
 	max-width: 1600px;
 	padding: 0 2rem;
@@ -31,6 +28,7 @@
 	display: inline-block;
 	padding: 2px;
 	span {
+		white-space: nowrap;
 		display: inline-block;
 		padding: 0.25rem 1.5rem;
 	}
@@ -162,21 +160,31 @@ section {
 }
 
 // Page Specific Sections
-header {
+.header {
 	margin-top: 1px;
 	box-shadow: 0 1px 0 0 #110038;
+	h1 {
+		max-width: 1920px;
+		margin: auto;
+	}
 }
 
 // TODO reusable dropdown section
 .navbar {
 	margin-top: 2.25rem;
-	@include flexCenter(row);
+	@include flexCenter(column);
 	justify-content: space-between;
-
+	.brand-container {
+		margin-bottom: 1rem;
+	}
 	.nav-item-container {
-		@include flexCenter(row nowrap);
+		@include flexCenter(column, wrap);
 		.nav-item {
 			margin-left: 1rem;
+			margin-bottom: 1rem;
+			&:last-child {
+				margin-bottom: 0;
+			}
 		}
 		.btn-link {
 			padding: 0.35rem 0.5rem 0.35rem 0;
@@ -207,6 +215,20 @@ header {
 			}
 		}
 	}
+	@media screen and (min-width: 576px) {
+		.nav-item-container {
+			flex-flow: row nowrap;
+			.nav-item {
+				margin-bottom: 0;
+			}
+		}
+	}
+	@media screen and (min-width: 768px) {
+		flex-direction: row;
+		.brand-container {
+			margin-bottom: 0;
+		}
+	}
 }
 .search-container {
 	.search {
@@ -218,23 +240,23 @@ header {
 			font-size: 0.875rem;
 		}
 		form {
-			@include flexCenter(row nowrap);
+			@include flexCenter(column, nowrap);
 			justify-content: space-between;
+			align-items: center;
 			padding: 0.75rem 1rem;
 			input {
+				min-width: 0;
 				width: 100%;
 				padding: 0.8rem 1rem;
 				margin-right: 0.5rem;
+				margin-bottom: 0.75rem;
 			}
 			button[type="submit"] {
 				flex-grow: 1;
 				max-width: fit-content;
 				span {
 					p {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						flex-direction: row;
+						@include flexCenter(row, nowrap);
 					}
 				}
 			}
@@ -256,8 +278,17 @@ header {
 	.search-tags {
 		margin-top: 0.75rem;
 	}
+	@media screen and (min-width: 768px) {
+		.search {
+			form {
+				flex-direction: row;
+				input {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
 }
-
 .suggestions,
 .search-results {
 	.result-container {
