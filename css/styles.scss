@@ -163,6 +163,10 @@ section {
 .header {
 	margin-top: 1px;
 	box-shadow: 0 1px 0 0 #110038;
+	h1 {
+		max-width: 1920px;
+		margin: auto;
+	}
 }
 
 // TODO reusable dropdown section
