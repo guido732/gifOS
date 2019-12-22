@@ -28,7 +28,6 @@ document.querySelector("#search-bar").oninput = function(e) {
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
 		fetchSearchTitles(7, document.querySelector("#search-bar").value);
-		showElements(document.querySelector("#search-suggestions"));
 	} else {
 		$searchButton.disabled = true;
 		hideElements(document.querySelector("#search-suggestions"));
@@ -41,7 +40,7 @@ document.searchform.onsubmit = e => {
 	handleSearchFunctionality(document.querySelector("#search-bar").value);
 };
 
-async function handleSearchFunctionality(searchValue) {
+function handleSearchFunctionality(searchValue) {
 	const $searchResults = document.querySelector("#search-results");
 	const $searchResultsContainer = document.querySelector("#search-result-container");
 
@@ -56,7 +55,7 @@ async function handleSearchFunctionality(searchValue) {
 		document.querySelector("#search-suggestions")
 	);
 
-	await fetchSearchResults(20, searchValue);
+	fetchSearchResults(20, searchValue);
 
 	/* 
 		ocultar elementos sugerencias y trends
@@ -135,13 +134,16 @@ async function fetchSearchTitles(limit, keywords) {
 	searchResults = await fetchURL(
 		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
+
 	$searchSuggestions.innerHTML = "";
 
-	if (searchResults.data.length > 0) {
+	if (searchResults.data.length) {
 		showElements(document.querySelector("#search-suggestions"));
 		searchResults.data.forEach(searchTitle => {
 			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
 		});
+	} else {
+		hideElements(document.querySelector("#search-suggestions"));
 	}
 
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
