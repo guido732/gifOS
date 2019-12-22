@@ -3,7 +3,7 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
 	fetchSuggestions(4);
-	fetchTrending(20);
+	fetchTrending(8);
 };
 
 // Dropdown list visibility toggle
