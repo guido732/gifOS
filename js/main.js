@@ -38,11 +38,26 @@ document.querySelector("#search-bar").oninput = function(e) {
 // Gets search results from form submission
 document.searchform.onsubmit = e => {
 	e.preventDefault();
-	const searchValue = document.querySelector("#search-bar").value;
-	fetchSearchResults(20, searchValue);
-	replaceSearchText(searchValue);
-	document.querySelector("#search-button").disabled = true;
+	handleSearchFunctionality(document.querySelector("#search-bar").value);
 };
+
+async function handleSearchFunctionality(searchValue) {
+	replaceSearchText(searchValue);
+
+	document.querySelector("#search-button").disabled = true;
+
+	await fetchSearchResults(20, searchValue);
+	/* 
+		ocultar elementos sugerencias y trends
+		limpiar gifs anteriores en contenedor
+		mostrar contenedor de resultados	
+		reemplazar texto input
+		limpiar valor del input
+		bloquear botón de búsqueda (si no se hace automáticamente)
+		hacer fetch
+			await generar elementos
+	*/
+}
 
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
