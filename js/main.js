@@ -3,21 +3,22 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
 	fetchSuggestions(4);
-	fetchTrending(8);
+	fetchTrending(20);
+	document.querySelector("#search-bar").focus();
 };
 
 // Dropdown list visibility toggle
 document.querySelector("#dropdown-btn").onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	e.preventDefault();
-	$dropdownList.style.display = $dropdownList.style.display === "block" ? "none" : "block";
+	$dropdownList.classList.toggle("hidden");
 };
 
 // Closes dropdown on click outside
 document.onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	if (e.target === document.querySelector("body")) {
-		$dropdownList.style.display = "none";
+		hideElements($dropdownList);
 	}
 };
 
@@ -26,19 +27,27 @@ document.querySelector("#search-bar").oninput = function(e) {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
-		document.querySelector("#search-suggestions").style.display = "block";
 		fetchSearchTitles(7, document.querySelector("#search-bar").value);
+		showElements(document.querySelector("#search-suggestions"));
 	} else {
 		$searchButton.disabled = true;
-		document.querySelector("#search-suggestions").style.display = "none";
+		hideElements(document.querySelector("#search-suggestions"));
 	}
 };
 
 // Gets search results from form submission
 document.searchform.onsubmit = e => {
 	e.preventDefault();
-	fetchSearchResults(20, document.querySelector("#search-bar").value);
+	const searchValue = document.querySelector("#search-bar").value;
+	fetchSearchResults(20, searchValue);
+	replaceSearchText(searchValue);
+	document.querySelector("#search-button").disabled = true;
 };
+
+function replaceSearchText(newText) {
+	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
+	document.querySelector("#search-bar").value = "";
+}
 
 // Generic fetch function
 function fetchURL(url) {
@@ -78,6 +87,8 @@ async function fetchSuggestions(limit) {
 		"the+mandalorian",
 		"pulp+fiction",
 		"fight+club",
+		"it",
+		"godzilla",
 		"wtf"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
@@ -99,14 +110,20 @@ async function fetchSearchTitles(limit, keywords) {
 		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
 	$searchSuggestions.innerHTML = "";
-	searchResults.data.forEach(searchTitle => {
-		searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
-	});
+
+	if (searchResults.data.length > 0) {
+		showElements(document.querySelector("#search-suggestions"));
+		searchResults.data.forEach(searchTitle => {
+			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
+		});
+	}
 
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
 	$searchSuggestionsBtn.forEach(element => {
 		element.onclick = e => {
+			replaceSearchText(element.innerText);
 			fetchSearchResults(20, element.innerText);
+			document.querySelector("#search-button").disabled = true;
 		};
 	});
 }
@@ -121,11 +138,12 @@ async function fetchSearchResults(limit, keywords) {
 	);
 
 	$searchResultsContainer.innerHTML = "";
-	$searchResults.style.display = "block";
-	document.querySelector("#trends").style.display = "none";
-	document.querySelector("#suggestions").style.display = "none";
-	document.querySelector("#search-suggestions").style.display = "none";
-
+	showElements($searchResults);
+	hideElements(
+		document.querySelector("#trends"),
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-suggestions")
+	);
 	searchResults.data.forEach(gif => {
 		let aspectRatio = "";
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
@@ -175,4 +193,15 @@ function newElement(type, element, ratio = "") {
 			$container.innerHTML = $element;
 			return $container.firstChild;
 	}
+}
+
+function hideElements(...elements) {
+	elements.forEach(element => {
+		element.classList.add("hidden");
+	});
+}
+function showElements(...elements) {
+	elements.forEach(element => {
+		element.classList.remove("hidden");
+	});
 }
