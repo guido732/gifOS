@@ -22,6 +22,9 @@
 		grid-column: span 2;
 	}
 }
+.hidden {
+	display: none !important;
+}
 
 // Components
 .btn-primary {
@@ -204,7 +207,7 @@ section {
 			}
 		}
 		.dropdown-list {
-			display: none;
+			display: block;
 			position: absolute;
 			width: 100%;
 			z-index: 1;

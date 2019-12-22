@@ -11,14 +11,14 @@ window.onload = () => {
 document.querySelector("#dropdown-btn").onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	e.preventDefault();
-	$dropdownList.style.display = $dropdownList.style.display === "block" ? "none" : "block";
+	$dropdownList.classList.toggle("hidden");
 };
 
 // Closes dropdown on click outside
 document.onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	if (e.target === document.querySelector("body")) {
-		$dropdownList.style.display = "none";
+		$dropdownList.classList.add("hidden");
 	}
 };
 
@@ -27,11 +27,11 @@ document.querySelector("#search-bar").oninput = function(e) {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
-		document.querySelector("#search-suggestions").style.display = "block";
 		fetchSearchTitles(7, document.querySelector("#search-bar").value);
+		document.querySelector("#search-suggestions").classList.remove("hidden");
 	} else {
 		$searchButton.disabled = true;
-		document.querySelector("#search-suggestions").style.display = "none";
+		document.querySelector("#search-suggestions").classList.add("hidden");
 	}
 };
 
@@ -41,6 +41,7 @@ document.searchform.onsubmit = e => {
 	const searchValue = document.querySelector("#search-bar").value;
 	fetchSearchResults(20, searchValue);
 	replaceSearchText(searchValue);
+	document.querySelector("#search-button").disabled = true;
 };
 
 function replaceSearchText(newText) {
@@ -109,9 +110,15 @@ async function fetchSearchTitles(limit, keywords) {
 		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
 	$searchSuggestions.innerHTML = "";
-	searchResults.data.forEach(searchTitle => {
-		searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
-	});
+
+	if (searchResults.data.length > 0) {
+		document.querySelector("#search-suggestions").classList.remove("hidden");
+		searchResults.data.forEach(searchTitle => {
+			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
+		});
+	} else {
+		document.querySelector("#search-suggestions").classList.add("hidden");
+	}
 
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
 	$searchSuggestionsBtn.forEach(element => {
@@ -132,11 +139,12 @@ async function fetchSearchResults(limit, keywords) {
 	);
 
 	$searchResultsContainer.innerHTML = "";
-	$searchResults.style.display = "block";
-	document.querySelector("#trends").style.display = "none";
-	document.querySelector("#suggestions").style.display = "none";
-	document.querySelector("#search-suggestions").style.display = "none";
-
+	$searchResults.classList.remove("hidden");
+	hideElements(
+		document.querySelector("#trends"),
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-suggestions")
+	);
 	searchResults.data.forEach(gif => {
 		let aspectRatio = "";
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
@@ -186,4 +194,10 @@ function newElement(type, element, ratio = "") {
 			$container.innerHTML = $element;
 			return $container.firstChild;
 	}
+}
+
+function hideElements(...elements) {
+	elements.forEach(element => {
+		element.classList.add("hidden");
+	});
 }
