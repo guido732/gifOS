@@ -3,7 +3,7 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
 	fetchSuggestions(4);
-	fetchTrending(8);
+	fetchTrending(20);
 	document.querySelector("#search-bar").focus();
 };
 
@@ -18,7 +18,7 @@ document.querySelector("#dropdown-btn").onclick = function(e) {
 document.onclick = function(e) {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	if (e.target === document.querySelector("body")) {
-		$dropdownList.classList.add("hidden");
+		hideElements($dropdownList);
 	}
 };
 
@@ -28,10 +28,10 @@ document.querySelector("#search-bar").oninput = function(e) {
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
 		fetchSearchTitles(7, document.querySelector("#search-bar").value);
-		document.querySelector("#search-suggestions").classList.remove("hidden");
+		showElements(document.querySelector("#search-suggestions"));
 	} else {
 		$searchButton.disabled = true;
-		document.querySelector("#search-suggestions").classList.add("hidden");
+		hideElements(document.querySelector("#search-suggestions"));
 	}
 };
 
@@ -112,12 +112,10 @@ async function fetchSearchTitles(limit, keywords) {
 	$searchSuggestions.innerHTML = "";
 
 	if (searchResults.data.length > 0) {
-		document.querySelector("#search-suggestions").classList.remove("hidden");
+		showElements(document.querySelector("#search-suggestions"));
 		searchResults.data.forEach(searchTitle => {
 			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
 		});
-	} else {
-		document.querySelector("#search-suggestions").classList.add("hidden");
 	}
 
 	const $searchSuggestionsBtn = document.querySelectorAll(".btn-search-suggestion");
@@ -125,6 +123,7 @@ async function fetchSearchTitles(limit, keywords) {
 		element.onclick = e => {
 			replaceSearchText(element.innerText);
 			fetchSearchResults(20, element.innerText);
+			document.querySelector("#search-button").disabled = true;
 		};
 	});
 }
@@ -139,7 +138,7 @@ async function fetchSearchResults(limit, keywords) {
 	);
 
 	$searchResultsContainer.innerHTML = "";
-	$searchResults.classList.remove("hidden");
+	showElements($searchResults);
 	hideElements(
 		document.querySelector("#trends"),
 		document.querySelector("#suggestions"),
@@ -199,5 +198,10 @@ function newElement(type, element, ratio = "") {
 function hideElements(...elements) {
 	elements.forEach(element => {
 		element.classList.add("hidden");
+	});
+}
+function showElements(...elements) {
+	elements.forEach(element => {
+		element.classList.remove("hidden");
 	});
 }
