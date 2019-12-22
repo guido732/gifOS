@@ -4,6 +4,7 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 window.onload = () => {
 	fetchSuggestions(4);
 	fetchTrending(8);
+	document.querySelector("#search-bar").focus();
 };
 
 // Dropdown list visibility toggle
@@ -86,6 +87,7 @@ async function fetchSuggestions(limit) {
 		"pulp+fiction",
 		"fight+club",
 		"it",
+		"godzilla",
 		"wtf"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
