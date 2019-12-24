@@ -2,8 +2,8 @@ const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
-	fetchSuggestions(4);
-	fetchTrending(16);
+	fetchSuggestionGifs(4);
+	fetchTrendingGifs(16);
 	document.querySelector("#search-bar").focus();
 };
 // Dropdown list visibility toggle
@@ -13,12 +13,11 @@ document.querySelector("#dropdown-btn").onclick = function(e) {
 	$dropdownList.classList.toggle("hidden");
 };
 // Closes dropdown on click outside or "Escape" keypress
-document.onclick = e => {
+window.onclick = e => {
 	const $dropdownList = document.querySelector("#dropdown-list");
 	const $searchSuggestions = document.querySelector("#search-suggestions");
-	if (e.target === document.querySelector("body")) {
-		hideElements($dropdownList, $searchSuggestions);
-	}
+	hideElements($searchSuggestions);
+	!e.target.closest("#dropdown-btn") ? hideElements($dropdownList) : null;
 };
 document.onkeydown = e => {
 	if (e.key === "Escape") {
@@ -33,7 +32,7 @@ document.querySelector("#search-bar").oninput = function(e) {
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
 		fetchSearchTitles(8, document.querySelector("#search-bar").value);
-		showElements(document.querySelector("#search-suggestions"));
+		// showElements(document.querySelector("#search-suggestions"));
 	} else {
 		$searchButton.disabled = true;
 		hideElements(document.querySelector("#search-suggestions"));
@@ -47,18 +46,19 @@ document.searchform.onsubmit = e => {
 
 async function handleSearchFunctionality(searchValue) {
 	replaceSearchText(searchValue);
+	document.querySelector("#search-bar").value = "";
+	document.querySelector("#search-bar").focus();
 	document.querySelector("#search-button").disabled = true;
 	document.querySelector("#search-result-container").innerHTML = "";
+	await fetchSearchResults(16, searchValue);
 	hideElements(
 		document.querySelector("#trends"),
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-suggestions")
 	);
-	showElements(document.querySelector("#search-results"));
-	await fetchSearchResults(16, searchValue);
-	document.querySelector("#search-bar").focus();
+	await showElements(document.querySelector("#search-results"));
 }
-async function fetchTrending(limit) {
+async function fetchTrendingGifs(limit) {
 	const $trendingGifs = document.querySelector("#trend-grid");
 	const gifOffset = Math.floor(Math.random() * 50);
 
@@ -71,7 +71,7 @@ async function fetchTrending(limit) {
 		$trendingGifs.append(newElement("trend", gif, aspectRatio));
 	});
 }
-async function fetchSuggestions(limit) {
+async function fetchSuggestionGifs(limit) {
 	const $suggestedGifs = document.querySelector("#suggested-container");
 	const suggestionArray = [
 		"baby+yoda",
@@ -107,13 +107,16 @@ async function fetchSearchTitles(limit, keywords) {
 
 	$searchSuggestions.innerHTML = "";
 
-	searchResults.data.length
-		? searchResults.data.forEach(searchTitle => {
-				searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
-		  })
-		: hideElements(document.querySelector("#search-suggestions"));
+	await showElements($searchSuggestions);
+	if (searchResults.data.length) {
+		searchResults.data.forEach(searchTitle => {
+			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
+		});
+	} else {
+		hideElements(document.querySelector("#search-suggestions"));
+	}
 
-	document.querySelectorAll(".btn-search-suggestion").forEach(async element => {
+	document.querySelectorAll(".btn-search-suggestion").forEach(element => {
 		element.onclick = () => {
 			handleSearchFunctionality(element.innerText);
 		};
@@ -201,5 +204,4 @@ function processSearchValues(inputValues) {
 }
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
-	document.querySelector("#search-bar").value = "";
 }
