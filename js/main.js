@@ -31,7 +31,7 @@ document.querySelector("#search-bar").oninput = function(e) {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
-		if (fetchSearchTitles(8, document.querySelector("#search-bar").value)) {
+		if (handleSearchSuggestionSearch(8, document.querySelector("#search-bar").value)) {
 			// showElements(document.querySelector("#search-suggestions"));
 		}
 	} else {
@@ -60,7 +60,7 @@ async function handleSearchFunctionality(searchValue) {
 	document.querySelector("#search-suggestions").innerHTML = "";
 	await showElements(document.querySelector("#search-results"));
 }
-async function fetchSearchTitles(limit, keywords) {
+async function handleSearchSuggestionSearch(limit, keywords) {
 	processedKeywords = processSearchValues(keywords);
 	const $searchSuggestions = document.querySelector("#search-suggestions");
 	const url = `http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
