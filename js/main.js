@@ -145,28 +145,27 @@ function fetchURL(url) {
 function newElement(type, element, ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
 	const $container = document.createElement("div");
-	let $element = "";
 	switch (type) {
 		case "window":
-			$element = `<div class="window-item ${ratio}">
-				<div class="wi-header">
-						${element.title}
-					<button class="remove-element"></button>
-				</div>
-				<div class="img-container">
-					<img class="img-element" src="${element.images.original.url}" />
-					<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
-				</div>
-			</div>`;
-			$container.innerHTML = $element;
+			$container.innerHTML = `<div class="window-item ${ratio}">
+			<div class="wi-header">
+					${element.title}
+				<button class="remove-element"></button>
+			</div>
+			<div class="img-container">
+				<img class="img-element" src="${element.images.original.url}" />
+				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
+			</div>
+		</div>`;
 			return $container.firstChild;
+
 		case "trend":
 			const titleToArray = element.title.split(" ");
 			let titleArrayToTags = "";
 			titleToArray.forEach(word => {
 				titleArrayToTags += `#${word} `;
 			});
-			$element = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img src="${element.images.original.url}" alt="${element.title}" class="img-element" />
 					<div class="trend-header">
@@ -175,13 +174,12 @@ function newElement(type, element, ratio = "") {
 				</a>
 			</div>
 		</div>`;
-			$container.innerHTML = $element;
 			return $container.firstChild;
+
 		case "searchTitle":
-			$element = `<button class="search-element btn-search-suggestion">
+			$container.innerHTML = `<button class="search-element btn-search-suggestion">
 		<span>${element.title}</span>
 		</button>`;
-			$container.innerHTML = $element;
 			return $container.firstChild;
 	}
 }
