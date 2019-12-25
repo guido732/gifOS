@@ -8,8 +8,8 @@ window.onload = () => {
 };
 // Dropdown list visibility toggle
 document.querySelector("#dropdown-btn").onclick = function(e) {
-	const $dropdownList = document.querySelector("#dropdown-list");
 	e.preventDefault();
+	const $dropdownList = document.querySelector("#dropdown-list");
 	$dropdownList.classList.toggle("hidden");
 };
 // Closes dropdown on click outside or "Escape" keypress
@@ -31,8 +31,9 @@ document.querySelector("#search-bar").oninput = function(e) {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
-		fetchSearchTitles(8, document.querySelector("#search-bar").value);
-		// showElements(document.querySelector("#search-suggestions"));
+		if (fetchSearchTitles(8, document.querySelector("#search-bar").value)) {
+			// showElements(document.querySelector("#search-suggestions"));
+		}
 	} else {
 		$searchButton.disabled = true;
 		hideElements(document.querySelector("#search-suggestions"));
@@ -50,13 +51,33 @@ async function handleSearchFunctionality(searchValue) {
 	document.querySelector("#search-bar").focus();
 	document.querySelector("#search-button").disabled = true;
 	document.querySelector("#search-result-container").innerHTML = "";
-	await fetchSearchResults(16, searchValue);
+	await fetchSearchResultGifs(16, searchValue);
 	hideElements(
 		document.querySelector("#trends"),
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-suggestions")
 	);
+	document.querySelector("#search-suggestions").innerHTML = "";
 	await showElements(document.querySelector("#search-results"));
+}
+async function fetchSearchTitles(limit, keywords) {
+	processedKeywords = processSearchValues(keywords);
+	const $searchSuggestions = document.querySelector("#search-suggestions");
+	const url = `http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
+	searchResults = await fetchURL(url);
+	$searchSuggestions.innerHTML = "";
+	showElements(document.querySelector("#search-suggestions"));
+	searchResults.data.length
+		? searchResults.data.forEach(searchTitle => {
+				searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
+		  })
+		: hideElements(document.querySelector("#search-suggestions"));
+
+	document.querySelectorAll(".btn-search-suggestion").forEach(element => {
+		element.onclick = () => {
+			handleSearchFunctionality(element.innerText);
+		};
+	});
 }
 async function fetchTrendingGifs(limit) {
 	const $trendingGifs = document.querySelector("#trend-grid");
@@ -97,32 +118,7 @@ async function fetchSuggestionGifs(limit) {
 		$suggestedGifs.append(newElement("window", gif));
 	});
 }
-async function fetchSearchTitles(limit, keywords) {
-	const $searchSuggestions = document.querySelector("#search-suggestions");
-
-	processedKeywords = processSearchValues(keywords);
-	searchResults = await fetchURL(
-		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
-	);
-
-	$searchSuggestions.innerHTML = "";
-
-	await showElements($searchSuggestions);
-	if (searchResults.data.length) {
-		searchResults.data.forEach(searchTitle => {
-			searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
-		});
-	} else {
-		hideElements(document.querySelector("#search-suggestions"));
-	}
-
-	document.querySelectorAll(".btn-search-suggestion").forEach(element => {
-		element.onclick = () => {
-			handleSearchFunctionality(element.innerText);
-		};
-	});
-}
-async function fetchSearchResults(limit, keywords) {
+async function fetchSearchResultGifs(limit, keywords) {
 	const $searchResultsContainer = document.querySelector("#search-result-container");
 	processedKeywords = processSearchValues(keywords);
 	searchResults = await fetchURL(
