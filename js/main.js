@@ -69,7 +69,9 @@ async function handleSearchSuggestionSearch(limit, keywords) {
 	showElements(document.querySelector("#search-suggestions"));
 	searchResults.data.length
 		? searchResults.data.forEach(searchTitle => {
-				searchTitle.title ? $searchSuggestions.append(newElement("searchTitle", searchTitle)) : null;
+				searchTitle.title && searchTitle.title !== " "
+					? $searchSuggestions.append(newElement("searchTitle", searchTitle))
+					: null;
 		  })
 		: hideElements(document.querySelector("#search-suggestions"));
 
