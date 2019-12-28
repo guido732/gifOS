@@ -20,6 +20,11 @@ $textWhite: #fff;
 .underline {
 	border-bottom-color: $textDark;
 }
+.loading-animation {
+	background: $gradient;
+	background-size: 400% 400%;
+	animation: loading-animation 2s ease infinite;
+}
 
 // Components
 .btn-primary {
@@ -212,5 +217,18 @@ a {
 	.search-suggestions {
 		background: $colorSearchHover;
 		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	}
+}
+
+// Animations
+@keyframes loading-animation {
+	0% {
+		background-position: 0% 88%;
+	}
+	50% {
+		background-position: 100% 13%;
+	}
+	100% {
+		background-position: 0% 88%;
 	}
 }
