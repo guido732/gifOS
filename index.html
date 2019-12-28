@@ -29,7 +29,7 @@
 				<div class="brand-container"></div>
 			</a>
 			<div class="nav-item-container">
-				<button href="#" class="btn-primary nav-item">
+				<button class="btn-primary nav-item" id="btn-create-gif">
 					<span>Crear Guifos</span>
 				</button>
 				<div class="nav-item dropdown-container-outer">
@@ -51,7 +51,7 @@
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search-container">
+			<section class="search-container" id="search-box">
 				<div class="search">
 					<div class="search-header">
 						<!-- ! review - header bottom border color -->
@@ -99,6 +99,9 @@
 			<section class="trends" id="trends">
 				<input type="text" name="suggestion-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
 				<div class="trend-grid" id="trend-grid"></div>
+			</section>
+			<section class="create-gif hidden" id="create-gif">
+				Crear Gif
 			</section>
 			<section class="my-gifs hidden" id="my-gifs">
 				<input type="text" name="my-gifs-results-input" class="input-title-bar" placeholder="Mis guifos:" disabled />

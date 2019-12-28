@@ -58,8 +58,13 @@ document.searchform.onsubmit = e => {
 	e.preventDefault();
 	handleSearchFunctionality(document.querySelector("#search-bar").value);
 };
+// Show my-gifs section
 document.querySelector("#btn-my-gifs").onclick = e => {
-	showMyGifs();
+	showMyGifsSection();
+};
+// Create gif trigger
+document.querySelector("#btn-create-gif").onclick = e => {
+	createGifSection();
 };
 
 async function handleSearchFunctionality(searchValue) {
@@ -72,6 +77,8 @@ async function handleSearchFunctionality(searchValue) {
 	hideElements(
 		document.querySelector("#trends"),
 		document.querySelector("#suggestions"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif"),
 		document.querySelector("#search-suggestions")
 	);
 	document.querySelector("#search-suggestions").innerHTML = "";
@@ -236,9 +243,26 @@ function processSearchValues(inputValues) {
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
-function showMyGifs() {
-	hideElements(document.querySelector("#suggestions"), document.querySelector("#trends"));
+function showMyGifsSection() {
+	hideElements(
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-results"),
+		document.querySelector("#search-box"),
+		document.querySelector("#trends"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif")
+	);
 	showElements(document.querySelector("#my-gifs"));
 }
-
+function createGifSection() {
+	hideElements(
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-results"),
+		document.querySelector("#search-box"),
+		document.querySelector("#trends"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif")
+	);
+	showElements(document.querySelector("#create-gif"));
+}
 // localStorage.setItem("color-theme", "light");
