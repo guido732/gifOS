@@ -184,8 +184,7 @@ function newElement(type, element, ratio = "") {
 				<button class="remove-element"></button>
 			</div>
 			<div class="img-container">
-			<!-- <img class="img-element" src="${element.images.original.url}" alt="${element.title}" /> -->
-				<img class="img-element" src="wrongurl" alt="${element.title}" />
+			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 			</div>
 		</div>`;
@@ -199,7 +198,7 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element" />
+					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
 					<div class="trend-header">
 						${titleArrayToTags}
 					</div>
