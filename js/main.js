@@ -1,3 +1,17 @@
+// Selectors
+/* document.querySelector("#search-bar")
+document.querySelector("#search-button")
+document.querySelector("#search-suggestions")
+document.querySelector("#search-result-container")
+document.querySelector("#search-results")
+document.querySelector("#suggestions")
+document.querySelector("#suggested-container")
+document.querySelectorAll(".btn-search-suggestion")
+document.querySelector("#dropdown-list")
+document.querySelector("#trends")
+document.querySelector("#trend-grid")
+ */
+
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 
 // Fetch new items on page load for trending and suggestions section
@@ -100,7 +114,7 @@ async function fetchSuggestionGifs(limit) {
 		"baby+yoda",
 		"adventure+time",
 		"oh+shit",
-		"rick+morty",
+		"rick+and+morty",
 		"the+office",
 		"sillicon+valley",
 		"the+mandalorian",
@@ -108,7 +122,8 @@ async function fetchSuggestionGifs(limit) {
 		"fight+club",
 		"it",
 		"godzilla",
-		"wtf"
+		"wtf",
+		"trippy"
 	];
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 
