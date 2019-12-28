@@ -184,7 +184,8 @@ function newElement(type, element, ratio = "") {
 				<button class="remove-element"></button>
 			</div>
 			<div class="img-container">
-				<img class="img-element" src="${element.images.original.url}" />
+			<!-- <img class="img-element" src="${element.images.original.url}" alt="${element.title}" /> -->
+				<img class="img-element" src="wrongurl" alt="${element.title}" />
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
 			</div>
 		</div>`;
