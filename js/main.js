@@ -58,6 +58,9 @@ document.searchform.onsubmit = e => {
 	e.preventDefault();
 	handleSearchFunctionality(document.querySelector("#search-bar").value);
 };
+document.querySelector("#btn-my-gifs").onclick = e => {
+	showMyGifs();
+};
 
 async function handleSearchFunctionality(searchValue) {
 	replaceSearchText(searchValue);
@@ -233,3 +236,9 @@ function processSearchValues(inputValues) {
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
+function showMyGifs() {
+	hideElements(document.querySelector("#suggestions"), document.querySelector("#trends"));
+	showElements(document.querySelector("#my-gifs"));
+}
+
+// localStorage.setItem("color-theme", "light");
