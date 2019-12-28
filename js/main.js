@@ -72,7 +72,7 @@ async function handleSearchFunctionality(searchValue) {
 		document.querySelector("#search-suggestions")
 	);
 	document.querySelector("#search-suggestions").innerHTML = "";
-	await showElements(document.querySelector("#search-results"));
+	await showElements(document.querySelector("#search-results"), document.querySelector("#search-tags"));
 }
 async function handleSearchSuggestionSearch(limit, keywords) {
 	processedKeywords = processSearchValues(keywords);
@@ -146,6 +146,20 @@ async function fetchSearchResultGifs(limit, keywords) {
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
 	});
+
+	const $tagCotnainer = document.querySelector("#search-tags");
+	$tagCotnainer.innerHTML = "";
+	searchResults.data.map(element => {
+		element.title && element.title !== " " && element.title !== "&emsp;"
+			? $tagCotnainer.appendChild(newElement("tag", element))
+			: null;
+	});
+
+	document.querySelectorAll(".tag").forEach(tag => {
+		tag.onclick = () => {
+			handleSearchFunctionality(tag.innerText);
+		};
+	});
 }
 
 // Generic fetch function
@@ -197,6 +211,9 @@ function newElement(type, element, ratio = "") {
 			$container.innerHTML = `<button class="search-element btn-search-suggestion">
 		<span>${element.title}</span>
 		</button>`;
+			return $container.firstChild;
+		case "tag":
+			$container.innerHTML = `<button type="button" class="btn-primary tag"><span>${element.title}</span></button>`;
 			return $container.firstChild;
 	}
 }
