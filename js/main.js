@@ -154,6 +154,12 @@ async function fetchSearchResultGifs(limit, keywords) {
 			? $tagCotnainer.appendChild(newElement("tag", element))
 			: null;
 	});
+
+	document.querySelectorAll(".tag").forEach(tag => {
+		tag.onclick = () => {
+			handleSearchFunctionality(tag.innerText);
+		};
+	});
 }
 
 // Generic fetch function
