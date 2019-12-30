@@ -312,7 +312,9 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			document.querySelector("#video-box").srcObject = stream;
+			const $video = document.querySelector("#video-box");
+			$video.srcObject = stream;
+			$video.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
