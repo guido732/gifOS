@@ -274,6 +274,11 @@ const myGifsSection = (function() {
 	//cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 
+	//bind events
+	document.querySelector("#create-gif-continue").onclick = e => {
+		stage2();
+	};
+
 	_render();
 	function _render() {
 		fetchGifsFromStorage();
@@ -290,6 +295,27 @@ const myGifsSection = (function() {
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
 		});
+	}
+	function stage2() {
+		document.querySelector("#create-gif").firstElementChild.classList.remove("window-size-md");
+		document.querySelector("#create-gif").firstElementChild.classList.add("window-size-lg");
+		hideElements(document.querySelector("#stage1"));
+		showElements(document.querySelector("#stage2"));
+		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
+		videoRecordInit();
+	}
+	async function videoRecordInit() {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: {
+					height: { max: 480 }
+				}
+			});
+			document.querySelector("#video-box").srcObject = stream;
+		} catch (e) {
+			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+		}
 	}
 	return {};
 })();
