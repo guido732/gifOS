@@ -261,8 +261,35 @@ function createGifSection() {
 		document.querySelector("#search-box"),
 		document.querySelector("#trends"),
 		document.querySelector("#my-gifs"),
-		document.querySelector("#create-gif")
+		document.querySelector("#create-gif"),
+		document.querySelector(".nav-item-container")
 	);
 	showElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
 }
 // localStorage.setItem("color-theme", "light");
+
+const myGifsSection = (function() {
+	let myGifs = [];
+
+	//cache DOM
+	const $gifsGrid = document.querySelector("#my-gifs-grid");
+
+	_render();
+	function _render() {
+		fetchGifsFromStorage();
+		$gifsGrid.innerHTML = "";
+		myGifs.forEach(element => {
+			let aspectRatio = "";
+			element.images["480w_still"].width / element.images["480w_still"].height >= 1.5
+				? (aspectRatio = "item-double")
+				: null;
+			newElement("window", element, aspectRatio);
+		});
+	}
+	function fetchGifsFromStorage() {
+		Object.keys(localStorage).forEach(element => {
+			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
+		});
+	}
+	return {};
+})();
