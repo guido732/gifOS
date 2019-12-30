@@ -263,6 +263,6 @@ function createGifSection() {
 		document.querySelector("#my-gifs"),
 		document.querySelector("#create-gif")
 	);
-	showElements(document.querySelector("#create-gif"));
+	showElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
 }
 // localStorage.setItem("color-theme", "light");
