@@ -278,6 +278,9 @@ const myGifsSection = (function() {
 	document.querySelector("#create-gif-continue").onclick = e => {
 		stage2();
 	};
+	document.querySelector("#start-recording").onclick = e => {
+		stage3();
+	};
 
 	_render();
 	function _render() {
@@ -303,6 +306,21 @@ const myGifsSection = (function() {
 		showElements(document.querySelector("#stage2"));
 		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
 		videoRecordInit();
+	}
+	function stage3() {
+		const $stream = document.querySelector("#video-box").srcObject;
+		recorder = RecordRTC($stream, {
+			type: "gif",
+			frameRate: 1,
+			quality: 10,
+			width: 360,
+			hidden: 240,
+
+			onGifRecordingStarted: function() {
+				console.log("started");
+			}
+		});
+		recorder.startRecording();
 	}
 	async function videoRecordInit() {
 		try {
