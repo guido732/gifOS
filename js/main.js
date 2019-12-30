@@ -278,9 +278,6 @@ const myGifsSection = (function() {
 	document.querySelector("#create-gif-continue").onclick = e => {
 		stage2();
 	};
-	document.querySelector("#start-recording").onclick = e => {
-		stage3();
-	};
 
 	_render();
 	function _render() {
@@ -306,21 +303,84 @@ const myGifsSection = (function() {
 		showElements(document.querySelector("#stage2"));
 		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
 		videoRecordInit();
+		stage3();
 	}
-	function stage3() {
-		const $stream = document.querySelector("#video-box").srcObject;
-		recorder = RecordRTC($stream, {
+	/* function getStreamAndRecord() {
+		const $video = document.querySelector("#video-box");
+
+		recorder = RecordRTC($video.srcObject, {
 			type: "gif",
 			frameRate: 1,
 			quality: 10,
-			width: 360,
+			width: 480,
 			hidden: 240,
-
 			onGifRecordingStarted: function() {
 				console.log("started");
+				document.querySelector("#stop-recording").classList.toggle("hidden");
+				document.querySelector("#start-recording").classList.toggle("hidden");
 			}
 		});
 		recorder.startRecording();
+		recorder.camera = $video.srcObject;
+
+		document.querySelector("#stop-recording").onclick = e => {
+			recorder.stopRecording(recordedGif => {
+				recorder.camera.stop();
+				console.log("Stopped Recording");
+				$video.src = window.URL.createObjectURL(recorder.getBlob());
+
+				let form = new FormData();
+				form.append("file", recorder.getBlob(), "myGif.gif");
+
+				// Destroy Camera and reset
+				recorder.destroy();
+				recorder = null;
+			});
+		};
+	} */
+
+	function stage3() {
+		const video = document.querySelector("#video-box");
+
+		document.querySelector("#start-recording").onclick = async () => {
+			document.querySelector("#start-recording").classList.toggle("hidden");
+			document.querySelector("#stop-recording").classList.toggle("hidden");
+
+			let stream = video.srcObject;
+			// video.srcObject = stream;
+			recorder = new RecordRTCPromisesHandler(stream, {
+				type: "video"
+			});
+			await recorder.startRecording();
+
+			// helps releasing camera on stopRecording
+			recorder.stream = stream;
+
+			/* // if you want to access internal recorder
+			const internalRecorder = await recorder.getInternalRecorder();
+			console.log("internal-recorder", internalRecorder.name);
+			// if you want to read recorder's state
+			console.log("recorder state: ", await recorder.getState()); */
+		};
+
+		document.querySelector("#stop-recording").onclick = async function() {
+			video.setAttribute("controls", "");
+			await recorder.stopRecording();
+			stopRecordingCallback();
+		};
+		async function stopRecordingCallback() {
+			video.srcObject = null;
+			let blob = await recorder.getBlob();
+			video.src = URL.createObjectURL(blob);
+			recorder.stream.getTracks(t => t.stop());
+
+			// reset recorder's state
+			await recorder.reset();
+			// clear the memory
+			await recorder.destroy();
+			// so that we can record again
+			recorder = null;
+		}
 	}
 	async function videoRecordInit() {
 		try {
@@ -330,9 +390,9 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			const $video = document.querySelector("#video-box");
-			$video.srcObject = stream;
-			$video.play();
+			const video = document.querySelector("#video-box");
+			video.srcObject = stream;
+			video.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
