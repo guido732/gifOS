@@ -154,7 +154,7 @@
 }
 .window-element {
 	padding: 2px;
-	max-width: 700px;
+
 	margin: 4.75rem auto 9.5rem auto;
 	.gradient-header {
 		padding: 0.375rem;
@@ -166,9 +166,7 @@
 		font-size: 0.875rem;
 		text-overflow: ellipsis;
 	}
-	.content {
-		margin: 2rem;
-	}
+
 	.content-split {
 		display: flex;
 		flex-direction: row;
@@ -206,6 +204,26 @@
 	}
 	.btn-secondary {
 		margin-right: 1rem;
+	}
+	video {
+		width: 100%;
+		height: auto;
+		margin-bottom: 1.25rem;
+		background: #ffffff;
+		border: 1px solid #979797;
+		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	}
+}
+.window-size-md {
+	max-width: 700px;
+	.content {
+		margin: 2rem;
+	}
+}
+.window-size-lg {
+	max-width: 860px;
+	.content {
+		margin: 1rem;
 	}
 }
 

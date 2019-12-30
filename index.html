@@ -102,10 +102,10 @@
 			</section>
 			<section class="create-gif-section hidden" id="create-gif">
 				<div class="window-element window-size-md">
-					<div class="gradient-header">
+					<div class="gradient-header" id="create-gif-section-header">
 						Crear Guifos
 					</div>
-					<div class="content">
+					<div class="content" id="stage1">
 						<div class="content-split">
 							<img src="./assets/icons/window_img.png" alt="Window" />
 							<div class="text-content">
@@ -128,8 +128,16 @@
 						<div class="flex-end-container">
 							<button class="btn-secondary btn-light" id="">
 								<span>Cancelar</span></button
-							><button class="btn-primary" id="">
+							><button class="btn-primary" id="create-gif-continue">
 								<span>Comenzar</span>
+							</button>
+						</div>
+					</div>
+					<div class="video-record-container hidden content" id="stage2">
+						<video id="video-box"></video>
+						<div class="flex-end-container">
+							<button class="btn-primary btn-light" id="start-recording">
+								<span>Capturar</span>
 							</button>
 						</div>
 					</div>
