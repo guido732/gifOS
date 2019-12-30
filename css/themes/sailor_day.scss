@@ -73,6 +73,20 @@ $textWhite: #fff;
 		background: #dbdbdb;
 	}
 }
+.btn-secondary {
+	background: $colorSecondary;
+	border: 1px solid $textDark;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	span {
+		border: 1px dotted $colorSecondaryHover;
+	}
+	&:hover {
+		background: $colorSecondaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+}
 .dropdown-btn:hover {
 	* {
 		background: $colorPrimaryHover;
@@ -129,6 +143,16 @@ $textWhite: #fff;
 	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
 	&::placeholder {
 		color: $textDark;
+	}
+}
+
+.window-element {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.gradient-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: 700;
 	}
 }
 
