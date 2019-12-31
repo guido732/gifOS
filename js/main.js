@@ -269,7 +269,8 @@ function createGifSection() {
 // localStorage.setItem("color-theme", "light");
 
 const myGifsSection = (function() {
-	let myGifs = [];
+	const myGifs = [];
+	let videoSrc = "";
 
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
@@ -366,8 +367,7 @@ const myGifsSection = (function() {
 		$video.src = URL.createObjectURL(blob);
 		recorder.stream.getTracks(t => t.stop());
 
-		let form = new FormData();
-		await form.append("createdGif", blob, "myGif.webm");
+		videoSrc = await blob;
 
 		// reset recorder's state
 		await recorder.reset();
@@ -376,8 +376,36 @@ const myGifsSection = (function() {
 		// so that we can record again
 		recorder = null;
 	}
-	function uploadCreatedGif() {
-		// todo
+	async function uploadCreatedGif() {
+		console.log("Upload started");
+		let form = new FormData();
+		form.append("file", videoSrc, "myGif.webm");
+		console.log(form.get("file"));
+
+		async function postData(url = "", data = {}) {
+			// Default options are marked with *
+			const response = await fetch(url, {
+				method: "POST", // *GET, POST, PUT, DELETE, etc.
+				mode: "cors", // no-cors, *cors, same-origin
+				cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+				credentials: "same-origin", // include, *same-origin, omit
+				headers: {
+					"Content-Type": "application/json"
+					// 'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				redirect: "follow", // manual, *follow, error
+				referrerPolicy: "no-referrer", // no-referrer, *client
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return await response.json(); // parses JSON response into native JavaScript objects
+		}
+
+		// postData(
+		// 	`http://upload.giphy.com/v1/gifs&api_key=${APIkey}&source_image_url=${URL.createObjectURL(videoSrc)}`,
+		// 	{}
+		// ).then(data => {
+		// 	console.log(data); // JSON data parsed by `response.json()` call
+		// });
 	}
 
 	return {};
