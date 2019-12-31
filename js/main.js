@@ -287,20 +287,28 @@ const myGifsSection = (function() {
 
 	// Bind events
 	$createGifContinue.onclick = () => {
-		startRecordingScreen();
+		$createGifWindow.firstElementChild.classList.remove("window-size-md");
+		$createGifWindow.firstElementChild.classList.add("window-size-lg");
+		hideElements($stage1);
+		showElements($stage2);
+		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
+		initiateWebcam();
 	};
 	$startRecording.onclick = () => {
+		hideElements($startRecording);
+		showElements($stopRecording, $stage3);
 		startRecording();
 	};
 	$stopRecording.onclick = () => {
-		stopRecording();
 		$stage3.classList.toggle("hidden");
 		$stage4.classList.toggle("hidden");
+		stopRecording();
 	};
 	$redoRecording.onclick = async () => {
+		showElements($stopRecording, $stage3);
+		hideElements($stage4, $startRecording);
 		await initiateWebcam();
 		await startRecording();
-		hideElements($stage4);
 	};
 	$uploadRecording.onclick = () => {
 		uploadCreatedGif();
@@ -310,7 +318,7 @@ const myGifsSection = (function() {
 	_render();
 
 	function _render() {
-		fetchGifsFromStorage();
+		_fetchGifsFromStorage();
 		$gifsGrid.innerHTML = "";
 		myGifs.forEach(element => {
 			let aspectRatio = "";
@@ -320,18 +328,10 @@ const myGifsSection = (function() {
 			newElement("window", element, aspectRatio);
 		});
 	}
-	function fetchGifsFromStorage() {
+	function _fetchGifsFromStorage() {
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
 		});
-	}
-	function startRecordingScreen() {
-		$createGifWindow.firstElementChild.classList.remove("window-size-md");
-		$createGifWindow.firstElementChild.classList.add("window-size-lg");
-		hideElements($stage1);
-		showElements($stage2);
-		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
-		initiateWebcam();
 	}
 
 	async function initiateWebcam() {
@@ -349,11 +349,8 @@ const myGifsSection = (function() {
 		}
 	}
 	async function startRecording() {
-		hideElements($startRecording);
-		showElements($stopRecording, $stage3);
 		$video.removeAttribute("controls");
-
-		let stream = $video.srcObject;
+		const stream = $video.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
 			type: "video"
 		});
@@ -362,12 +359,13 @@ const myGifsSection = (function() {
 		recorder.stream = stream;
 	}
 	async function stopRecording() {
-		$video.setAttribute("controls", "");
 		await recorder.stopRecording();
+		$video.setAttribute("controls", "");
 		$video.srcObject = null;
 		let blob = await recorder.getBlob();
 		$video.src = URL.createObjectURL(blob);
 		recorder.stream.getTracks(t => t.stop());
+
 		let form = new FormData();
 		await form.append("createdGif", blob, "myGif.webm");
 
