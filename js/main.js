@@ -302,46 +302,11 @@ const myGifsSection = (function() {
 		hideElements(document.querySelector("#stage1"));
 		showElements(document.querySelector("#stage2"));
 		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
-		videoRecordInit();
+		initiateWebcam();
 		stage3();
 	}
-	/* function getStreamAndRecord() {
-		const $video = document.querySelector("#video-box");
-
-		recorder = RecordRTC($video.srcObject, {
-			type: "gif",
-			frameRate: 1,
-			quality: 10,
-			width: 480,
-			hidden: 240,
-			onGifRecordingStarted: function() {
-				console.log("started");
-				document.querySelector("#stop-recording").classList.toggle("hidden");
-				document.querySelector("#start-recording").classList.toggle("hidden");
-			}
-		});
-		recorder.startRecording();
-		recorder.camera = $video.srcObject;
-
-		document.querySelector("#stop-recording").onclick = e => {
-			recorder.stopRecording(recordedGif => {
-				recorder.camera.stop();
-				console.log("Stopped Recording");
-				$video.src = window.URL.createObjectURL(recorder.getBlob());
-
-				let form = new FormData();
-				form.append("file", recorder.getBlob(), "myGif.gif");
-
-				// Destroy Camera and reset
-				recorder.destroy();
-				recorder = null;
-			});
-		};
-	} */
-
 	function stage3() {
 		const video = document.querySelector("#video-box");
-
 		document.querySelector("#start-recording").onclick = async () => {
 			document.querySelector("#start-recording").classList.toggle("hidden");
 			document.querySelector("#stop-recording").classList.toggle("hidden");
@@ -362,8 +327,7 @@ const myGifsSection = (function() {
 			// if you want to read recorder's state
 			console.log("recorder state: ", await recorder.getState()); */
 		};
-
-		document.querySelector("#stop-recording").onclick = async function() {
+		document.querySelector("#stop-recording").onclick = async () => {
 			video.setAttribute("controls", "");
 			await recorder.stopRecording();
 			stopRecordingCallback();
@@ -373,7 +337,10 @@ const myGifsSection = (function() {
 			let blob = await recorder.getBlob();
 			video.src = URL.createObjectURL(blob);
 			recorder.stream.getTracks(t => t.stop());
-
+			let form = new FormData();
+			await form.append("createdGif", blob, "myGif.webm");
+			document.querySelector("#stage3").classList.toggle("hidden");
+			document.querySelector("#stage4").classList.toggle("hidden");
 			// reset recorder's state
 			await recorder.reset();
 			// clear the memory
@@ -382,7 +349,7 @@ const myGifsSection = (function() {
 			recorder = null;
 		}
 	}
-	async function videoRecordInit() {
+	async function initiateWebcam() {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
 				audio: false,

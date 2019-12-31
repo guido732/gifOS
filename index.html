@@ -126,9 +126,8 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-secondary btn-light" id="">
-								<span>Cancelar</span></button
-							><button class="btn-primary" id="create-gif-continue">
+							<a class="btn-secondary " href="/"> <span>Cancelar</span></a>
+							<button class="btn-primary" id="create-gif-continue">
 								<span>Comenzar</span>
 							</button>
 						</div>
@@ -136,11 +135,20 @@
 					<div class="video-record-container hidden content" id="stage2">
 						<video autoplay loop playsinline id="video-box"></video>
 						<div class="flex-end-container">
-							<button class="btn-primary btn-light" id="start-recording">
+							<button class="btn-primary " id="start-recording">
 								<span>Capturar</span>
 							</button>
-							<button class="btn-primary btn-light hidden" id="stop-recording">
+						</div>
+						<div class="flex-end-container" id="stage3">
+							<button class="btn-primary  hidden" id="stop-recording">
 								<span>Listo</span>
+							</button>
+						</div>
+						<div class="flex-end-container hidden" id="stage4">
+							<button class="btn-secondary " id="redo-recording">
+								<span>Repetir Captura</span></button
+							><button class="btn-primary" id="upload-gif">
+								<span>Subir Guifo</span>
 							</button>
 						</div>
 					</div>
