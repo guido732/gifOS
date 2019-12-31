@@ -271,15 +271,44 @@ function createGifSection() {
 const myGifsSection = (function() {
 	let myGifs = [];
 
-	//cache DOM
+	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
+	const $createGifWindow = document.querySelector("#create-gif");
+	const $createGifContinue = document.querySelector("#create-gif-continue");
+	const $startRecording = document.querySelector("#start-recording");
+	const $stopRecording = document.querySelector("#stop-recording");
+	const $redoRecording = document.querySelector("#redo-recording");
+	const $uploadRecording = document.querySelector("#upload-gif");
+	const $stage1 = document.querySelector("#stage1");
+	const $stage2 = document.querySelector("#stage2");
+	const $stage3 = document.querySelector("#stage3");
+	const $stage4 = document.querySelector("#stage4");
+	const $video = document.querySelector("#video-box");
 
-	//bind events
-	document.querySelector("#create-gif-continue").onclick = e => {
-		stage2();
+	// Bind events
+	$createGifContinue.onclick = () => {
+		startRecordingScreen();
+	};
+	$startRecording.onclick = () => {
+		startRecording();
+	};
+	$stopRecording.onclick = () => {
+		stopRecording();
+		$stage3.classList.toggle("hidden");
+		$stage4.classList.toggle("hidden");
+	};
+	$redoRecording.onclick = async () => {
+		await initiateWebcam();
+		await startRecording();
+		hideElements($stage4);
+	};
+	$uploadRecording.onclick = () => {
+		uploadCreatedGif();
 	};
 
+	// On Load functions
 	_render();
+
 	function _render() {
 		fetchGifsFromStorage();
 		$gifsGrid.innerHTML = "";
@@ -296,59 +325,15 @@ const myGifsSection = (function() {
 			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
 		});
 	}
-	function stage2() {
-		document.querySelector("#create-gif").firstElementChild.classList.remove("window-size-md");
-		document.querySelector("#create-gif").firstElementChild.classList.add("window-size-lg");
-		hideElements(document.querySelector("#stage1"));
-		showElements(document.querySelector("#stage2"));
+	function startRecordingScreen() {
+		$createGifWindow.firstElementChild.classList.remove("window-size-md");
+		$createGifWindow.firstElementChild.classList.add("window-size-lg");
+		hideElements($stage1);
+		showElements($stage2);
 		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
 		initiateWebcam();
-		stage3();
 	}
-	function stage3() {
-		const video = document.querySelector("#video-box");
-		document.querySelector("#start-recording").onclick = async () => {
-			document.querySelector("#start-recording").classList.toggle("hidden");
-			document.querySelector("#stop-recording").classList.toggle("hidden");
 
-			let stream = video.srcObject;
-			// video.srcObject = stream;
-			recorder = new RecordRTCPromisesHandler(stream, {
-				type: "video"
-			});
-			await recorder.startRecording();
-
-			// helps releasing camera on stopRecording
-			recorder.stream = stream;
-
-			/* // if you want to access internal recorder
-			const internalRecorder = await recorder.getInternalRecorder();
-			console.log("internal-recorder", internalRecorder.name);
-			// if you want to read recorder's state
-			console.log("recorder state: ", await recorder.getState()); */
-		};
-		document.querySelector("#stop-recording").onclick = async () => {
-			video.setAttribute("controls", "");
-			await recorder.stopRecording();
-			stopRecordingCallback();
-		};
-		async function stopRecordingCallback() {
-			video.srcObject = null;
-			let blob = await recorder.getBlob();
-			video.src = URL.createObjectURL(blob);
-			recorder.stream.getTracks(t => t.stop());
-			let form = new FormData();
-			await form.append("createdGif", blob, "myGif.webm");
-			document.querySelector("#stage3").classList.toggle("hidden");
-			document.querySelector("#stage4").classList.toggle("hidden");
-			// reset recorder's state
-			await recorder.reset();
-			// clear the memory
-			await recorder.destroy();
-			// so that we can record again
-			recorder = null;
-		}
-	}
 	async function initiateWebcam() {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
@@ -357,12 +342,45 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			const video = document.querySelector("#video-box");
-			video.srcObject = stream;
-			video.play();
+			$video.srcObject = await stream;
+			await $video.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	}
+	async function startRecording() {
+		hideElements($startRecording);
+		showElements($stopRecording, $stage3);
+		$video.removeAttribute("controls");
+
+		let stream = $video.srcObject;
+		recorder = new RecordRTCPromisesHandler(stream, {
+			type: "video"
+		});
+		await recorder.startRecording();
+		// helps releasing camera on stopRecording
+		recorder.stream = stream;
+	}
+	async function stopRecording() {
+		$video.setAttribute("controls", "");
+		await recorder.stopRecording();
+		$video.srcObject = null;
+		let blob = await recorder.getBlob();
+		$video.src = URL.createObjectURL(blob);
+		recorder.stream.getTracks(t => t.stop());
+		let form = new FormData();
+		await form.append("createdGif", blob, "myGif.webm");
+
+		// reset recorder's state
+		await recorder.reset();
+		// clear the memory
+		await recorder.destroy();
+		// so that we can record again
+		recorder = null;
+	}
+	function uploadCreatedGif() {
+		// todo
+	}
+
 	return {};
 })();
