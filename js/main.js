@@ -244,6 +244,7 @@ function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
 function showMyGifsSection() {
+	myGifsSection();
 	hideElements(
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-results"),
@@ -255,6 +256,7 @@ function showMyGifsSection() {
 	showElements(document.querySelector("#my-gifs"));
 }
 function createGifSection() {
+	myGifsSection();
 	hideElements(
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-results"),
@@ -268,7 +270,7 @@ function createGifSection() {
 }
 // localStorage.setItem("color-theme", "light");
 
-const myGifsSection = (function() {
+const myGifsSection = () => {
 	let myGifs = {};
 	// let videoSrc = "";
 
@@ -367,7 +369,7 @@ const myGifsSection = (function() {
 		const stream = $inputPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
 			type: "gif",
-			frameRate: 48
+			frameRate: 24
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
@@ -398,13 +400,14 @@ const myGifsSection = (function() {
 				json: true
 			});
 			const data = await response.json();
-			// console.log(await data);
+			console.log(await data);
 			console.log("***Upload ended***");
-			await localStorage.setItem(`gif-${data.id}`, data.id);
+			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
+			await _render();
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
 		}
 	}
 
 	return {};
-})();
+};
