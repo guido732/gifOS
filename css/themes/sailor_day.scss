@@ -23,7 +23,7 @@ $textWhite: #fff;
 .loading-animation {
 	background: $gradient;
 	background-size: 400% 400%;
-	animation: loading-animation 2s ease infinite;
+	animation: loading-animation 2s ease-in-out infinite;
 }
 
 // Components
@@ -71,6 +71,20 @@ $textWhite: #fff;
 	}
 	&:active {
 		background: #dbdbdb;
+	}
+}
+.btn-secondary {
+	background: $colorSecondary;
+	border: 1px solid $textDark;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	span {
+		border: 1px dotted $colorSecondaryHover;
+	}
+	&:hover {
+		background: $colorSecondaryHover;
+		span {
+			border: 1px dotted $textDark;
+		}
 	}
 }
 .dropdown-btn:hover {
@@ -132,6 +146,21 @@ $textWhite: #fff;
 	}
 }
 
+.window-element {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.gradient-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: 700;
+	}
+	video {
+		@extend .loading-animation;
+		border: 1px solid #979797;
+		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	}
+}
+
 // General element styles
 body {
 	background-color: $bgColor;
@@ -142,6 +171,9 @@ h1 {
 p,
 a {
 	color: $textDark;
+}
+button {
+	background-color: transparent;
 }
 
 // Page Specific Sections

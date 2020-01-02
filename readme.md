@@ -12,6 +12,8 @@ Trabajo número 2 del curso de Desarrollo Web Full Stack de Acámica.
 - Google Fonts
 - GIT para control de versiones
 - [API giphy](https://developers.giphy.com/)
+- [RecordRTC](https://recordrtc.org/) para obtener [video](https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/RecordRTCPromisesHandler.html) a través de la cámara del dispositivo
+- `media.navigator.streams.fake` Para emular data de stream falsa en Firefox
 
 El objetivo del trabajo es generar una página web incorporando los conocimientos adquiridos en la primera etapa que permita obtener datos de la API de giphy a través de un request a la misma.
 
