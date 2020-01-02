@@ -6,10 +6,11 @@ $gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
-
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
 
+$colorSearch: #f0f0f0;
+$colorSearchHover: #e6e6e6;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
@@ -18,6 +19,11 @@ $textWhite: #fff;
 // Utility
 .underline {
 	border-bottom-color: $textDark;
+}
+.loading-animation {
+	background: $gradient;
+	background-size: 400% 400%;
+	animation: loading-animation 2s ease infinite;
 }
 
 // Components
@@ -35,6 +41,38 @@ $textWhite: #fff;
 		}
 	}
 }
+.btn-primary.tag {
+	background: #4180f6;
+	border: 1px solid #4c2f99;
+	box-shadow: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 #ffffff;
+	color: $textWhite;
+	span {
+		border: 1px dotted #4180f6;
+	}
+	&:hover {
+		background: #3a72db;
+		span {
+			border: 1px dotted #110038;
+		}
+	}
+}
+.btn-search-suggestion {
+	background: $colorSearch;
+	border: 1px solid #808080;
+	box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+	span {
+		border: 1px dotted $colorSearch;
+	}
+	&:hover {
+		background: $colorSearchHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+	&:active {
+		background: #dbdbdb;
+	}
+}
 .dropdown-btn:hover {
 	* {
 		background: $colorPrimaryHover;
@@ -47,6 +85,50 @@ $textWhite: #fff;
 	border: 1px dotted transparent;
 	&:hover {
 		border: 1px dotted $textDark;
+	}
+}
+.window-item {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.wi-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: 700;
+	}
+	.img-container {
+		border: 1px dotted transparent;
+		.btn-primary.tag span {
+			border: 1px dotted transparent;
+		}
+		&:hover {
+			border: 1px dotted #110038;
+			.btn-primary.tag span {
+				border: 1px dotted #110038;
+			}
+		}
+	}
+}
+.trend-item {
+	background: #e6e6e6;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	.trend-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: bold;
+	}
+	.img-element {
+		border: 1px solid #e6e6e6;
+		&:hover {
+			border: 1px dotted #110038;
+		}
+	}
+}
+.input-title-bar {
+	background: #fffafe;
+	border: 1px solid #e6bbe2;
+	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
+	&::placeholder {
+		color: $textDark;
 	}
 }
 
@@ -62,9 +144,8 @@ a {
 	color: $textDark;
 }
 
-
 // Page Specific Sections
-header {
+.header {
 	background: $gradient;
 }
 .brand-container {
@@ -86,5 +167,68 @@ header {
 			background-color: #fff4fd;
 			border: 1px solid #cca6c9;
 		}
+	}
+}
+.search {
+	background: $colorSearchHover;
+	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	padding-top: 2px;
+	.search-header {
+		background: $gradient;
+		color: $textWhite;
+		font-weight: 700;
+	}
+	form {
+		background: #e6e6e6;
+		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 0px 0 0 #ffffff;
+		input {
+			background: #ffffff;
+			border: 1px solid #979797;
+			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+			&::placeholder {
+				color: #b4b4b4;
+			}
+		}
+		button[type="submit"] {
+			p::before {
+				content: "";
+				background: url(../../assets/icons/lupa.svg) no-repeat;
+				width: 1rem;
+				height: 1rem;
+				margin-right: 0.5rem;
+			}
+		}
+		input:placeholder-shown ~ button[type="submit"] {
+			cursor: default;
+			background: #e6e6e6;
+			border: 1px solid #808080;
+			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
+			span {
+				border: 1px solid #e6e6e6;
+			}
+			p {
+				color: #b4b4b4;
+				&::before {
+					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
+				}
+			}
+		}
+	}
+	.search-suggestions {
+		background: $colorSearchHover;
+		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
+	}
+}
+
+// Animations
+@keyframes loading-animation {
+	0% {
+		background-position: 0% 88%;
+	}
+	50% {
+		background-position: 100% 13%;
+	}
+	100% {
+		background-position: 0% 88%;
 	}
 }
