@@ -58,6 +58,14 @@ document.searchform.onsubmit = e => {
 	e.preventDefault();
 	handleSearchFunctionality(document.querySelector("#search-bar").value);
 };
+// Show my-gifs section
+document.querySelector("#btn-my-gifs").onclick = e => {
+	showMyGifsSection();
+};
+// Create gif trigger
+document.querySelector("#btn-create-gif").onclick = e => {
+	createGifSection();
+};
 
 async function handleSearchFunctionality(searchValue) {
 	replaceSearchText(searchValue);
@@ -69,6 +77,8 @@ async function handleSearchFunctionality(searchValue) {
 	hideElements(
 		document.querySelector("#trends"),
 		document.querySelector("#suggestions"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif"),
 		document.querySelector("#search-suggestions")
 	);
 	document.querySelector("#search-suggestions").innerHTML = "";
@@ -233,3 +243,198 @@ function processSearchValues(inputValues) {
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
+function showMyGifsSection() {
+	hideElements(
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-results"),
+		document.querySelector("#search-box"),
+		document.querySelector("#trends"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif")
+	);
+	showElements(document.querySelector("#my-gifs"));
+}
+function createGifSection() {
+	hideElements(
+		document.querySelector("#suggestions"),
+		document.querySelector("#search-results"),
+		document.querySelector("#search-box"),
+		document.querySelector("#trends"),
+		document.querySelector("#my-gifs"),
+		document.querySelector("#create-gif"),
+		document.querySelector(".nav-item-container")
+	);
+	showElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
+}
+// localStorage.setItem("color-theme", "light");
+
+const myGifsSection = (function() {
+	const myGifs = [];
+	let videoSrc = "";
+
+	// Cache DOM
+	const $gifsGrid = document.querySelector("#my-gifs-grid");
+	const $createGifWindow = document.querySelector("#create-gif");
+	const $createGifContinue = document.querySelector("#create-gif-continue");
+	const $startRecording = document.querySelector("#start-recording");
+	const $stopRecording = document.querySelector("#stop-recording");
+	const $redoRecording = document.querySelector("#redo-recording");
+	const $uploadRecording = document.querySelector("#upload-gif");
+	const $stage1 = document.querySelector("#stage1");
+	const $stage2 = document.querySelector("#stage2");
+	const $stage3 = document.querySelector("#stage3");
+	const $stage4 = document.querySelector("#stage4");
+	const $video = document.querySelector("#video-box");
+
+	// Bind events
+	$createGifContinue.onclick = () => {
+		$createGifWindow.firstElementChild.classList.remove("window-size-md");
+		$createGifWindow.firstElementChild.classList.add("window-size-lg");
+		hideElements($stage1);
+		showElements($stage2);
+		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
+		initiateWebcam();
+	};
+	$startRecording.onclick = () => {
+		hideElements($startRecording);
+		showElements($stopRecording, $stage3);
+		startRecording();
+	};
+	$stopRecording.onclick = () => {
+		$stage3.classList.toggle("hidden");
+		$stage4.classList.toggle("hidden");
+		stopRecording();
+	};
+	$redoRecording.onclick = async () => {
+		showElements($stopRecording, $stage3);
+		hideElements($stage4, $startRecording);
+		await initiateWebcam();
+		await startRecording();
+	};
+	$uploadRecording.onclick = () => {
+		uploadCreatedGif();
+	};
+
+	// On Load functions
+	_render();
+
+	function _render() {
+		_fetchGifsFromStorage();
+		$gifsGrid.innerHTML = "";
+		myGifs.forEach(element => {
+			let aspectRatio = "";
+			element.images["480w_still"].width / element.images["480w_still"].height >= 1.5
+				? (aspectRatio = "item-double")
+				: null;
+			newElement("window", element, aspectRatio);
+		});
+	}
+	function _fetchGifsFromStorage() {
+		Object.keys(localStorage).forEach(element => {
+			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
+		});
+	}
+
+	async function initiateWebcam() {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: {
+					height: { max: 480 }
+				}
+			});
+			$video.srcObject = await stream;
+			await $video.play();
+		} catch (e) {
+			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+		}
+	}
+	async function startRecording() {
+		$video.removeAttribute("controls");
+		const stream = $video.srcObject;
+		recorder = new RecordRTCPromisesHandler(stream, {
+			type: "video"
+		});
+		await recorder.startRecording();
+		// helps releasing camera on stopRecording
+		recorder.stream = stream;
+	}
+	async function stopRecording() {
+		await recorder.stopRecording();
+		$video.setAttribute("controls", "");
+		$video.srcObject = null;
+		let blob = await recorder.getBlob();
+		$video.src = URL.createObjectURL(blob);
+		recorder.stream.getTracks(t => t.stop());
+
+		videoSrc = await blob;
+
+		// reset recorder's state
+		await recorder.reset();
+		// clear the memory
+		await recorder.destroy();
+		// so that we can record again
+		recorder = null;
+	}
+	async function uploadCreatedGif() {
+		console.log("***Upload started***");
+		// console.log(videoSrc);
+
+		/* var postData = {
+			api_key: APIkey,
+			file: {
+				value: JSON.stringify(videoSrc),
+				options: {
+					filename: "filename.webm",
+					contentType: "video/webm"
+				}
+			},
+			tags: "tags,comma,separated",
+			source_post_url: "https://example.com/postID"
+		}; */
+
+		const formData = new FormData();
+		// formData.append("username", "abc123");
+		formData.append("file", videoSrc, "myWebm.webm");
+		console.log(URL.createObjectURL(videoSrc));
+
+		fetch(`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&username=guido732&tags=test`, {
+			// method: "PUT",
+			method: "POST",
+			body: formData,
+			json: true
+		})
+			.then(response => response.json())
+			.then(result => {
+				console.log("Success:", result);
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			});
+
+		/* async function uploadToGiphy() {
+			const options = {
+				method: "POST",
+				mode: "cors",
+				// mode: "no-cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				headers: {
+					"Content-Type": "video/webm"
+				},
+				redirect: "follow",
+				referrerPolicy: "no-referrer"
+				// json: true,
+				// body: JSON.stringify(videoSrc)
+			};
+			const response = await fetch(
+				`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&file=${JSON.stringify(videoSrc)}`,
+				options
+			);
+			return await response;
+		}
+		uploadToGiphy().then(data => console.log(data)); */
+	}
+
+	return {};
+})();

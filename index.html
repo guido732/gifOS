@@ -18,6 +18,7 @@
 		<!-- FontAwesome -->
 		<script src="https://kit.fontawesome.com/f49d5ad486.js" crossorigin="anonymous"></script>
 	</head>
+
 	<body>
 		<header class="header">
 			<h1>
@@ -29,7 +30,7 @@
 				<div class="brand-container"></div>
 			</a>
 			<div class="nav-item-container">
-				<button href="#" class="btn-primary nav-item">
+				<button class="btn-primary nav-item" id="btn-create-gif">
 					<span>Crear Guifos</span>
 				</button>
 				<div class="nav-item dropdown-container-outer">
@@ -43,15 +44,15 @@
 						</div>
 					</button>
 					<div class="dropdown-list hidden" id="dropdown-list">
-						<a href="#" class="dropdown-list-item" id="dropdown-list-item">Sailor Day</a>
+						<a href="#" class="dropdown-list-item">Sailor Day</a>
 						<a href="#" class="dropdown-list-item">Sailor Night</a>
 					</div>
 				</div>
-				<a href="#" class="nav-item btn-link"><span class="underline">M</span>is Guifos</a>
+				<button href="#" class="nav-item btn-link" id="btn-my-gifs"><span class="underline">M</span>is Guifos</button>
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search-container">
+			<section class="search-container" id="search-box">
 				<div class="search">
 					<div class="search-header">
 						<!-- ! review - header bottom border color -->
@@ -100,8 +101,68 @@
 				<input type="text" name="suggestion-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
 				<div class="trend-grid" id="trend-grid"></div>
 			</section>
+			<section class="create-gif-section hidden" id="create-gif">
+				<div class="window-element window-size-md">
+					<div class="gradient-header" id="create-gif-section-header">
+						Crear Guifos
+					</div>
+					<div class="content" id="stage1">
+						<div class="content-split">
+							<img src="./assets/icons/window_img.png" alt="Window" />
+							<div class="text-content">
+								<h2>Aquí podrás crear tus propios guifos</h2>
+								<p>
+									Crear tu <strong><em>guifo</em></strong> es muy fácil, graba cualquier imagen con tu cámara y obtén
+									guifos personalizados. Los pasos para crear tu guifo son:
+								</p>
+								<ol class="numbered-list">
+									<li>Dar permisos de acceso a la cámara (sólo por el tiempo de uso)</li>
+									<li>Capturar tu momento guifo</li>
+									<li>Revisar el momento</li>
+									<li>Listo para subir y compartir!</li>
+								</ol>
+								<p>
+									¿Quieres comenzar a crear tu <strong><em>guifo</em></strong> ahora?
+								</p>
+							</div>
+						</div>
+						<div class="flex-end-container">
+							<a class="btn-secondary " href="/"> <span>Cancelar</span></a>
+							<button class="btn-primary" id="create-gif-continue">
+								<span>Comenzar</span>
+							</button>
+						</div>
+					</div>
+					<div class="video-record-container hidden content" id="stage2">
+						<video autoplay loop playsinline id="video-box"></video>
+						<div class="flex-end-container">
+							<button class="btn-primary " id="start-recording">
+								<span>Capturar</span>
+							</button>
+						</div>
+						<div class="flex-end-container" id="stage3">
+							<button class="btn-primary  hidden" id="stop-recording">
+								<span>Listo</span>
+							</button>
+						</div>
+						<div class="flex-end-container hidden" id="stage4">
+							<button class="btn-secondary " id="redo-recording">
+								<span>Repetir Captura</span></button
+							><button class="btn-primary" id="upload-gif">
+								<span>Subir Guifo</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="my-gifs hidden" id="my-gifs">
+				<input type="text" name="my-gifs-results-input" class="input-title-bar" placeholder="Mis guifos:" disabled />
+				<div class="trend-grid" id="my-gifs-grid"></div>
+			</section>
 		</main>
 		<footer></footer>
 		<script src="./js/main.js"></script>
+		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+		<form action="" method="post"></form>
 	</body>
 </html>
