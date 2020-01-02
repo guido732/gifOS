@@ -154,7 +154,12 @@ $textWhite: #fff;
 		color: $textWhite;
 		font-weight: 700;
 	}
-	video {
+	.video-element {
+		@extend .loading-animation;
+		border: 1px solid #979797;
+		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	}
+	.video-preview-img {
 		@extend .loading-animation;
 		border: 1px solid #979797;
 		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;

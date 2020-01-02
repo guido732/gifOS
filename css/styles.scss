@@ -205,13 +205,15 @@
 	.btn-secondary {
 		margin-right: 1rem;
 	}
-	video {
+	.video-element {
 		width: 100%;
 		height: auto;
 		margin-bottom: 1.25rem;
-		background: #ffffff;
-		border: 1px solid #979797;
-		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	}
+	.video-preview-img {
+		margin-bottom: 1.25rem;
+		width: 100%;
+		height: auto;
 	}
 }
 .window-size-md {
