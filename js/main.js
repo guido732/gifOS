@@ -340,16 +340,15 @@ const myGifsSection = (function() {
 
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
-		console.log(await searchResults);
+		// console.log(await searchResults);
 
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$gifsGrid.append(newElement("trend", gif, aspectRatio));
-			console.log("element appended");
+			// console.log("element appended");
 		});
 	}
-
 	async function initiateWebcam() {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
@@ -399,7 +398,7 @@ const myGifsSection = (function() {
 				json: true
 			});
 			const data = await response.json();
-			console.log(await data);
+			// console.log(await data);
 			console.log("***Upload ended***");
 			await localStorage.setItem(`gif-${data.id}`, data.id);
 		} catch (e) {
