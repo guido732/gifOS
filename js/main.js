@@ -353,18 +353,17 @@ const myGifsSection = (function() {
 		}
 	}
 	async function startRecording() {
-		$recordingPreview.removeAttribute("controls");
 		const stream = $recordingPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
 			type: "gif",
-			frameRate: 100
+			frameRate: 48
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
 		recorder.stream = stream;
 	}
 	async function stopRecording() {
-		await recorder.stopRecording();
+		recorder.stopRecording();
 		$recordingPreview.srcObject = null;
 		let blob = await recorder.getBlob();
 		recorder.stream.getTracks(t => t.stop());
