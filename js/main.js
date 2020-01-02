@@ -284,7 +284,7 @@ const myGifsSection = (function() {
 	const $stage2 = document.querySelector("#stage2");
 	const $stage3 = document.querySelector("#stage3");
 	const $stage4 = document.querySelector("#stage4");
-	const $recordingPreview = document.querySelector("#video-box");
+	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
 
 	// Bind events
@@ -304,12 +304,12 @@ const myGifsSection = (function() {
 	$stopRecording.onclick = () => {
 		$stage3.classList.toggle("hidden");
 		$stage4.classList.toggle("hidden");
-		hideElements($recordingPreview);
+		hideElements($inputPreview);
 		showElements($outputPreview);
 		stopRecording();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $stage3, $recordingPreview);
+		showElements($stopRecording, $stage3, $inputPreview);
 		hideElements($stage4, $startRecording, $outputPreview);
 		await initiateWebcam();
 		await startRecording();
@@ -346,14 +346,14 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			$recordingPreview.srcObject = await stream;
-			await $recordingPreview.play();
+			$inputPreview.srcObject = await stream;
+			await $inputPreview.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	}
 	async function startRecording() {
-		const stream = $recordingPreview.srcObject;
+		const stream = $inputPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
 			type: "gif",
 			frameRate: 48
@@ -364,19 +364,14 @@ const myGifsSection = (function() {
 	}
 	async function stopRecording() {
 		recorder.stopRecording();
-		$recordingPreview.srcObject = null;
+		$inputPreview.srcObject = null;
 		let blob = await recorder.getBlob();
 		recorder.stream.getTracks(t => t.stop());
 		$outputPreview.src = URL.createObjectURL(blob);
-
 		videoSrc = await blob;
-
-		// reset recorder's state
-		// await recorder.reset();
-		// clear the memory
+		// reset recorder's state & clear the memory
+		await recorder.reset();
 		await recorder.destroy();
-		// so that we can record again
-		// recorder = null;
 	}
 	async function uploadCreatedGif() {
 		console.log("***Upload started***");
