@@ -112,11 +112,17 @@ async function fetchTrendingGifs(limit) {
 	gifsTrending = await fetchURL(
 		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
 	);
-	gifsTrending.data.forEach(gif => {
+	await gifsTrending.data.forEach(gif => {
 		let aspectRatio = "";
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 		$trendingGifs.append(newElement("trend", gif, aspectRatio));
 	});
+
+	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
 }
 async function fetchSuggestionGifs(limit) {
 	const $suggestedGifs = document.querySelector("#suggested-container");
@@ -156,6 +162,12 @@ async function fetchSearchResultGifs(limit, keywords) {
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
 	});
+
+	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
 
 	const $tagContainer = document.querySelector("#search-tags");
 	$tagContainer.innerHTML = "";
