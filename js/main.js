@@ -157,11 +157,11 @@ async function fetchSearchResultGifs(limit, keywords) {
 		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
 	});
 
-	const $tagCotnainer = document.querySelector("#search-tags");
-	$tagCotnainer.innerHTML = "";
+	const $tagContainer = document.querySelector("#search-tags");
+	$tagContainer.innerHTML = "";
 	searchResults.data.map(element => {
 		element.title && element.title !== " " && element.title !== "&emsp;"
-			? $tagCotnainer.appendChild(newElement("tag", element))
+			? $tagContainer.appendChild(newElement("tag", element))
 			: null;
 	});
 
@@ -269,8 +269,8 @@ function createGifSection() {
 // localStorage.setItem("color-theme", "light");
 
 const myGifsSection = (function() {
-	const myGifs = [];
-	let videoSrc = "";
+	let myGifs = {};
+	// let videoSrc = "";
 
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
@@ -314,27 +314,39 @@ const myGifsSection = (function() {
 		await initiateWebcam();
 		await startRecording();
 	};
-	$uploadRecording.onclick = () => {
-		uploadCreatedGif();
+	$uploadRecording.onclick = async () => {
+		await uploadCreatedGif();
+		await _render();
 	};
 
 	// On Load functions
 	_render();
 
 	function _render() {
-		_fetchGifsFromStorage();
+		myGifs = {};
 		$gifsGrid.innerHTML = "";
-		myGifs.forEach(element => {
-			let aspectRatio = "";
-			element.images["480w_still"].width / element.images["480w_still"].height >= 1.5
-				? (aspectRatio = "item-double")
-				: null;
-			newElement("window", element, aspectRatio);
-		});
-	}
-	function _fetchGifsFromStorage() {
+
 		Object.keys(localStorage).forEach(element => {
-			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
+			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
+		});
+
+		let gifIds = "";
+		for (let key in myGifs) {
+			gifIds += `${myGifs[key]},`;
+		}
+		gifIds = gifIds.slice(0, -1);
+		fetchMyGifs(gifIds);
+	}
+
+	async function fetchMyGifs(gifIds) {
+		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
+		console.log(await searchResults);
+
+		await searchResults.data.forEach(gif => {
+			let aspectRatio = "";
+			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+			$gifsGrid.append(newElement("trend", gif, aspectRatio));
+			console.log("element appended");
 		});
 	}
 
@@ -374,8 +386,8 @@ const myGifsSection = (function() {
 		await recorder.destroy();
 	}
 	async function uploadCreatedGif() {
-		console.log("***Upload started***");
 		try {
+			console.log("***Upload started***");
 			const formData = new FormData();
 			// formData.append("file", videoSrc, "myWebm.webm");
 			formData.append("file", videoSrc, "myWebm.gif");
@@ -389,6 +401,7 @@ const myGifsSection = (function() {
 			const data = await response.json();
 			console.log(await data);
 			console.log("***Upload ended***");
+			await localStorage.setItem(`gif-${data.id}`, data.id);
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
 		}
