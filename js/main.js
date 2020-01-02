@@ -87,7 +87,7 @@ async function handleSearchFunctionality(searchValue) {
 async function handleSearchSuggestionSearch(limit, keywords) {
 	processedKeywords = processSearchValues(keywords);
 	const $searchSuggestions = document.querySelector("#search-suggestions");
-	const url = `http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
+	const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
 	searchResults = await fetchURL(url);
 	$searchSuggestions.innerHTML = "";
 	showElements(document.querySelector("#search-suggestions"));
@@ -110,7 +110,7 @@ async function fetchTrendingGifs(limit) {
 	const gifOffset = Math.floor(Math.random() * 50);
 
 	gifsTrending = await fetchURL(
-		`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
 	);
 	gifsTrending.data.forEach(gif => {
 		let aspectRatio = "";
@@ -138,7 +138,7 @@ async function fetchSuggestionGifs(limit) {
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 
 	gifsSuggestions = await fetchURL(
-		`http://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
+		`https://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
 	);
 
 	gifsSuggestions.data.forEach(gif => {
@@ -149,7 +149,7 @@ async function fetchSearchResultGifs(limit, keywords) {
 	const $searchResultsContainer = document.querySelector("#search-result-container");
 	processedKeywords = processSearchValues(keywords);
 	searchResults = await fetchURL(
-		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+		`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
 	await searchResults.data.forEach(gif => {
 		let aspectRatio = "";
@@ -353,7 +353,8 @@ const myGifsSection = (function() {
 		$video.removeAttribute("controls");
 		const stream = $video.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
-			type: "video"
+			// type: "video"
+			type: "gif"
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
@@ -378,62 +379,23 @@ const myGifsSection = (function() {
 	}
 	async function uploadCreatedGif() {
 		console.log("***Upload started***");
-		// console.log(videoSrc);
+		try {
+			const formData = new FormData();
+			// formData.append("file", videoSrc, "myWebm.webm");
+			formData.append("file", videoSrc, "myWebm.gif");
 
-		/* var postData = {
-			api_key: APIkey,
-			file: {
-				value: JSON.stringify(videoSrc),
-				options: {
-					filename: "filename.webm",
-					contentType: "video/webm"
-				}
-			},
-			tags: "tags,comma,separated",
-			source_post_url: "https://example.com/postID"
-		}; */
-
-		const formData = new FormData();
-		// formData.append("username", "abc123");
-		formData.append("file", videoSrc, "myWebm.webm");
-		console.log(URL.createObjectURL(videoSrc));
-
-		fetch(`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&username=guido732&tags=test`, {
-			// method: "PUT",
-			method: "POST",
-			body: formData,
-			json: true
-		})
-			.then(response => response.json())
-			.then(result => {
-				console.log("Success:", result);
-			})
-			.catch(error => {
-				console.error("Error:", error);
-			});
-
-		/* async function uploadToGiphy() {
-			const options = {
+			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+			const response = await fetch(postUrl, {
 				method: "POST",
-				mode: "cors",
-				// mode: "no-cors",
-				cache: "no-cache",
-				credentials: "same-origin",
-				headers: {
-					"Content-Type": "video/webm"
-				},
-				redirect: "follow",
-				referrerPolicy: "no-referrer"
-				// json: true,
-				// body: JSON.stringify(videoSrc)
-			};
-			const response = await fetch(
-				`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&file=${JSON.stringify(videoSrc)}`,
-				options
-			);
-			return await response;
+				body: formData,
+				json: true
+			});
+			const data = await response.json();
+			console.log(await data);
+			console.log("***Upload ended***");
+		} catch (e) {
+			console.log(`Error: ${e}\n${e.message}`);
 		}
-		uploadToGiphy().then(data => console.log(data)); */
 	}
 
 	return {};
