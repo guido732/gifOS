@@ -284,7 +284,8 @@ const myGifsSection = (function() {
 	const $stage2 = document.querySelector("#stage2");
 	const $stage3 = document.querySelector("#stage3");
 	const $stage4 = document.querySelector("#stage4");
-	const $video = document.querySelector("#video-box");
+	const $recordingPreview = document.querySelector("#video-box");
+	const $outputPreview = document.querySelector("#gif-preview");
 
 	// Bind events
 	$createGifContinue.onclick = () => {
@@ -303,11 +304,13 @@ const myGifsSection = (function() {
 	$stopRecording.onclick = () => {
 		$stage3.classList.toggle("hidden");
 		$stage4.classList.toggle("hidden");
+		hideElements($recordingPreview);
+		showElements($outputPreview);
 		stopRecording();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $stage3);
-		hideElements($stage4, $startRecording);
+		showElements($stopRecording, $stage3, $recordingPreview);
+		hideElements($stage4, $startRecording, $outputPreview);
 		await initiateWebcam();
 		await startRecording();
 	};
@@ -343,18 +346,18 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			$video.srcObject = await stream;
-			await $video.play();
+			$recordingPreview.srcObject = await stream;
+			await $recordingPreview.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	}
 	async function startRecording() {
-		$video.removeAttribute("controls");
-		const stream = $video.srcObject;
+		$recordingPreview.removeAttribute("controls");
+		const stream = $recordingPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
-			// type: "video"
-			type: "gif"
+			type: "gif",
+			frameRate: 100
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
@@ -362,20 +365,19 @@ const myGifsSection = (function() {
 	}
 	async function stopRecording() {
 		await recorder.stopRecording();
-		$video.setAttribute("controls", "");
-		$video.srcObject = null;
+		$recordingPreview.srcObject = null;
 		let blob = await recorder.getBlob();
-		$video.src = URL.createObjectURL(blob);
 		recorder.stream.getTracks(t => t.stop());
+		$outputPreview.src = URL.createObjectURL(blob);
 
 		videoSrc = await blob;
 
 		// reset recorder's state
-		await recorder.reset();
+		// await recorder.reset();
 		// clear the memory
 		await recorder.destroy();
 		// so that we can record again
-		recorder = null;
+		// recorder = null;
 	}
 	async function uploadCreatedGif() {
 		console.log("***Upload started***");
