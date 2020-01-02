@@ -377,35 +377,63 @@ const myGifsSection = (function() {
 		recorder = null;
 	}
 	async function uploadCreatedGif() {
-		console.log("Upload started");
-		let form = new FormData();
-		form.append("file", videoSrc, "myGif.webm");
-		console.log(form.get("file"));
+		console.log("***Upload started***");
+		// console.log(videoSrc);
 
-		async function postData(url = "", data = {}) {
-			// Default options are marked with *
-			const response = await fetch(url, {
-				method: "POST", // *GET, POST, PUT, DELETE, etc.
-				mode: "cors", // no-cors, *cors, same-origin
-				cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-				credentials: "same-origin", // include, *same-origin, omit
-				headers: {
-					"Content-Type": "application/json"
-					// 'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				redirect: "follow", // manual, *follow, error
-				referrerPolicy: "no-referrer", // no-referrer, *client
-				body: JSON.stringify(data) // body data type must match "Content-Type" header
+		/* var postData = {
+			api_key: APIkey,
+			file: {
+				value: JSON.stringify(videoSrc),
+				options: {
+					filename: "filename.webm",
+					contentType: "video/webm"
+				}
+			},
+			tags: "tags,comma,separated",
+			source_post_url: "https://example.com/postID"
+		}; */
+
+		const formData = new FormData();
+		// formData.append("username", "abc123");
+		formData.append("file", videoSrc, "myWebm.webm");
+		console.log(URL.createObjectURL(videoSrc));
+
+		fetch(`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&username=guido732&tags=test`, {
+			// method: "PUT",
+			method: "POST",
+			body: formData,
+			json: true
+		})
+			.then(response => response.json())
+			.then(result => {
+				console.log("Success:", result);
+			})
+			.catch(error => {
+				console.error("Error:", error);
 			});
-			return await response.json(); // parses JSON response into native JavaScript objects
-		}
 
-		// postData(
-		// 	`http://upload.giphy.com/v1/gifs&api_key=${APIkey}&source_image_url=${URL.createObjectURL(videoSrc)}`,
-		// 	{}
-		// ).then(data => {
-		// 	console.log(data); // JSON data parsed by `response.json()` call
-		// });
+		/* async function uploadToGiphy() {
+			const options = {
+				method: "POST",
+				mode: "cors",
+				// mode: "no-cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				headers: {
+					"Content-Type": "video/webm"
+				},
+				redirect: "follow",
+				referrerPolicy: "no-referrer"
+				// json: true,
+				// body: JSON.stringify(videoSrc)
+			};
+			const response = await fetch(
+				`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&file=${JSON.stringify(videoSrc)}`,
+				options
+			);
+			return await response;
+		}
+		uploadToGiphy().then(data => console.log(data)); */
 	}
 
 	return {};
