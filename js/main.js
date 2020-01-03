@@ -402,7 +402,6 @@ const myGifsSection = () => {
 		try {
 			console.log("***Upload started***");
 			const formData = new FormData();
-			// formData.append("file", videoSrc, "myWebm.webm");
 			formData.append("file", videoSrc, "myWebm.gif");
 
 			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
@@ -415,7 +414,6 @@ const myGifsSection = () => {
 			console.log(await data);
 			console.log("***Upload ended***");
 			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
-			await _render();
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
 		}
