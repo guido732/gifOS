@@ -20,8 +20,17 @@ window.onload = () => {
 	fetchTrendingGifs(16);
 	document.querySelector("#search-bar").focus();
 };
+document.querySelector("#home-button").onclick = e => {
+	hideElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
+	showElements(
+		document.querySelector("#search-box"),
+		document.querySelector("#suggestions"),
+		document.querySelector("#trends"),
+		document.querySelector(".nav-item-container")
+	);
+};
 // Dropdown list visibility toggle
-document.querySelector("#dropdown-btn").onclick = function(e) {
+document.querySelector("#dropdown-btn").onclick = e => {
 	e.preventDefault();
 	const $dropdownList = document.querySelector("#dropdown-list");
 	$dropdownList.classList.toggle("hidden");
@@ -41,7 +50,7 @@ document.onkeydown = e => {
 	}
 };
 // Handles search bar functionality
-document.querySelector("#search-bar").oninput = function(e) {
+document.querySelector("#search-bar").oninput = e => {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
@@ -287,9 +296,11 @@ const myGifsSection = () => {
 	// let videoSrc = "";
 
 	// Cache DOM
-	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifWindow = document.querySelector("#create-gif");
+	const $myGifsSection = document.querySelector("#my-gifs");
+	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
+	const $createGifCancel = document.querySelector("#create-gif-cancel");
 	const $createGifHeader = document.querySelector("#create-gif-section-header");
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
@@ -310,6 +321,16 @@ const myGifsSection = () => {
 		hideElements($stage1);
 		showElements($stage2);
 		initiateWebcam();
+	};
+	$createGifCancel.onclick = () => {
+		// TODO Replace for executing component function
+		hideElements($createGifWindow, $myGifsSection);
+		showElements(
+			document.querySelector("#search-box"),
+			document.querySelector("#suggestions"),
+			document.querySelector("#trends"),
+			document.querySelector(".nav-item-container")
+		);
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
