@@ -290,6 +290,7 @@ const myGifsSection = () => {
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifWindow = document.querySelector("#create-gif");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
+	const $createGifHeader = document.querySelector("#create-gif-section-header");
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
@@ -305,12 +306,13 @@ const myGifsSection = () => {
 	$createGifContinue.onclick = () => {
 		$createGifWindow.firstElementChild.classList.remove("window-size-md");
 		$createGifWindow.firstElementChild.classList.add("window-size-lg");
+		$createGifHeader.innerText = "Un Chequeo Antes de Empezar";
 		hideElements($stage1);
 		showElements($stage2);
-		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
 		initiateWebcam();
 	};
 	$startRecording.onclick = () => {
+		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording);
 		showElements($stopRecording, $stage3);
 		startRecording();
@@ -318,6 +320,7 @@ const myGifsSection = () => {
 	$stopRecording.onclick = () => {
 		$stage3.classList.toggle("hidden");
 		$stage4.classList.toggle("hidden");
+		$createGifHeader.innerText = "Vista Previa";
 		hideElements($inputPreview);
 		showElements($outputPreview);
 		stopRecording();
@@ -325,10 +328,12 @@ const myGifsSection = () => {
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
 		hideElements($stage4, $startRecording, $outputPreview);
+		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
 	};
 	$uploadRecording.onclick = async () => {
+		$createGifHeader.innerText = "Subiendo Guifo";
 		await uploadCreatedGif();
 		await _render();
 	};
