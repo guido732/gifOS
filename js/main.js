@@ -293,7 +293,7 @@ function createGifSection() {
 
 const myGifsSection = () => {
 	let myGifs = {};
-	// let videoSrc = "";
+	const stopwatch = new Stopwatch(timer);
 
 	// Cache DOM
 	const $createGifWindow = document.querySelector("#create-gif");
@@ -312,6 +312,7 @@ const myGifsSection = () => {
 	const $stage4 = document.querySelector("#stage4");
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
+	const $timer = document.querySelector("#timer");
 
 	// Bind events
 	$createGifContinue.onclick = () => {
@@ -337,6 +338,8 @@ const myGifsSection = () => {
 		hideElements($startRecording);
 		showElements($stopRecording, $stage3);
 		startRecording();
+		stopwatch.reset();
+		stopwatch.start();
 	};
 	$stopRecording.onclick = () => {
 		$stage3.classList.toggle("hidden");
@@ -345,6 +348,7 @@ const myGifsSection = () => {
 		hideElements($inputPreview);
 		showElements($outputPreview);
 		stopRecording();
+		stopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
@@ -352,6 +356,8 @@ const myGifsSection = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
+		stopwatch.reset();
+		stopwatch.start();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
@@ -446,4 +452,53 @@ const myGifsSection = () => {
 	}
 
 	return {};
+};
+
+const Stopwatch = function(elem) {
+	let timer = elem,
+		offset,
+		clock,
+		interval;
+
+	// initialize
+	reset();
+
+	// private functions
+	function start() {
+		if (!interval) {
+			offset = Date.now();
+			interval = setInterval(update);
+		}
+	}
+	function stop() {
+		if (interval) {
+			clearInterval(interval);
+			interval = null;
+		}
+	}
+	function reset() {
+		clock = 0;
+		render();
+	}
+	function update() {
+		clock += delta();
+		render();
+	}
+	function render() {
+		timer.innerHTML = clock / 1000;
+		// timer.innerHTML = Math.floor(clock / 1000);
+	}
+	function delta() {
+		let now = Date.now(),
+			d = now - offset;
+		offset = now;
+		return d;
+	}
+
+	// Exposed Functions
+	return {
+		start: start,
+		stop: stop,
+		reset: reset
+	};
 };
