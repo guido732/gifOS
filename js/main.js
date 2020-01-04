@@ -292,9 +292,6 @@ function createGifSection() {
 // localStorage.setItem("color-theme", "light");
 
 const myGifsSection = () => {
-	let myGifs = {};
-	const stopwatch = new Stopwatch(timer);
-
 	// Cache DOM
 	const $createGifWindow = document.querySelector("#create-gif");
 	const $myGifsSection = document.querySelector("#my-gifs");
@@ -313,6 +310,10 @@ const myGifsSection = () => {
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
 	const $timer = document.querySelector("#timer");
+
+	// Local variables
+	const stopwatch = Stopwatch($timer, { delay: 100 });
+	let myGifs = {};
 
 	// Bind events
 	$createGifContinue.onclick = () => {
@@ -454,20 +455,21 @@ const myGifsSection = () => {
 	return {};
 };
 
-const Stopwatch = function(elem) {
+const Stopwatch = function(elem, options) {
 	let timer = elem,
 		offset,
 		clock,
 		interval;
-
+	// default options
+	options = options || {};
+	options.delay = options.delay || 1;
 	// initialize
 	reset();
-
 	// private functions
 	function start() {
 		if (!interval) {
 			offset = Date.now();
-			interval = setInterval(update);
+			interval = setInterval(update, options.delay);
 		}
 	}
 	function stop() {
@@ -494,7 +496,6 @@ const Stopwatch = function(elem) {
 		offset = now;
 		return d;
 	}
-
 	// Exposed Functions
 	return {
 		start: start,
