@@ -343,11 +343,9 @@ const myGifsSection = () => {
 		stopwatch.start();
 	};
 	$stopRecording.onclick = () => {
-		$stage3.classList.toggle("hidden");
-		$stage4.classList.toggle("hidden");
+		hideElements($stage4, $inputPreview, $stopRecording);
+		showElements($stage4, $outputPreview);
 		$createGifHeader.innerText = "Vista Previa";
-		hideElements($inputPreview);
-		showElements($outputPreview);
 		stopRecording();
 		stopwatch.stop();
 	};
