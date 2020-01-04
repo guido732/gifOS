@@ -98,12 +98,25 @@
 .btn-link {
 	padding: 0.35rem 0.5rem 0.35rem 0;
 }
-.input-title-bar {
+.input-bar {
 	width: 100%;
 	padding: 0.5rem;
 	font-size: 0.875rem;
 	margin-bottom: 1rem;
 }
+.input-bar-mono-lg {
+	min-width: 0;
+	width: 100%;
+	padding: 0.8rem 1rem;
+	margin-right: 0.5rem;
+	margin-bottom: 0.75rem;
+}
+.input-bar-mono-sm {
+	min-width: 0;
+	width: min-content;
+	padding: 0.5rem 0.8rem 0.5rem 1rem;
+}
+
 .window-item {
 	padding: 2px;
 	.wi-header {
@@ -219,6 +232,13 @@
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-end;
+		width: 100%;
+	}
+	.stage3-container {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		align-items: flex-start;
 		width: 100%;
 	}
 	.btn-secondary {
@@ -341,13 +361,7 @@ section {
 			justify-content: space-between;
 			align-items: center;
 			padding: 0.75rem 1rem;
-			input {
-				min-width: 0;
-				width: 100%;
-				padding: 0.8rem 1rem;
-				margin-right: 0.5rem;
-				margin-bottom: 0.75rem;
-			}
+
 			button[type="submit"] {
 				flex-grow: 1;
 				max-width: fit-content;

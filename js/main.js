@@ -318,7 +318,7 @@ const myGifsSection = () => {
 		$createGifWindow.firstElementChild.classList.remove("window-size-md");
 		$createGifWindow.firstElementChild.classList.add("window-size-lg");
 		$createGifHeader.innerText = "Un Chequeo Antes de Empezar";
-		hideElements($stage1);
+		hideElements($stage1, $stage3);
 		showElements($stage2);
 		initiateWebcam();
 	};

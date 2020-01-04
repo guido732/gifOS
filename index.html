@@ -54,6 +54,7 @@
 						<!-- TODO boton de Limpiar búsqueda -->
 						<input
 							type="search"
+							class="input-bar input-bar-mono-lg"
 							id="search-bar"
 							placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
 							autocomplete="off"
@@ -72,7 +73,7 @@
 				<input
 					type="text"
 					name="search-results-input"
-					class="input-title-bar"
+					class="input-bar"
 					id="search-results-input"
 					placeholder="Resultados de búsqueda:"
 					disabled
@@ -80,17 +81,11 @@
 				<div class="result-container" id="search-result-container"></div>
 			</section>
 			<section class="suggestions" id="suggestions">
-				<input
-					type="text"
-					name="suggestion-results-input"
-					class="input-title-bar"
-					placeholder="Hoy te sugerimos:"
-					disabled
-				/>
+				<input type="text" name="suggestion-results-input" class="input-bar" placeholder="Hoy te sugerimos:" disabled />
 				<div class="result-container" id="suggested-container"></div>
 			</section>
 			<section class="trends" id="trends">
-				<input type="text" name="suggestion-results-input" class="input-title-bar" placeholder="Tendencias:" disabled />
+				<input type="text" name="suggestion-results-input" class="input-bar" placeholder="Tendencias:" disabled />
 				<div class="trend-grid" id="trend-grid"></div>
 			</section>
 			<section class="create-gif-section hidden" id="create-gif">
@@ -119,7 +114,9 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-secondary" id="create-gif-cancel"><span class="btn-text-container">Cancelar</span></button>
+							<button class="btn-secondary" id="create-gif-cancel">
+								<span class="btn-text-container">Cancelar</span>
+							</button>
 							<button class="btn-primary" id="create-gif-continue">
 								<span class="btn-text-container">Comenzar</span>
 							</button>
@@ -129,12 +126,13 @@
 						<video id="video-box" class="video-element"></video>
 						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
 						<div class="flex-end-container">
-							<button class="btn-primary " id="start-recording">
+							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
 								<span class="btn-text-container">Capturar</span>
 							</button>
 						</div>
-						<div class="flex-end-container" id="stage3">
-							<button class="btn-primary  hidden" id="stop-recording">
+						<div class="stage3-container" id="stage3">
+							<input type="time" name="timer" id="timer" class="input-bar input-bar-mono-sm" disabled />
+							<button class="btn-primary btn-recording btn-primary--icon-before icon-recording" id="stop-recording">
 								<span class="btn-text-container">Listo</span>
 							</button>
 						</div>
@@ -149,7 +147,7 @@
 				</div>
 			</section>
 			<section class="my-gifs hidden" id="my-gifs">
-				<input type="text" name="my-gifs-results-input" class="input-title-bar" placeholder="Mis guifos:" disabled />
+				<input type="text" name="my-gifs-results-input" class="input-bar" placeholder="Mis guifos:" disabled />
 				<div class="trend-grid" id="my-gifs-grid"></div>
 			</section>
 		</main>
