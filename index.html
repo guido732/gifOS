@@ -27,18 +27,13 @@
 				<div class="brand-container"></div>
 			</button>
 			<div class="nav-item-container">
-				<button class="btn-primary nav-item" id="btn-create-gif">
-					<span>Crear Guifos</span>
+				<button class="nav-item btn-primary" id="btn-create-gif">
+					<span class="btn-text-container">Crear Guifos</span>
 				</button>
+
 				<div class="nav-item dropdown-container-outer">
-					<!-- TODO reusable dropdown section -->
-					<button class="dropdown-btn" id="dropdown-btn">
-						<div class="btn-primary"><span>Elegir Tema</span></div>
-						<div class="btn-primary arrow">
-							<span>
-								<img src="./assets/icons/dropdown.svg" alt="Dropdown Arrow" />
-							</span>
-						</div>
+					<button class=" btn-primary btn-primary--icon-after icon-dropdown" id="dropdown-btn">
+						<span class="btn-text-container">Elegir Tema</span>
 					</button>
 					<div class="dropdown-list hidden" id="dropdown-list">
 						<a href="#" class="dropdown-list-item">Sailor Day</a>
@@ -64,7 +59,7 @@
 							autocomplete="off"
 						/>
 						<button type="submit" id="search-button" disabled class="btn-primary submit">
-							<span><p>Buscar</p> </span>
+							<span class="btn-text-container icon-within icon-search">Buscar</span>
 						</button>
 					</form>
 					<div class="search-suggestions hidden" id="search-suggestions">
@@ -124,9 +119,9 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-secondary" id="create-gif-cancel"><span>Cancelar</span></button>
+							<button class="btn-secondary" id="create-gif-cancel"><span class="btn-text-container">Cancelar</span></button>
 							<button class="btn-primary" id="create-gif-continue">
-								<span>Comenzar</span>
+								<span class="btn-text-container">Comenzar</span>
 							</button>
 						</div>
 					</div>
@@ -135,19 +130,19 @@
 						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
 						<div class="flex-end-container">
 							<button class="btn-primary " id="start-recording">
-								<span>Capturar</span>
+								<span class="btn-text-container">Capturar</span>
 							</button>
 						</div>
 						<div class="flex-end-container" id="stage3">
 							<button class="btn-primary  hidden" id="stop-recording">
-								<span>Listo</span>
+								<span class="btn-text-container">Listo</span>
 							</button>
 						</div>
 						<div class="flex-end-container hidden" id="stage4">
 							<button class="btn-secondary " id="redo-recording">
-								<span>Repetir Captura</span></button
+								<span class="btn-text-container">Repetir Captura</span></button
 							><button class="btn-primary" id="upload-gif">
-								<span>Subir Guifo</span>
+								<span class="btn-text-container">Subir Guifo</span>
 							</button>
 						</div>
 					</div>
