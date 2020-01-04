@@ -25,34 +25,81 @@ $textWhite: #fff;
 	background-size: 400% 400%;
 	animation: loading-animation 2s ease-in-out infinite;
 }
+.icon-dropdown {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/dropdown.svg");
+	}
+}
+.icon-search {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/lupa.svg");
+	}
+}
 
 // Components
 .btn-primary {
+	color: $textDark;
 	background: $colorPrimary;
 	border: 1px solid $textDark;
 	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	span {
+	.btn-text-container {
 		border: 1px dotted $colorPrimaryHover;
 	}
 	&:hover {
 		background: $colorPrimaryHover;
-		span {
+		.btn-text-container {
 			border: 1px dotted $textDark;
 		}
 	}
 }
-.btn-primary.tag {
+.btn-primary--icon-before {
+	&::before {
+		border: 1px solid black;
+		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	}
+	&:hover::before {
+		outline: 1px dotted black;
+		outline-offset: -4px;
+	}
+}
+.btn-primary--icon-after {
+	&::after {
+		border: 1px solid black;
+		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	}
+	&:hover::after {
+		outline: 1px dotted black;
+		outline-offset: -4px;
+	}
+}
+.btn-tag {
 	background: #4180f6;
 	border: 1px solid #4c2f99;
 	box-shadow: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 #ffffff;
 	color: $textWhite;
-	span {
+	.btn-text-container {
 		border: 1px dotted #4180f6;
 	}
 	&:hover {
 		background: #3a72db;
-		span {
+		.btn-text-container {
 			border: 1px dotted #110038;
+		}
+	}
+}
+.btn-secondary {
+	background: $colorSecondary;
+	border: 1px solid $textDark;
+	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
+	.btn-text-container {
+		border: 1px dotted $colorSecondaryHover;
+	}
+	&:hover {
+		background: $colorSecondaryHover;
+		.btn-text-container {
+			border: 1px dotted $textDark;
 		}
 	}
 }
@@ -71,28 +118,6 @@ $textWhite: #fff;
 	}
 	&:active {
 		background: #dbdbdb;
-	}
-}
-.btn-secondary {
-	background: $colorSecondary;
-	border: 1px solid $textDark;
-	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	span {
-		border: 1px dotted $colorSecondaryHover;
-	}
-	&:hover {
-		background: $colorSecondaryHover;
-		span {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.dropdown-btn:hover {
-	* {
-		background: $colorPrimaryHover;
-		span {
-			border: 1px dotted $textDark;
-		}
 	}
 }
 .btn-link {
@@ -174,19 +199,19 @@ a {
 }
 button {
 	background-color: transparent;
+	cursor: pointer;
+	&:disabled {
+		cursor: default;
+	}
 }
 
 // Page Specific Sections
 .header {
 	background: $gradient;
+	box-shadow: 0 1px 0 0 #110038;
 }
 .brand-container {
-	width: 6.25rem;
-	height: 4rem;
 	background-image: url(../../assets/img/gifOF_logo.png);
-	background-size: auto;
-	background-position: center;
-	background-repeat: no-repeat;
 }
 .dropdown-list {
 	background: #e6e6e6;
@@ -201,10 +226,10 @@ button {
 		}
 	}
 }
+
 .search {
 	background: $colorSearchHover;
 	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	padding-top: 2px;
 	.search-header {
 		background: $gradient;
 		color: $textWhite;
@@ -221,24 +246,12 @@ button {
 				color: #b4b4b4;
 			}
 		}
-		button[type="submit"] {
-			p::before {
-				content: "";
-				background: url(../../assets/icons/lupa.svg) no-repeat;
-				width: 1rem;
-				height: 1rem;
-				margin-right: 0.5rem;
-			}
-		}
 		input:placeholder-shown ~ button[type="submit"] {
-			cursor: default;
 			background: #e6e6e6;
 			border: 1px solid #808080;
 			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
-			span {
+			.btn-text-container {
 				border: 1px solid #e6e6e6;
-			}
-			p {
 				color: #b4b4b4;
 				&::before {
 					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;

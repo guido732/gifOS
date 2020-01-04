@@ -195,7 +195,7 @@ function newElement(type, element, ratio = "") {
 			</div>
 			<div class="img-container">
 			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary tag"><span>Ver más...</span></a>
+				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
 			</div>
 		</div>`;
 			return $container.firstChild;
@@ -223,7 +223,7 @@ function newElement(type, element, ratio = "") {
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary tag"><span>${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn-primary btn-tag"><span class="btn-text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 	}
 }
