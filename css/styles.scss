@@ -26,6 +26,12 @@
 	display: none !important;
 }
 
+.icon-dropdown {
+	&::before,
+	&::after {
+		background-image: url("../assets/icons/dropdown.svg");
+	}
+}
 // Components
 .btn-primary {
 	display: inline-block;
@@ -36,17 +42,44 @@
 		padding: 0.25rem 1.5rem;
 	}
 }
-.btn-primary.arrow {
-	@include flexCenter();
+
+.btn-primary2 {
+	display: inline-block;
 	padding: 2px;
 	span {
-		padding: 0rem 0.75rem;
-		@include flexCenter();
-	}
-	img {
-		min-width: 10px;
+		white-space: nowrap;
+		display: inline-block;
+		padding: 0.25rem 1.5rem;
 	}
 }
+
+.btn-primary--icon-before {
+	@include flexCenter();
+	&::before {
+		content: "";
+		padding: 0 1.2rem;
+		align-self: stretch;
+		margin-top: -3px;
+		margin-bottom: -3px;
+		margin-left: -3px;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+}
+.btn-primary--icon-after {
+	@include flexCenter();
+	&::after {
+		content: "";
+		padding: 0 1.2rem;
+		align-self: stretch;
+		margin-top: -3px;
+		margin-bottom: -3px;
+		margin-right: -3px;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+}
+
 .btn-primary.tag {
 	padding: 3px;
 	margin-right: 0.5rem;
@@ -258,8 +291,6 @@ section {
 		margin: auto;
 	}
 }
-
-// TODO reusable dropdown section
 .navbar {
 	margin-top: 2.25rem;
 	margin-bottom: 2rem;
