@@ -312,7 +312,7 @@ const myGifsSection = () => {
 	const $timer = document.querySelector("#timer");
 
 	// Local variables
-	const stopwatch = Stopwatch($timer, { delay: 100 });
+	const stopwatch = Stopwatch($timer, { delay: 10 });
 	let myGifs = {};
 
 	// Bind events
@@ -477,6 +477,7 @@ const Stopwatch = function(elem, options) {
 			clearInterval(interval);
 			interval = null;
 		}
+		console.log(clock);
 	}
 	function reset() {
 		clock = 0;
@@ -486,15 +487,26 @@ const Stopwatch = function(elem, options) {
 		clock += delta();
 		render();
 	}
-	function render() {
-		timer.innerHTML = clock / 1000;
-		// timer.innerHTML = Math.floor(clock / 1000);
-	}
 	function delta() {
 		let now = Date.now(),
 			d = now - offset;
 		offset = now;
 		return d;
+	}
+	function msToTime(duration) {
+		let milliseconds = parseInt((duration % 1000) / 10),
+			seconds = Math.floor((duration / 1000) % 60),
+			minutes = Math.floor((duration / (1000 * 60)) % 60),
+			hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+		hours = hours < 10 ? "0" + hours : hours;
+		minutes = minutes < 10 ? "0" + minutes : minutes;
+		seconds = seconds < 10 ? "0" + seconds : seconds;
+
+		return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+	}
+	function render() {
+		timer.innerHTML = msToTime(clock);
 	}
 	// Exposed Functions
 	return {
