@@ -95,6 +95,9 @@
 		width: 100%;
 	}
 }
+.btn-link {
+	padding: 0.35rem 0.5rem 0.35rem 0;
+}
 .input-title-bar {
 	width: 100%;
 	padding: 0.5rem;
@@ -274,6 +277,11 @@ section {
 	justify-content: space-between;
 	.brand-container {
 		margin-bottom: 1rem;
+		width: 6.25rem;
+		height: 4rem;
+		background-size: auto;
+		background-position: center;
+		background-repeat: no-repeat;
 	}
 	.nav-item-container {
 		@include flexCenter(column, wrap);
@@ -283,9 +291,6 @@ section {
 			&:last-child {
 				margin-bottom: 0;
 			}
-		}
-		.btn-link {
-			padding: 0.35rem 0.5rem 0.35rem 0;
 		}
 	}
 	.dropdown-container-outer {
@@ -321,6 +326,7 @@ section {
 .search-container {
 	.search {
 		position: relative;
+		padding-top: 2px;
 		.search-header {
 			padding: 0.375rem;
 			margin: 0 2px;
