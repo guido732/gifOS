@@ -14,9 +14,6 @@
 
 		<!-- Google Fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Chakra+Petch:400,700&display=swap" rel="stylesheet" />
-
-		<!-- FontAwesome -->
-		<script src="https://kit.fontawesome.com/f49d5ad486.js" crossorigin="anonymous"></script>
 	</head>
 
 	<body>
@@ -26,9 +23,9 @@
 			</h1>
 		</header>
 		<nav class="container navbar">
-			<a href="/">
+			<button id="home-button">
 				<div class="brand-container"></div>
-			</a>
+			</button>
 			<div class="nav-item-container">
 				<button class="nav-item btn-primary" id="btn-create-gif">
 					<span class="btn-text-container">Crear Guifos</span>
@@ -122,14 +119,15 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<a class="btn-secondary " href="/"><span class="btn-text-container">Cancelar</span></a>
+							<button class="btn-secondary" id="create-gif-cancel"><span class="btn-text-container">Cancelar</span></button>
 							<button class="btn-primary" id="create-gif-continue">
 								<span class="btn-text-container">Comenzar</span>
 							</button>
 						</div>
 					</div>
 					<div class="video-record-container hidden content" id="stage2">
-						<video autoplay loop playsinline id="video-box"></video>
+						<video id="video-box" class="video-element"></video>
+						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
 						<div class="flex-end-container">
 							<button class="btn-primary " id="start-recording">
 								<span class="btn-text-container">Capturar</span>

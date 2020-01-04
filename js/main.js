@@ -20,8 +20,17 @@ window.onload = () => {
 	fetchTrendingGifs(16);
 	document.querySelector("#search-bar").focus();
 };
+document.querySelector("#home-button").onclick = e => {
+	hideElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
+	showElements(
+		document.querySelector("#search-box"),
+		document.querySelector("#suggestions"),
+		document.querySelector("#trends"),
+		document.querySelector(".nav-item-container")
+	);
+};
 // Dropdown list visibility toggle
-document.querySelector("#dropdown-btn").onclick = function(e) {
+document.querySelector("#dropdown-btn").onclick = e => {
 	e.preventDefault();
 	const $dropdownList = document.querySelector("#dropdown-list");
 	$dropdownList.classList.toggle("hidden");
@@ -41,7 +50,7 @@ document.onkeydown = e => {
 	}
 };
 // Handles search bar functionality
-document.querySelector("#search-bar").oninput = function(e) {
+document.querySelector("#search-bar").oninput = e => {
 	const $searchButton = document.querySelector("#search-button");
 	if (e.target.value !== "") {
 		$searchButton.disabled = false;
@@ -87,7 +96,7 @@ async function handleSearchFunctionality(searchValue) {
 async function handleSearchSuggestionSearch(limit, keywords) {
 	processedKeywords = processSearchValues(keywords);
 	const $searchSuggestions = document.querySelector("#search-suggestions");
-	const url = `http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
+	const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
 	searchResults = await fetchURL(url);
 	$searchSuggestions.innerHTML = "";
 	showElements(document.querySelector("#search-suggestions"));
@@ -110,13 +119,19 @@ async function fetchTrendingGifs(limit) {
 	const gifOffset = Math.floor(Math.random() * 50);
 
 	gifsTrending = await fetchURL(
-		`http://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
 	);
-	gifsTrending.data.forEach(gif => {
+	await gifsTrending.data.forEach(gif => {
 		let aspectRatio = "";
 		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 		$trendingGifs.append(newElement("trend", gif, aspectRatio));
 	});
+
+	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
 }
 async function fetchSuggestionGifs(limit) {
 	const $suggestedGifs = document.querySelector("#suggested-container");
@@ -138,7 +153,7 @@ async function fetchSuggestionGifs(limit) {
 	const suggestion = Math.floor(Math.random() * (suggestionArray.length - 1));
 
 	gifsSuggestions = await fetchURL(
-		`http://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
+		`https://api.giphy.com/v1/gifs/search?q=${suggestionArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
 	);
 
 	gifsSuggestions.data.forEach(gif => {
@@ -149,7 +164,7 @@ async function fetchSearchResultGifs(limit, keywords) {
 	const $searchResultsContainer = document.querySelector("#search-result-container");
 	processedKeywords = processSearchValues(keywords);
 	searchResults = await fetchURL(
-		`http://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+		`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
 	);
 	await searchResults.data.forEach(gif => {
 		let aspectRatio = "";
@@ -157,11 +172,17 @@ async function fetchSearchResultGifs(limit, keywords) {
 		$searchResultsContainer.append(newElement("trend", gif, aspectRatio));
 	});
 
-	const $tagCotnainer = document.querySelector("#search-tags");
-	$tagCotnainer.innerHTML = "";
+	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
+
+	const $tagContainer = document.querySelector("#search-tags");
+	$tagContainer.innerHTML = "";
 	searchResults.data.map(element => {
 		element.title && element.title !== " " && element.title !== "&emsp;"
-			? $tagCotnainer.appendChild(newElement("tag", element))
+			? $tagContainer.appendChild(newElement("tag", element))
 			: null;
 	});
 
@@ -244,6 +265,7 @@ function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
 function showMyGifsSection() {
+	myGifsSection();
 	hideElements(
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-results"),
@@ -255,6 +277,7 @@ function showMyGifsSection() {
 	showElements(document.querySelector("#my-gifs"));
 }
 function createGifSection() {
+	myGifsSection();
 	hideElements(
 		document.querySelector("#suggestions"),
 		document.querySelector("#search-results"),
@@ -268,14 +291,17 @@ function createGifSection() {
 }
 // localStorage.setItem("color-theme", "light");
 
-const myGifsSection = (function() {
-	const myGifs = [];
-	let videoSrc = "";
+const myGifsSection = () => {
+	let myGifs = {};
+	// let videoSrc = "";
 
 	// Cache DOM
-	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifWindow = document.querySelector("#create-gif");
+	const $myGifsSection = document.querySelector("#my-gifs");
+	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
+	const $createGifCancel = document.querySelector("#create-gif-cancel");
+	const $createGifHeader = document.querySelector("#create-gif-section-header");
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
@@ -284,18 +310,30 @@ const myGifsSection = (function() {
 	const $stage2 = document.querySelector("#stage2");
 	const $stage3 = document.querySelector("#stage3");
 	const $stage4 = document.querySelector("#stage4");
-	const $video = document.querySelector("#video-box");
+	const $inputPreview = document.querySelector("#video-box");
+	const $outputPreview = document.querySelector("#gif-preview");
 
 	// Bind events
 	$createGifContinue.onclick = () => {
 		$createGifWindow.firstElementChild.classList.remove("window-size-md");
 		$createGifWindow.firstElementChild.classList.add("window-size-lg");
+		$createGifHeader.innerText = "Un Chequeo Antes de Empezar";
 		hideElements($stage1);
 		showElements($stage2);
-		document.querySelector("#create-gif-section-header").innerText = "Un Chequeo Antes de Empezar";
 		initiateWebcam();
 	};
+	$createGifCancel.onclick = () => {
+		// TODO Replace for executing component function
+		hideElements($createGifWindow, $myGifsSection);
+		showElements(
+			document.querySelector("#search-box"),
+			document.querySelector("#suggestions"),
+			document.querySelector("#trends"),
+			document.querySelector(".nav-item-container")
+		);
+	};
 	$startRecording.onclick = () => {
+		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording);
 		showElements($stopRecording, $stage3);
 		startRecording();
@@ -303,38 +341,54 @@ const myGifsSection = (function() {
 	$stopRecording.onclick = () => {
 		$stage3.classList.toggle("hidden");
 		$stage4.classList.toggle("hidden");
+		$createGifHeader.innerText = "Vista Previa";
+		hideElements($inputPreview);
+		showElements($outputPreview);
 		stopRecording();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $stage3);
-		hideElements($stage4, $startRecording);
+		showElements($stopRecording, $stage3, $inputPreview);
+		hideElements($stage4, $startRecording, $outputPreview);
+		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
 	};
-	$uploadRecording.onclick = () => {
-		uploadCreatedGif();
+	$uploadRecording.onclick = async () => {
+		$createGifHeader.innerText = "Subiendo Guifo";
+		await uploadCreatedGif();
+		await _render();
 	};
 
 	// On Load functions
 	_render();
 
 	function _render() {
-		_fetchGifsFromStorage();
+		myGifs = {};
 		$gifsGrid.innerHTML = "";
-		myGifs.forEach(element => {
-			let aspectRatio = "";
-			element.images["480w_still"].width / element.images["480w_still"].height >= 1.5
-				? (aspectRatio = "item-double")
-				: null;
-			newElement("window", element, aspectRatio);
-		});
-	}
-	function _fetchGifsFromStorage() {
+
 		Object.keys(localStorage).forEach(element => {
-			element.substring(0, 3) === "gif" ? myGifs.push(element) : null;
+			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
+
+		let gifIds = "";
+		for (let key in myGifs) {
+			gifIds += `${myGifs[key]},`;
+		}
+		gifIds = gifIds.slice(0, -1);
+		fetchMyGifs(gifIds);
 	}
 
+	async function fetchMyGifs(gifIds) {
+		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
+		// console.log(await searchResults);
+
+		await searchResults.data.forEach(gif => {
+			let aspectRatio = "";
+			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+			$gifsGrid.append(newElement("trend", gif, aspectRatio));
+			// console.log("element appended");
+		});
+	}
 	async function initiateWebcam() {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
@@ -343,98 +397,53 @@ const myGifsSection = (function() {
 					height: { max: 480 }
 				}
 			});
-			$video.srcObject = await stream;
-			await $video.play();
+			$inputPreview.srcObject = await stream;
+			await $inputPreview.play();
 		} catch (e) {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	}
 	async function startRecording() {
-		$video.removeAttribute("controls");
-		const stream = $video.srcObject;
+		const stream = $inputPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
-			type: "video"
+			type: "gif",
+			frameRate: 24
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
 		recorder.stream = stream;
 	}
 	async function stopRecording() {
-		await recorder.stopRecording();
-		$video.setAttribute("controls", "");
-		$video.srcObject = null;
+		recorder.stopRecording();
+		$inputPreview.srcObject = null;
 		let blob = await recorder.getBlob();
-		$video.src = URL.createObjectURL(blob);
 		recorder.stream.getTracks(t => t.stop());
-
+		$outputPreview.src = URL.createObjectURL(blob);
 		videoSrc = await blob;
-
-		// reset recorder's state
+		// reset recorder's state & clear the memory
 		await recorder.reset();
-		// clear the memory
 		await recorder.destroy();
-		// so that we can record again
-		recorder = null;
 	}
 	async function uploadCreatedGif() {
-		console.log("***Upload started***");
-		// console.log(videoSrc);
+		try {
+			console.log("***Upload started***");
+			const formData = new FormData();
+			formData.append("file", videoSrc, "myWebm.gif");
 
-		/* var postData = {
-			api_key: APIkey,
-			file: {
-				value: JSON.stringify(videoSrc),
-				options: {
-					filename: "filename.webm",
-					contentType: "video/webm"
-				}
-			},
-			tags: "tags,comma,separated",
-			source_post_url: "https://example.com/postID"
-		}; */
-
-		const formData = new FormData();
-		// formData.append("username", "abc123");
-		formData.append("file", videoSrc, "myWebm.webm");
-		console.log(URL.createObjectURL(videoSrc));
-
-		fetch(`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&username=guido732&tags=test`, {
-			// method: "PUT",
-			method: "POST",
-			body: formData,
-			json: true
-		})
-			.then(response => response.json())
-			.then(result => {
-				console.log("Success:", result);
-			})
-			.catch(error => {
-				console.error("Error:", error);
-			});
-
-		/* async function uploadToGiphy() {
-			const options = {
+			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+			const response = await fetch(postUrl, {
 				method: "POST",
-				mode: "cors",
-				// mode: "no-cors",
-				cache: "no-cache",
-				credentials: "same-origin",
-				headers: {
-					"Content-Type": "video/webm"
-				},
-				redirect: "follow",
-				referrerPolicy: "no-referrer"
-				// json: true,
-				// body: JSON.stringify(videoSrc)
-			};
-			const response = await fetch(
-				`http://upload.giphy.com/v1/gifs?api_key=${APIkey}&file=${JSON.stringify(videoSrc)}`,
-				options
-			);
-			return await response;
+				body: formData,
+				json: true
+			});
+			const data = await response.json();
+			console.log(await data);
+			console.log("***Upload ended***");
+			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
+		} catch (e) {
+			console.log(`Error: ${e}\n${e.message}`);
 		}
-		uploadToGiphy().then(data => console.log(data)); */
 	}
 
 	return {};
-})();
+};
