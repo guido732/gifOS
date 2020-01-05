@@ -315,10 +315,11 @@ const myGifsSection = () => {
 	const $myBar = document.querySelector("#bar");
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
+	const $progressBlocks = document.querySelectorAll("#loading-bar .progress-block");
 
 	// Local variables
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
-	const myLoadingBar = LoadingBar($myBar);
+	const myLoadingBar = LoadingBar($progressBlocks);
 	let totalTime = 0;
 	let myGifs = {};
 
@@ -364,12 +365,6 @@ const myGifsSection = () => {
 		await startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
-
-		// $createGifHeader.innerText = "Un Chequeo Antes de Empezar";
-		// hideElements($stage1, $stage3, $outputPreview);
-		// showElements($stage2, $startRecording, $inputPreview);
-		// await stopRecording();
-		// await initiateWebcam();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
@@ -378,6 +373,7 @@ const myGifsSection = () => {
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
+
 		/* 
 		Replace preview window for video again
 		make video NOT play by default
@@ -547,28 +543,34 @@ const Stopwatch = (elem, options) => {
 		reset: reset
 	};
 };
-const LoadingBar = elem => {
+const LoadingBar = subElems => {
 	// Local variables
 	let running = false;
-
+	let progress = 0;
 	function start(totalTime = 100) {
 		if (!running) {
+			reset();
 			running = true;
-			let width = 0;
 			const id = setInterval(frame, totalTime);
 			function frame() {
-				if (width >= 100) {
+				if (progress >= 100) {
 					clearInterval(id);
 					running = false;
 				} else {
-					width++;
-					elem.style.width = width + "%";
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
 				}
 			}
 		}
 	}
 	function reset() {
 		running = false;
+		progress = 0;
+		subElems.forEach(elem => {
+			elem.classList.add("empty");
+		});
 	}
 	// Public Functions
 	return {
