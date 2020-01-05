@@ -352,8 +352,10 @@ const myGifsSection = () => {
 	};
 	$stopRecording.onclick = () => {
 		$createGifHeader.innerText = "Vista Previa";
-		hideElements($stage4, $inputPreview, $stopRecording);
-		showElements($stage4, $outputPreview, $timerLoadingBar);
+		// hideElements($stage4, $inputPreview, $stopRecording);
+		// showElements($stage4, $outputPreview, $timerLoadingBar);
+		hideElements($stage4, $stopRecording);
+		showElements($stage4, $timerLoadingBar);
 		stopRecording();
 		totalTime = myStopwatch.stop();
 	};
@@ -373,7 +375,7 @@ const myGifsSection = () => {
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
-
+		$inputPreview.play();
 		/* 
 		Replace preview window for video again
 		make video NOT play by default
@@ -399,7 +401,6 @@ const myGifsSection = () => {
 		}
 		gifIds = gifIds.slice(0, -1);
 		fetchMyGifs(gifIds);
-		console.log("rendered");
 	}
 
 	async function fetchMyGifs(gifIds) {
@@ -429,36 +430,37 @@ const myGifsSection = () => {
 	}
 	async function startRecording() {
 		const stream = $inputPreview.srcObject;
-		recorder = new RecordRTCPromisesHandler(stream, {
-			type: "gif",
-			mimeType: "video/webm",
-			disableLogs: true,
+		videoRecorder = new RecordRTCPromisesHandler(stream, {
+			type: "video",
+			mimeType: "video/webm; codecs=vp8",
+			// disableLogs: true,
 			videoBitsPerSecond: 128000,
 			frameRate: 30,
 			quality: 10,
 			width: 480,
 			hidden: 240
 		});
-		await recorder.startRecording();
+		await videoRecorder.startRecording();
 		// helps releasing camera on stopRecording
-		recorder.stream = stream;
+		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
-		recorder.stopRecording();
+		await videoRecorder.stopRecording();
 		$inputPreview.srcObject = null;
-		let blob = await recorder.getBlob();
-		$outputPreview.src = await URL.createObjectURL(blob);
+		let blob = await videoRecorder.getBlob();
+		// $outputPreview.src = await URL.createObjectURL(blob);
+		$inputPreview.src = URL.createObjectURL(blob);
 		videoSrc = await blob;
-		recorder.stream.getTracks(t => t.stop());
-		// reset recorder's state & clear the memory
-		await recorder.reset();
-		await recorder.destroy();
+		videoRecorder.stream.getTracks(t => t.stop());
+		// reset Recorder's state & clear the memory
+		await videoRecorder.reset();
+		await videoRecorder.destroy();
 	}
 	async function uploadCreatedGif() {
-		/* try {
+		try {
 			console.log("***Upload started***");
 			const formData = new FormData();
-			formData.append("file", videoSrc, "myWebm.gif");
+			formData.append("file", videoSrc, "myWebm.webm");
 
 			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 			const response = await fetch(postUrl, {
@@ -472,10 +474,10 @@ const myGifsSection = () => {
 			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
-		} */
-		setTimeout(() => {
+		}
+		/* setTimeout(() => {
 			console.log("gif uploaded");
-		}, 1000);
+		}, 1000); */
 	}
 
 	return {};
