@@ -283,26 +283,18 @@
 		height: 1.75rem;
 		padding: 2px;
 		overflow: hidden;
-		background: #b4b4b4;
-		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000000;
 		.bar {
 			width: 1%;
 			height: 100%;
-			background: #f7c9f3;
 		}
 		.progress-block {
 			display: block;
 			height: 100%;
-			// width: 0.75rem;
 			flex: 1 1 auto;
-			background-color: #f7c9f3;
 			margin-right: 2px;
 			&:last-child {
 				margin-right: 0;
 			}
-		}
-		.empty {
-			background-color: #999999;
 		}
 	}
 }

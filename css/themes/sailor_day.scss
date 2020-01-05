@@ -225,6 +225,21 @@ $textWhite: #fff;
 		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
 	}
 }
+.loading-bar-container {
+	.loading-bar {
+		background: #b4b4b4;
+		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000000;
+		.bar {
+			background: #f7c9f3;
+		}
+		.progress-block {
+			background-color: #f7c9f3;
+		}
+		.empty {
+			background-color: #999999;
+		}
+	}
+}
 
 // General element styles
 body {
