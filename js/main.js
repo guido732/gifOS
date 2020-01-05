@@ -309,10 +309,15 @@ const myGifsSection = () => {
 	const $stage4 = document.querySelector("#stage4");
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
+	// Timer
 	const $timer = document.querySelector("#timer");
+	// Loading Bar
+	const $barElement = document.querySelector("#loading-bar");
+	const $myBar = document.querySelector("#bar");
 
 	// Local variables
-	const stopwatch = Stopwatch($timer, { delay: 10 });
+	const myStopwatch = Stopwatch($timer, { delay: 10 });
+	const myLoadingBar = LoadingBar($myBar);
 	let myGifs = {};
 
 	// Bind events
@@ -336,18 +341,19 @@ const myGifsSection = () => {
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		hideElements($startRecording);
+		hideElements($startRecording, $barElement);
 		showElements($stopRecording, $stage3);
 		startRecording();
-		stopwatch.reset();
-		stopwatch.start();
+		myStopwatch.reset();
+		myStopwatch.start();
 	};
 	$stopRecording.onclick = () => {
-		hideElements($stage4, $inputPreview, $stopRecording);
-		showElements($stage4, $outputPreview);
 		$createGifHeader.innerText = "Vista Previa";
+		hideElements($stage4, $inputPreview, $stopRecording);
+		showElements($stage4, $outputPreview, $barElement);
 		stopRecording();
-		stopwatch.stop();
+		myStopwatch.stop();
+		myLoadingBar.start(10);
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
@@ -355,8 +361,8 @@ const myGifsSection = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
-		stopwatch.reset();
-		stopwatch.start();
+		myStopwatch.reset();
+		myStopwatch.start();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
@@ -381,6 +387,7 @@ const myGifsSection = () => {
 		}
 		gifIds = gifIds.slice(0, -1);
 		fetchMyGifs(gifIds);
+		console.log("rendered");
 	}
 
 	async function fetchMyGifs(gifIds) {
@@ -412,7 +419,13 @@ const myGifsSection = () => {
 		const stream = $inputPreview.srcObject;
 		recorder = new RecordRTCPromisesHandler(stream, {
 			type: "gif",
-			frameRate: 24
+			mimeType: "video/webm",
+			disableLogs: true,
+			videoBitsPerSecond: 128000,
+			frameRate: 30,
+			quality: 10,
+			width: 480,
+			hidden: 240
 		});
 		await recorder.startRecording();
 		// helps releasing camera on stopRecording
@@ -430,7 +443,7 @@ const myGifsSection = () => {
 		await recorder.destroy();
 	}
 	async function uploadCreatedGif() {
-		try {
+		/* try {
 			console.log("***Upload started***");
 			const formData = new FormData();
 			formData.append("file", videoSrc, "myWebm.gif");
@@ -447,22 +460,27 @@ const myGifsSection = () => {
 			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
-		}
+		} */
+		setTimeout(() => {
+			console.log("gif uploaded");
+		}, 1000);
 	}
 
 	return {};
 };
-
-const Stopwatch = function(elem, options) {
+const Stopwatch = (elem, options) => {
 	let timer = elem,
 		offset,
 		clock,
 		interval;
+
 	// default options
 	options = options || {};
 	options.delay = options.delay || 1;
+
 	// initialize
 	reset();
+
 	// private functions
 	function start() {
 		if (!interval) {
@@ -475,7 +493,6 @@ const Stopwatch = function(elem, options) {
 			clearInterval(interval);
 			interval = null;
 		}
-		console.log(clock);
 	}
 	function reset() {
 		clock = 0;
@@ -511,5 +528,35 @@ const Stopwatch = function(elem, options) {
 		start: start,
 		stop: stop,
 		reset: reset
+	};
+};
+
+const LoadingBar = elem => {
+	// Local variables
+	let running = false;
+
+	function start(totalTime = 100) {
+		if (!running) {
+			running = true;
+			let width = 0;
+			const id = setInterval(frame, totalTime);
+			function frame() {
+				if (width >= 100) {
+					clearInterval(id);
+					running = false;
+				} else {
+					width++;
+					elem.style.width = width + "%";
+				}
+			}
+		}
+	}
+	function reset() {
+		running = false;
+	}
+	// Public Functions
+	return {
+		start: start,
+		stop: reset
 	};
 };

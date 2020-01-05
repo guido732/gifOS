@@ -131,7 +131,19 @@
 							</button>
 						</div>
 						<div class="stage3-container" id="stage3">
-							<div id="timer" class="input-bar input-bar-mono-sm"></div>
+							<div class="timer-container">
+								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
+								<div class="loading-bar-container">
+									<button class="btn-primary btn-only-icon">
+										<span class="btn-text-container">
+											&#9654;
+										</span>
+									</button>
+									<div class="loading-bar" id="loading-bar">
+										<div class="bar" id="bar"></div>
+									</div>
+								</div>
+							</div>
 							<button class="btn-primary btn-recording btn-primary--icon-before icon-recording" id="stop-recording">
 								<span class="btn-text-container">Listo</span>
 							</button>
