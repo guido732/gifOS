@@ -312,12 +312,14 @@ const myGifsSection = () => {
 	// Timer
 	const $timer = document.querySelector("#timer");
 	// Loading Bar
-	const $barElement = document.querySelector("#loading-bar");
 	const $myBar = document.querySelector("#bar");
+	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
+	const $playPreview = document.querySelector("#btn-play-gif");
 
 	// Local variables
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
 	const myLoadingBar = LoadingBar($myBar);
+	let totalTime = 0;
 	let myGifs = {};
 
 	// Bind events
@@ -341,7 +343,7 @@ const myGifsSection = () => {
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		hideElements($startRecording, $barElement);
+		hideElements($startRecording, $timerLoadingBar);
 		showElements($stopRecording, $stage3);
 		startRecording();
 		myStopwatch.reset();
@@ -350,10 +352,9 @@ const myGifsSection = () => {
 	$stopRecording.onclick = () => {
 		$createGifHeader.innerText = "Vista Previa";
 		hideElements($stage4, $inputPreview, $stopRecording);
-		showElements($stage4, $outputPreview, $barElement);
+		showElements($stage4, $outputPreview, $timerLoadingBar);
 		stopRecording();
-		myStopwatch.stop();
-		myLoadingBar.start(10);
+		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
@@ -363,11 +364,26 @@ const myGifsSection = () => {
 		await startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
+
+		// $createGifHeader.innerText = "Un Chequeo Antes de Empezar";
+		// hideElements($stage1, $stage3, $outputPreview);
+		// showElements($stage2, $startRecording, $inputPreview);
+		// await stopRecording();
+		// await initiateWebcam();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
 		await uploadCreatedGif();
 		await _render();
+	};
+	$playPreview.onclick = () => {
+		myLoadingBar.start(totalTime / 100);
+		/* 
+		Replace preview window for video again
+		make video NOT play by default
+		if video playing -> stop / reset timer / reset loading bar
+		if video !playing -> play once / start timer / start loading bar with video max time as param
+		*/
 	};
 
 	// On Load functions
@@ -435,9 +451,9 @@ const myGifsSection = () => {
 		recorder.stopRecording();
 		$inputPreview.srcObject = null;
 		let blob = await recorder.getBlob();
-		recorder.stream.getTracks(t => t.stop());
-		$outputPreview.src = URL.createObjectURL(blob);
+		$outputPreview.src = await URL.createObjectURL(blob);
 		videoSrc = await blob;
+		recorder.stream.getTracks(t => t.stop());
 		// reset recorder's state & clear the memory
 		await recorder.reset();
 		await recorder.destroy();
@@ -493,6 +509,7 @@ const Stopwatch = (elem, options) => {
 			clearInterval(interval);
 			interval = null;
 		}
+		return clock;
 	}
 	function reset() {
 		clock = 0;
@@ -530,7 +547,6 @@ const Stopwatch = (elem, options) => {
 		reset: reset
 	};
 };
-
 const LoadingBar = elem => {
 	// Local variables
 	let running = false;
