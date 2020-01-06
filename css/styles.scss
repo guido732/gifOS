@@ -332,7 +332,11 @@
 	}
 	.stage7 {
 		@include flexCenter(column, nowrap);
+		text-align: center;
 		h2 {
+			margin-bottom: 1rem;
+		}
+		p {
 			margin-bottom: 2rem;
 		}
 		.img-container {

@@ -319,12 +319,12 @@ const myGifsSection = () => {
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
-	const $createGifCancel = document.querySelector("#create-gif-cancel");
 	const $createGifHeader = document.querySelector("#create-gif-section-header");
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
+	const $errorMsg = document.querySelector("#error-msg");
 	const $copyGifLink = document.querySelector("#copy-link");
 	const $donwloadGif = document.querySelector("#download-gif");
 	const $endProcess = document.querySelectorAll(".close-window");
@@ -396,18 +396,28 @@ const myGifsSection = () => {
 		myLoadingBar.stop();
 		try {
 			const newGif = await uploadCreatedGif();
-			newGifId = await newGif.data.id;
-			saveGifToLocalStorage(await newGif.data.id);
-			await hideElements($stage5);
-			await showElements($stage6);
-			await _render();
-			await uploadLoadingBar.stop();
+			if ((await newGif.meta.status) === 200) {
+				newGifId = await newGif.data.id;
+				saveGifToLocalStorage(await newGif.data.id);
+				await hideElements($stage5);
+				await showElements($stage6);
+				await _render();
+				await uploadLoadingBar.stop();
+			} else {
+				await showElements($stage7);
+				await hideElements($stage5);
+				await uploadLoadingBar.stop();
+				$errorMsg.innerText = `${e.name}\n${e.message}`;
+			}
 		} catch (e) {
 			await showElements($stage7);
 			await hideElements($stage5);
 			await uploadLoadingBar.stop();
-			console.log(`Error: ${e}\n${e.message}`);
+			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
+	};
+	$retryUpload.onclick = () => {
+		//
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
@@ -537,12 +547,14 @@ const myGifsSection = () => {
 		console.log("***Upload started***");
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
-		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,
 			json: true
 		});
+
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
