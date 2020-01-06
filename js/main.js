@@ -287,7 +287,11 @@ function createGifSection() {
 		document.querySelector("#create-gif"),
 		document.querySelector(".nav-item-container")
 	);
-	showElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
+	showElements(
+		document.querySelector("#create-gif"),
+		document.querySelector("#stage1"),
+		document.querySelector("#my-gifs")
+	);
 }
 // localStorage.setItem("color-theme", "light");
 
