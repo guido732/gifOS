@@ -20,7 +20,9 @@ window.onload = () => {
 	fetchSuggestionGifs(4);
 	fetchTrendingGifs(16);
 	document.querySelector("#search-bar").focus();
-	!localStorage.getItem("colorTheme") ? localStorage.setItem("colorTheme", colorThemes[0]) : null;
+	localStorage.getItem("colorTheme")
+		? setColorTheme(localStorage.getItem("colorTheme"))
+		: setColorTheme(colorThemes[0]);
 };
 document.querySelector("#home-button").onclick = e => {
 	hideElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
@@ -79,7 +81,7 @@ document.querySelector("#btn-create-gif").onclick = e => {
 };
 document.querySelectorAll(".color-theme-option").forEach((colorThemeBtn, index) => {
 	colorThemeBtn.onclick = () => {
-		setColorTheme(index);
+		setColorTheme(colorThemes[index]);
 	};
 });
 
@@ -300,9 +302,10 @@ function createGifSection() {
 		document.querySelector("#my-gifs")
 	);
 }
-function setColorTheme(indexNum) {
+function setColorTheme(selectedColorTheme) {
 	const $styleSheet = document.querySelector("#color-theme-stylesheet");
-	$styleSheet.setAttribute("href", `./css/themes/${colorThemes[indexNum]}.min.css`);
+	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
+	localStorage.setItem("colorTheme", selectedColorTheme);
 }
 
 const myGifsSection = () => {
