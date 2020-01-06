@@ -465,21 +465,38 @@ const myGifsSection = () => {
 			width: 480,
 			hidden: 240
 		});
+		gifRecorder = new RecordRTCPromisesHandler(stream, {
+			disableLogs: true,
+			type: "gif",
+			frameRate: 1,
+			quality: 10,
+			width: 360,
+			hidden: 240,
+			onGifPreview: function(gifURL) {
+				$outputPreview.src = gifURL;
+			}
+		});
 		await videoRecorder.startRecording();
+		await gifRecorder.startRecording();
 		// helps releasing camera on stopRecording
 		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
 		await videoRecorder.stopRecording();
 		$inputPreview.srcObject = null;
-		let blob = await videoRecorder.getBlob();
-		// $outputPreview.src = await URL.createObjectURL(blob);
-		$inputPreview.src = URL.createObjectURL(blob);
-		videoSrc = await blob;
+		const videoBlob = await videoRecorder.getBlob();
+		$inputPreview.src = URL.createObjectURL(videoBlob);
+		videoSrc = await videoBlob;
 		videoRecorder.stream.getTracks(t => t.stop());
 		// reset Recorder's state & clear the memory
 		await videoRecorder.reset();
 		await videoRecorder.destroy();
+
+		await gifRecorder.stopRecording();
+		const gifBlob = await gifRecorder.getBlob();
+		$outputPreview.src = URL.createObjectURL(await gifBlob);
+		await gifRecorder.destroy();
+		gifRecorder = await null;
 	}
 	async function uploadCreatedGif() {
 		/* console.log("***Upload started***");
