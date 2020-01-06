@@ -37,6 +37,18 @@ $textWhite: #fff;
 		background-image: url("../../assets/icons/lupa.svg");
 	}
 }
+.icon-camera {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/camera.svg");
+	}
+}
+.icon-recording {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/recording.svg");
+	}
+}
 
 // Components
 .btn-primary {
@@ -60,7 +72,7 @@ $textWhite: #fff;
 		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
 	}
 	&:hover::before {
-		outline: 1px dotted black;
+		outline: 1px dotted $textDark;
 		outline-offset: -4px;
 	}
 }
@@ -72,6 +84,17 @@ $textWhite: #fff;
 	&:hover::after {
 		outline: 1px dotted black;
 		outline-offset: -4px;
+	}
+}
+.btn-recording {
+	background: #ff6161;
+	border: 1px solid #110038;
+	box-shadow: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 #ffffff;
+	.btn-text-container {
+		color: $textWhite;
+	}
+	&:hover {
+		background: #ff6161;
 	}
 }
 .btn-tag {
@@ -126,6 +149,15 @@ $textWhite: #fff;
 		border: 1px dotted $textDark;
 	}
 }
+.btn-full-width {
+	.btn-text-container {
+		border: none;
+	}
+	&:hover .btn-text-container {
+		outline: 1px dotted $textDark;
+		border: none;
+	}
+}
 .window-item {
 	background: #e6e6e6;
 	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
@@ -162,7 +194,7 @@ $textWhite: #fff;
 		}
 	}
 }
-.input-title-bar {
+.input-bar {
 	background: #fffafe;
 	border: 1px solid #e6bbe2;
 	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
@@ -170,7 +202,19 @@ $textWhite: #fff;
 		color: $textDark;
 	}
 }
-
+.input-bar-mono-lg {
+	background: #ffffff;
+	border: 1px solid #979797;
+	box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	&::placeholder {
+		color: #b4b4b4;
+	}
+}
+.input-bar-mono-sm {
+	background: #ffffff;
+	border: 1px solid #979797;
+	box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+}
 .window-element {
 	background: #e6e6e6;
 	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
@@ -188,6 +232,21 @@ $textWhite: #fff;
 		@extend .loading-animation;
 		border: 1px solid #979797;
 		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+	}
+}
+.loading-bar-container {
+	.loading-bar {
+		background: #b4b4b4;
+		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000000;
+		.bar {
+			background: #f7c9f3;
+		}
+		.progress-block {
+			background-color: #f7c9f3;
+		}
+		.empty {
+			background-color: #999999;
+		}
 	}
 }
 
@@ -231,7 +290,6 @@ button {
 		}
 	}
 }
-
 .search {
 	background: $colorSearchHover;
 	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
@@ -243,14 +301,6 @@ button {
 	form {
 		background: #e6e6e6;
 		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 0px 0 0 #ffffff;
-		input {
-			background: #ffffff;
-			border: 1px solid #979797;
-			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-			&::placeholder {
-				color: #b4b4b4;
-			}
-		}
 		input:placeholder-shown ~ button[type="submit"] {
 			background: #e6e6e6;
 			border: 1px solid #808080;

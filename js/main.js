@@ -292,9 +292,6 @@ function createGifSection() {
 // localStorage.setItem("color-theme", "light");
 
 const myGifsSection = () => {
-	let myGifs = {};
-	// let videoSrc = "";
-
 	// Cache DOM
 	const $createGifWindow = document.querySelector("#create-gif");
 	const $myGifsSection = document.querySelector("#my-gifs");
@@ -312,13 +309,26 @@ const myGifsSection = () => {
 	const $stage4 = document.querySelector("#stage4");
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
+	// Timer
+	const $timer = document.querySelector("#timer");
+	// Loading Bar
+	const $myBar = document.querySelector("#bar");
+	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
+	const $playPreview = document.querySelector("#btn-play-gif");
+	const $progressBlocks = document.querySelectorAll("#loading-bar .progress-block");
+
+	// Local variables
+	const myStopwatch = Stopwatch($timer, { delay: 10 });
+	const myLoadingBar = LoadingBar($progressBlocks);
+	let totalTime = 0;
+	let myGifs = {};
 
 	// Bind events
 	$createGifContinue.onclick = () => {
 		$createGifWindow.firstElementChild.classList.remove("window-size-md");
 		$createGifWindow.firstElementChild.classList.add("window-size-lg");
 		$createGifHeader.innerText = "Un Chequeo Antes de Empezar";
-		hideElements($stage1);
+		hideElements($stage1, $stage3);
 		showElements($stage2);
 		initiateWebcam();
 	};
@@ -334,29 +344,44 @@ const myGifsSection = () => {
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		hideElements($startRecording);
+		hideElements($startRecording, $timerLoadingBar);
 		showElements($stopRecording, $stage3);
 		startRecording();
+		myStopwatch.reset();
+		myStopwatch.start();
 	};
 	$stopRecording.onclick = () => {
-		$stage3.classList.toggle("hidden");
-		$stage4.classList.toggle("hidden");
 		$createGifHeader.innerText = "Vista Previa";
-		hideElements($inputPreview);
-		showElements($outputPreview);
+		// hideElements($stage4, $inputPreview, $stopRecording);
+		// showElements($stage4, $outputPreview, $timerLoadingBar);
+		hideElements($stage4, $stopRecording);
+		showElements($stage4, $timerLoadingBar);
 		stopRecording();
+		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
-		hideElements($stage4, $startRecording, $outputPreview);
+		hideElements($stage4, $startRecording, $outputPreview, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
+		myStopwatch.reset();
+		myStopwatch.start();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
 		await uploadCreatedGif();
 		await _render();
+	};
+	$playPreview.onclick = () => {
+		myLoadingBar.start(totalTime / 100);
+		$inputPreview.play();
+		/* 
+		Replace preview window for video again
+		make video NOT play by default
+		if video playing -> stop / reset timer / reset loading bar
+		if video !playing -> play once / start timer / start loading bar with video max time as param
+		*/
 	};
 
 	// On Load functions
@@ -405,30 +430,37 @@ const myGifsSection = () => {
 	}
 	async function startRecording() {
 		const stream = $inputPreview.srcObject;
-		recorder = new RecordRTCPromisesHandler(stream, {
-			type: "gif",
-			frameRate: 24
+		videoRecorder = new RecordRTCPromisesHandler(stream, {
+			type: "video",
+			mimeType: "video/webm; codecs=vp8",
+			disableLogs: true,
+			videoBitsPerSecond: 128000,
+			frameRate: 30,
+			quality: 10,
+			width: 480,
+			hidden: 240
 		});
-		await recorder.startRecording();
+		await videoRecorder.startRecording();
 		// helps releasing camera on stopRecording
-		recorder.stream = stream;
+		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
-		recorder.stopRecording();
+		await videoRecorder.stopRecording();
 		$inputPreview.srcObject = null;
-		let blob = await recorder.getBlob();
-		recorder.stream.getTracks(t => t.stop());
-		$outputPreview.src = URL.createObjectURL(blob);
+		let blob = await videoRecorder.getBlob();
+		// $outputPreview.src = await URL.createObjectURL(blob);
+		$inputPreview.src = URL.createObjectURL(blob);
 		videoSrc = await blob;
-		// reset recorder's state & clear the memory
-		await recorder.reset();
-		await recorder.destroy();
+		videoRecorder.stream.getTracks(t => t.stop());
+		// reset Recorder's state & clear the memory
+		await videoRecorder.reset();
+		await videoRecorder.destroy();
 	}
 	async function uploadCreatedGif() {
 		try {
 			console.log("***Upload started***");
 			const formData = new FormData();
-			formData.append("file", videoSrc, "myWebm.gif");
+			formData.append("file", videoSrc, "myWebm.webm");
 
 			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 			const response = await fetch(postUrl, {
@@ -443,7 +475,108 @@ const myGifsSection = () => {
 		} catch (e) {
 			console.log(`Error: ${e}\n${e.message}`);
 		}
+		/* setTimeout(() => {
+			console.log("gif uploaded");
+		}, 1000); */
 	}
 
 	return {};
+};
+const Stopwatch = (elem, options) => {
+	let timer = elem,
+		offset,
+		clock,
+		interval;
+
+	// default options
+	options = options || {};
+	options.delay = options.delay || 1;
+
+	// initialize
+	reset();
+
+	// private functions
+	function start() {
+		if (!interval) {
+			offset = Date.now();
+			interval = setInterval(update, options.delay);
+		}
+	}
+	function stop() {
+		if (interval) {
+			clearInterval(interval);
+			interval = null;
+		}
+		return clock;
+	}
+	function reset() {
+		clock = 0;
+		render();
+	}
+	function update() {
+		clock += delta();
+		render();
+	}
+	function delta() {
+		let now = Date.now(),
+			d = now - offset;
+		offset = now;
+		return d;
+	}
+	function msToTime(duration) {
+		let milliseconds = parseInt((duration % 1000) / 10),
+			seconds = Math.floor((duration / 1000) % 60),
+			minutes = Math.floor((duration / (1000 * 60)) % 60),
+			hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+		hours = hours < 10 ? "0" + hours : hours;
+		minutes = minutes < 10 ? "0" + minutes : minutes;
+		seconds = seconds < 10 ? "0" + seconds : seconds;
+
+		return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+	}
+	function render() {
+		timer.innerHTML = msToTime(clock);
+	}
+	// Exposed Functions
+	return {
+		start: start,
+		stop: stop,
+		reset: reset
+	};
+};
+const LoadingBar = subElems => {
+	// Local variables
+	let running = false;
+	let progress = 0;
+	function start(totalTime = 100) {
+		if (!running) {
+			reset();
+			running = true;
+			const id = setInterval(frame, totalTime);
+			function frame() {
+				if (progress >= 100) {
+					clearInterval(id);
+					running = false;
+				} else {
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
+				}
+			}
+		}
+	}
+	function reset() {
+		running = false;
+		progress = 0;
+		subElems.forEach(elem => {
+			elem.classList.add("empty");
+		});
+	}
+	// Public Functions
+	return {
+		start: start,
+		stop: reset
+	};
 };
