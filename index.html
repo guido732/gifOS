@@ -122,56 +122,6 @@
 							</button>
 						</div>
 					</div>
-					<!-- <div class="video-record-container hidden content" id="stage2">
-						<video id="video-box" class="video-element"></video>
-						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
-						<div class="flex-end-container">
-							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
-								<span class="btn-text-container">Capturar</span>
-							</button>
-						</div>
-						<div class="stage3-container" id="stage3">
-							<div class="timer-container">
-								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
-								<div class="loading-bar-container" id="timer-loading-bar">
-									<button class="btn-primary btn-only-icon" id="btn-play-gif">
-										<span class="btn-text-container">
-											&#9654;
-										</span>
-									</button>
-									<div class="loading-bar" id="loading-bar">
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-									</div>
-								</div>
-							</div>
-							<button class="btn-primary btn-recording btn-primary--icon-before icon-recording" id="stop-recording">
-								<span class="btn-text-container">Listo</span>
-							</button>
-							<div class="hidden" id="stage4">
-								<button class="btn-secondary " id="redo-recording">
-									<span class="btn-text-container">Repetir Captura</span></button
-								><button class="btn-primary" id="upload-gif">
-									<span class="btn-text-container">Subir Guifo</span>
-								</button>
-							</div>
-						</div>
-					</div> -->
 				</div>
 				<div class="window-element window-size-lg hidden" id="stage2">
 					<div class="gradient-header" id="create-gif-section-header">
@@ -228,7 +178,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-lg hidden">
+				<div class="window-element window-size-lg hidden" id="stage5">
 					<div class="gradient-header">
 						Subiendo Guifo
 					</div>
@@ -264,7 +214,7 @@
 						<h3>Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos</h3>
 					</div>
 				</div>
-				<div class="window-element window-size-md hidden">
+				<div class="window-element window-size-md hidden" id="stage6">
 					<div class="gradient-header">
 						Guifo Subido con Éxito
 					</div>
@@ -286,13 +236,13 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-primary" id="end-process">
+							<button class="btn-primary close-window">
 								<span class="btn-text-container">Listo</span>
 							</button>
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-md hidden">
+				<div class="window-element window-size-md hidden" id="stage7">
 					<div class="gradient-header">
 						Algo Salió Mal
 					</div>
@@ -312,7 +262,7 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-primary" id="end-process">
+							<button class="btn-primary close-window">
 								<span class="btn-text-container">Listo</span>
 							</button>
 						</div>
