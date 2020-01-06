@@ -392,15 +392,15 @@ const myGifsSection = () => {
 		showElements($stage5);
 		uploadLoadingBar.loop();
 		try {
-			uploadLoadingBar.reset();
 			await uploadCreatedGif();
 			await hideElements($stage5);
 			await showElements($stage6);
 			await _render();
+			await uploadLoadingBar.stop();
 		} catch (e) {
-			uploadLoadingBar.reset();
 			await showElements($stage7);
 			await hideElements($stage5);
+			await uploadLoadingBar.stop();
 			console.log(`Error: ${e}\n${e.message}`);
 		}
 	};
@@ -486,7 +486,6 @@ const myGifsSection = () => {
 		$inputPreview.srcObject = null;
 		const videoBlob = await videoRecorder.getBlob();
 		$inputPreview.src = URL.createObjectURL(videoBlob);
-		videoSrc = await videoBlob;
 		videoRecorder.stream.getTracks(t => t.stop());
 		// reset Recorder's state & clear the memory
 		await videoRecorder.reset();
@@ -494,14 +493,15 @@ const myGifsSection = () => {
 
 		await gifRecorder.stopRecording();
 		const gifBlob = await gifRecorder.getBlob();
+		gifSrc = await gifBlob;
 		$outputPreview.src = URL.createObjectURL(await gifBlob);
 		await gifRecorder.destroy();
 		gifRecorder = await null;
 	}
 	async function uploadCreatedGif() {
-		/* console.log("***Upload started***");
+		console.log("***Upload started***");
 		const formData = new FormData();
-		formData.append("file", videoSrc, "myWebm.webm");
+		formData.append("file", gifSrc, "myGif.gif");
 		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
@@ -511,12 +511,8 @@ const myGifsSection = () => {
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
-		await localStorage.setItem(`gif-${data.data.id}`, data.data.id); */
-		fetch("https://jsonplaceholder.typicode.com/todos/1")
-			.then(response => response.json())
-			.then(json => console.log(json));
+		await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
 	}
-
 	return {};
 };
 const Stopwatch = (elem, options) => {
@@ -588,7 +584,7 @@ const LoadingBar = subElems => {
 	let interval;
 
 	function start(totalTime = 100) {
-		reset();
+		stop();
 		interval = setInterval(frame, totalTime);
 		function frame() {
 			if (progress >= 100) {
@@ -601,7 +597,7 @@ const LoadingBar = subElems => {
 			}
 		}
 	}
-	function reset() {
+	function stop() {
 		clearInterval(interval);
 		progress = 0;
 		subElems.forEach(elem => {
@@ -609,11 +605,11 @@ const LoadingBar = subElems => {
 		});
 	}
 	function loop(totalTime = 10) {
-		reset();
+		stop();
 		interval = setInterval(frame, totalTime);
 		function frame() {
 			if (progress >= 100) {
-				reset();
+				stop();
 				interval = setInterval(frame, totalTime);
 			} else {
 				progress++;
@@ -626,7 +622,7 @@ const LoadingBar = subElems => {
 	// Public Functions
 	return {
 		start: start,
-		reset: reset,
+		stop: stop,
 		loop: loop
 	};
 };

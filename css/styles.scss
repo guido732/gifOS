@@ -271,11 +271,7 @@
 		height: auto;
 		margin-bottom: 1.25rem;
 	}
-	.video-preview-img {
-		margin-bottom: 1.25rem;
-		width: 100%;
-		height: auto;
-	}
+
 	.stage5 {
 		@include flexCenter(column, nowrap);
 		padding: 8.75rem 0;
@@ -312,12 +308,14 @@
 		}
 		.img-container {
 			width: 24rem;
+			margin-bottom: 1.25rem;
 			flex: 0 0 auto;
 			background: #ffffff;
 			border: 1px solid #979797;
 			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-			img {
+			.video-preview-img {
 				width: 100%;
+				// height: auto;
 			}
 		}
 	}
