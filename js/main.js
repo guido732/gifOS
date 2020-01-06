@@ -312,7 +312,7 @@ const myGifsSection = () => {
 	// Local variables
 	let totalTime = 0;
 	let myGifs = {};
-	let newGifURL = "";
+	let newGifId = "";
 
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
@@ -324,6 +324,7 @@ const myGifsSection = () => {
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
 	const $copyGifLink = document.querySelector("#copy-link");
+	const $donwloadGif = document.querySelector("#download-gif");
 	const $endProcess = document.querySelectorAll(".close-window");
 	const $uploadRecording = document.querySelector("#upload-gif");
 	const $stage1 = document.querySelector("#stage1");
@@ -395,8 +396,8 @@ const myGifsSection = () => {
 		uploadLoadingBar.loop();
 		try {
 			const newGif = await uploadCreatedGif();
-			newGifURL = `https://giphy.com/gifs/${await newGif.data.id}`;
-			saveCreatedGif(await newGif.data.id);
+			newGifId = await newGif.data.id;
+			saveGifToLocalStorage(await newGif.data.id);
 			await hideElements($stage5);
 			await showElements($stage6);
 			await _render();
@@ -419,15 +420,10 @@ const myGifsSection = () => {
 		};
 	});
 	$copyGifLink.onclick = () => {
-		const tempElement = document.createElement("textarea");
-		tempElement.value = newGifURL;
-		tempElement.setAttribute("readonly", "");
-		tempElement.style = { position: "absolute", left: "-9999px", display: "none" };
-		document.body.appendChild(tempElement);
-		tempElement.select();
-		document.execCommand("copy");
-		console.log("Copied data to clipboard!");
-		document.body.removeChild(tempElement);
+		copyGifLink();
+	};
+	$donwloadGif.onclick = () => {
+		downloadCreatedGif();
 	};
 
 	// On Load functions
@@ -436,11 +432,9 @@ const myGifsSection = () => {
 	function _render() {
 		myGifs = {};
 		$gifsGrid.innerHTML = "";
-
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
-
 		let gifIds = "";
 		for (let key in myGifs) {
 			gifIds += `${myGifs[key]},`;
@@ -449,8 +443,34 @@ const myGifsSection = () => {
 		fetchMyGifs(gifIds);
 	}
 
-	function saveCreatedGif(gifId) {
+	function saveGifToLocalStorage(gifId) {
 		localStorage.setItem(`gif-${gifId}`, gifId);
+	}
+	function copyGifLink() {
+		const tempElement = document.createElement("textarea");
+		tempElement.value = `https://giphy.com/gifs/${newGifId}`;
+		tempElement.setAttribute("readonly", "");
+		tempElement.style = { position: "absolute", left: "-9999px", display: "none" };
+		document.body.appendChild(tempElement);
+		tempElement.select();
+		document.execCommand("copy");
+		console.log("Copied data to clipboard!");
+		document.body.removeChild(tempElement);
+	}
+	function downloadCreatedGif() {
+		const downloadUrl = `https://media.giphy.com/media/${newGifId}/giphy.gif`;
+		const downloading = browser.downloads.download({
+			url: downloadUrl,
+			filename: "downloaded-guifo.gif",
+			conflictAction: "uniquify"
+		});
+		downloading.then(onStartedDownload, onFailed);
+		function onStartedDownload(id) {
+			console.log(`Started downloading: ${id}`);
+		}
+		function onFailed(error) {
+			console.log(`Download failed: ${error}`);
+		}
 	}
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
