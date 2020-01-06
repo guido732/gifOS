@@ -354,8 +354,8 @@ const myGifsSection = () => {
 	};
 	$createGifCancel.onclick = () => {
 		// TODO Replace for executingfor main screen components init function
-		hideElements($section1);
-		showElements($section2);
+		hideElements($stage1);
+		showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
@@ -410,7 +410,6 @@ const myGifsSection = () => {
 		element.onclick = () => {
 			hideElements($stage6, $stage7);
 			showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
-			console.log("end process function");
 		};
 	});
 
