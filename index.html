@@ -89,11 +89,11 @@
 				<div class="trend-grid" id="trend-grid"></div>
 			</section>
 			<section class="create-gif-section hidden" id="create-gif">
-				<div class="window-element window-size-md">
-					<div class="gradient-header" id="create-gif-section-header">
+				<div class="window-element window-size-md" id="stage1">
+					<div class="gradient-header">
 						Crear Guifos
 					</div>
-					<div class="content" id="stage1">
+					<div class="content">
 						<div class="content-split">
 							<img src="./assets/icons/window_img.png" alt="Window" />
 							<div class="text-content">
@@ -122,7 +122,7 @@
 							</button>
 						</div>
 					</div>
-					<div class="video-record-container hidden content" id="stage2">
+					<!-- <div class="video-record-container hidden content" id="stage2">
 						<video id="video-box" class="video-element"></video>
 						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
 						<div class="flex-end-container">
@@ -171,9 +171,64 @@
 								</button>
 							</div>
 						</div>
+					</div> -->
+				</div>
+				<div class="window-element window-size-lg hidden" id="stage2">
+					<div class="gradient-header" id="create-gif-section-header">
+						Un Chequeo Antes de Empezar
+					</div>
+					<div class="video-record-container content">
+						<video id="video-box" class="video-element"></video>
+						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
+						<div class="flex-end-container">
+							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
+								<span class="btn-text-container">Capturar</span>
+							</button>
+						</div>
+						<div class="stage3-container hidden" id="stage3">
+							<div class="timer-container">
+								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
+								<div class="loading-bar-container hidden" id="timer-loading-bar">
+									<button class="btn-primary btn-only-icon" id="btn-play-gif">
+										<span class="btn-text-container">
+											&#9654;
+										</span>
+									</button>
+									<div class="loading-bar" id="loading-bar">
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+										<span class="progress-block empty"></span>
+									</div>
+								</div>
+							</div>
+							<button class="btn-primary btn-recording btn-primary--icon-before icon-recording" id="stop-recording">
+								<span class="btn-text-container">Listo</span>
+							</button>
+							<div class="hidden" id="stage4">
+								<button class="btn-secondary " id="redo-recording">
+									<span class="btn-text-container">Repetir Captura</span></button
+								><button class="btn-primary" id="upload-gif">
+									<span class="btn-text-container">Subir Guifo</span>
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-lg">
+				<div class="window-element window-size-lg hidden">
 					<div class="gradient-header">
 						Subiendo Guifo
 					</div>
@@ -209,7 +264,7 @@
 						<h3>Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos</h3>
 					</div>
 				</div>
-				<div class="window-element window-size-md">
+				<div class="window-element window-size-md hidden">
 					<div class="gradient-header">
 						Guifo Subido con Éxito
 					</div>
@@ -226,6 +281,32 @@
 									</button>
 									<button class="btn-secondary btn-full-width" id="download-gif">
 										<span class="btn-text-container">Descargar Guifo</span>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="flex-end-container">
+							<button class="btn-primary" id="end-process">
+								<span class="btn-text-container">Listo</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="window-element window-size-md hidden">
+					<div class="gradient-header">
+						Algo Salió Mal
+					</div>
+					<!-- TODO - Error section -->
+					<div class="content stage6" id="stage7">
+						<div class="content-split">
+							<div class="img-container">
+								<img src="./assets/img/gifOF_logo.png" alt="" />
+							</div>
+							<div>
+								<div class="options-container">
+									<h2>Tu Guifo no pudo ser creado</h2>
+									<button class="btn-secondary btn-full-width" id="retry-upload">
+										<span class="btn-text-container">Reintentar</span>
 									</button>
 								</div>
 							</div>
