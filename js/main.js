@@ -292,9 +292,11 @@ function createGifSection() {
 // localStorage.setItem("color-theme", "light");
 
 const myGifsSection = () => {
+	// Local variables
+	let totalTime = 0;
+	let myGifs = {};
+
 	// Cache DOM
-	const $createGifWindow = document.querySelector("#create-gif");
-	const $myGifsSection = document.querySelector("#my-gifs");
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
 	const $createGifCancel = document.querySelector("#create-gif-cancel");
@@ -302,66 +304,63 @@ const myGifsSection = () => {
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
+	const $retryUpload = document.querySelector("#retry-upload");
+	const $endProcess = document.querySelectorAll(".close-window");
 	const $uploadRecording = document.querySelector("#upload-gif");
 	const $stage1 = document.querySelector("#stage1");
 	const $stage2 = document.querySelector("#stage2");
 	const $stage3 = document.querySelector("#stage3");
 	const $stage4 = document.querySelector("#stage4");
+	const $stage5 = document.querySelector("#stage5");
+	const $stage6 = document.querySelector("#stage6");
+	const $stage7 = document.querySelector("#stage7");
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
-	// Timer
+	// Timer elements
 	const $timer = document.querySelector("#timer");
-	// Loading Bar
-	const $myBar = document.querySelector("#bar");
+	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
 	const $progressBlocks = document.querySelectorAll("#loading-bar .progress-block");
 
-	// Local variables
+	// Timer + Stopwatch inicialization
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
 	const myLoadingBar = LoadingBar($progressBlocks);
-	let totalTime = 0;
-	let myGifs = {};
 
 	// Bind events
 	$createGifContinue.onclick = () => {
-		$createGifWindow.firstElementChild.classList.remove("window-size-md");
-		$createGifWindow.firstElementChild.classList.add("window-size-lg");
-		$createGifHeader.innerText = "Un Chequeo Antes de Empezar";
-		hideElements($stage1, $stage3);
+		hideElements($stage1);
 		showElements($stage2);
-		initiateWebcam();
+		try {
+			initiateWebcam();
+		} catch (e) {
+			// TODO - styled modal popup
+			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+		}
 	};
 	$createGifCancel.onclick = () => {
-		// TODO Replace for executing component function
-		hideElements($createGifWindow, $myGifsSection);
-		showElements(
-			document.querySelector("#search-box"),
-			document.querySelector("#suggestions"),
-			document.querySelector("#trends"),
-			document.querySelector(".nav-item-container")
-		);
+		// TODO Replace for executingfor main screen components init function
+		hideElements($section1);
+		showElements($section2);
 	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording, $timerLoadingBar);
-		showElements($stopRecording, $stage3);
+		showElements($stage3);
 		startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
 	};
 	$stopRecording.onclick = () => {
 		$createGifHeader.innerText = "Vista Previa";
-		// hideElements($stage4, $inputPreview, $stopRecording);
-		// showElements($stage4, $outputPreview, $timerLoadingBar);
-		hideElements($stage4, $stopRecording);
+		hideElements($stopRecording);
 		showElements($stage4, $timerLoadingBar);
 		stopRecording();
 		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $stage3, $inputPreview);
-		hideElements($stage4, $startRecording, $outputPreview, $timerLoadingBar);
+		showElements($stopRecording, $inputPreview);
+		hideElements($stage4, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
@@ -370,8 +369,18 @@ const myGifsSection = () => {
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
-		await uploadCreatedGif();
-		await _render();
+		hideElements($stage2);
+		showElements($stage5);
+		try {
+			await uploadCreatedGif();
+			await _render();
+			showElements($stage6);
+			hideElements($stage5);
+		} catch (e) {
+			showElements($stage7);
+			hideElements($stage5);
+			console.log(`Error: ${e}\n${e.message}`);
+		}
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
@@ -383,6 +392,12 @@ const myGifsSection = () => {
 		if video !playing -> play once / start timer / start loading bar with video max time as param
 		*/
 	};
+	$endProcess.forEach(element => {
+		element.onclick = () => {
+			// TODO end function
+			console.log("end process function");
+		};
+	});
 
 	// On Load functions
 	_render();
@@ -405,8 +420,6 @@ const myGifsSection = () => {
 
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
-		// console.log(await searchResults);
-
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
@@ -415,18 +428,14 @@ const myGifsSection = () => {
 		});
 	}
 	async function initiateWebcam() {
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
-				audio: false,
-				video: {
-					height: { max: 480 }
-				}
-			});
-			$inputPreview.srcObject = await stream;
-			await $inputPreview.play();
-		} catch (e) {
-			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
-		}
+		const stream = await navigator.mediaDevices.getUserMedia({
+			audio: false,
+			video: {
+				height: { max: 480 }
+			}
+		});
+		$inputPreview.srcObject = await stream;
+		await $inputPreview.play();
 	}
 	async function startRecording() {
 		const stream = $inputPreview.srcObject;
@@ -457,24 +466,19 @@ const myGifsSection = () => {
 		await videoRecorder.destroy();
 	}
 	async function uploadCreatedGif() {
-		try {
-			console.log("***Upload started***");
-			const formData = new FormData();
-			formData.append("file", videoSrc, "myWebm.webm");
-
-			const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-			const response = await fetch(postUrl, {
-				method: "POST",
-				body: formData,
-				json: true
-			});
-			const data = await response.json();
-			console.log(await data);
-			console.log("***Upload ended***");
-			await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
-		} catch (e) {
-			console.log(`Error: ${e}\n${e.message}`);
-		}
+		console.log("***Upload started***");
+		const formData = new FormData();
+		formData.append("file", videoSrc, "myWebm.webm");
+		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		const response = await fetch(postUrl, {
+			method: "POST",
+			body: formData,
+			json: true
+		});
+		const data = await response.json();
+		console.log(await data);
+		console.log("***Upload ended***");
+		await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
 		/* setTimeout(() => {
 			console.log("gif uploaded");
 		}, 1000); */
