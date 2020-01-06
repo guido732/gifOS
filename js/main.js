@@ -304,7 +304,9 @@ function createGifSection() {
 }
 function setColorTheme(selectedColorTheme) {
 	const $styleSheet = document.querySelector("#color-theme-stylesheet");
+	const $favicon = document.querySelector("#favicon");
 	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
+	$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme}.ico`);
 	localStorage.setItem("colorTheme", selectedColorTheme);
 }
 
