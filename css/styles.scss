@@ -330,6 +330,21 @@
 			}
 		}
 	}
+	.stage7 {
+		@include flexCenter(column, nowrap);
+		h2 {
+			margin-bottom: 2rem;
+		}
+		.img-container {
+			width: 100%;
+			max-width: 20rem;
+			margin-bottom: 1.25rem;
+			flex: 0 0 auto;
+			background: #ffffff;
+			border: 1px solid #979797;
+			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+		}
+	}
 }
 .window-size-md {
 	max-width: 700px;
