@@ -72,7 +72,7 @@ $textWhite: #fff;
 		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
 	}
 	&:hover::before {
-		outline: 1px dotted black;
+		outline: 1px dotted $textDark;
 		outline-offset: -4px;
 	}
 }
@@ -147,6 +147,15 @@ $textWhite: #fff;
 	border: 1px dotted transparent;
 	&:hover {
 		border: 1px dotted $textDark;
+	}
+}
+.btn-full-width {
+	.btn-text-container {
+		border: none;
+	}
+	&:hover .btn-text-container {
+		outline: 1px dotted $textDark;
+		border: none;
 	}
 }
 .window-item {

@@ -5,6 +5,7 @@
 // TODO replace media queries for mixins
 // TODO replace flex declarations for include
 // TODO replace border styles for class with border/shadow/etec
+// TODO fixed width buttons
 
 // Uitlity Classes
 .container {
@@ -111,6 +112,14 @@
 }
 .btn-full-width {
 	width: 100%;
+	.btn-text-container {
+		padding: 0.4rem 0;
+	}
+	&:hover .btn-text-container {
+		width: 100%;
+		outline-offset: -1px;
+		border: none;
+	}
 }
 .input-bar {
 	width: 100%;
