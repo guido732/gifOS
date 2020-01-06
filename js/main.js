@@ -136,7 +136,7 @@ async function fetchTrendingGifs(limit) {
 		$trendingGifs.append(newElement("trend", gif, aspectRatio));
 	});
 
-	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
 	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
 	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
 		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
@@ -312,6 +312,7 @@ const myGifsSection = () => {
 	// Local variables
 	let totalTime = 0;
 	let myGifs = {};
+	let newGifId = "";
 
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
@@ -322,6 +323,8 @@ const myGifsSection = () => {
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
+	const $copyGifLink = document.querySelector("#copy-link");
+	const $donwloadGif = document.querySelector("#download-gif");
 	const $endProcess = document.querySelectorAll(".close-window");
 	const $uploadRecording = document.querySelector("#upload-gif");
 	const $stage1 = document.querySelector("#stage1");
@@ -338,16 +341,18 @@ const myGifsSection = () => {
 	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
-	const $progressBlocks = document.querySelectorAll("#loading-bar .progress-block");
+	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
+	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
 
 	// Timer + Stopwatch inicialization
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
-	const myLoadingBar = LoadingBar($progressBlocks);
+	const myLoadingBar = LoadingBar($previewProgressBlocks);
+	const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
 	// Bind events
 	$createGifContinue.onclick = () => {
-		hideElements($stage1);
-		showElements($stage2);
+		hideElements($stage1, $stage3);
+		showElements($stage2, $startRecording);
 		try {
 			initiateWebcam();
 		} catch (e) {
@@ -355,15 +360,10 @@ const myGifsSection = () => {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	};
-	$createGifCancel.onclick = () => {
-		// TODO Replace for executingfor main screen components init function
-		hideElements($stage1);
-		showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
-	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		hideElements($startRecording, $timerLoadingBar);
-		showElements($stage3);
+		hideElements($startRecording, $timerLoadingBar, $stage4);
+		showElements($stage3, $stopRecording);
 		startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
@@ -383,38 +383,46 @@ const myGifsSection = () => {
 		await startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
+		myLoadingBar.stop();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
+		// TODO check that status of request is 200
 		hideElements($stage2);
 		showElements($stage5);
+		uploadLoadingBar.loop();
+		myLoadingBar.stop();
 		try {
-			await uploadCreatedGif();
+			const newGif = await uploadCreatedGif();
+			newGifId = await newGif.data.id;
+			saveGifToLocalStorage(await newGif.data.id);
+			await hideElements($stage5);
 			await showElements($stage6);
-			hideElements($stage5);
 			await _render();
+			await uploadLoadingBar.stop();
 		} catch (e) {
 			await showElements($stage7);
-			hideElements($stage5);
+			await hideElements($stage5);
+			await uploadLoadingBar.stop();
 			console.log(`Error: ${e}\n${e.message}`);
 		}
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
 		$inputPreview.play();
-		/* 
-		Replace preview window for video again
-		make video NOT play by default
-		if video playing -> stop / reset timer / reset loading bar
-		if video !playing -> play once / start timer / start loading bar with video max time as param
-		*/
 	};
 	$endProcess.forEach(element => {
-		element.onclick = () => {
-			hideElements($stage6, $stage7);
-			showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
-		};
+		element.addEventListener("click", () => {
+			hideElements($stage1, $stage2, $stage5, $stage6, $stage7);
+			showElements(document.querySelector(".nav-item-container"));
+		});
 	});
+	$copyGifLink.onclick = () => {
+		copyCreatedGifLink();
+	};
+	$donwloadGif.onclick = () => {
+		downloadCreatedGif();
+	};
 
 	// On Load functions
 	_render();
@@ -422,11 +430,9 @@ const myGifsSection = () => {
 	function _render() {
 		myGifs = {};
 		$gifsGrid.innerHTML = "";
-
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
-
 		let gifIds = "";
 		for (let key in myGifs) {
 			gifIds += `${myGifs[key]},`;
@@ -434,7 +440,33 @@ const myGifsSection = () => {
 		gifIds = gifIds.slice(0, -1);
 		fetchMyGifs(gifIds);
 	}
-
+	function saveGifToLocalStorage(gifId) {
+		localStorage.setItem(`gif-${gifId}`, gifId);
+	}
+	function copyCreatedGifLink() {
+		const tempElement = document.createElement("textarea");
+		tempElement.value = `https://giphy.com/gifs/${newGifId}`;
+		tempElement.setAttribute("readonly", "");
+		tempElement.style = 'display: "none"';
+		document.body.appendChild(tempElement);
+		tempElement.select();
+		document.execCommand("copy");
+		console.log("Copied data to clipboard!");
+		document.body.removeChild(tempElement);
+	}
+	async function downloadCreatedGif() {
+		const downloadUrl = `https://media.giphy.com/media/${newGifId}/giphy.gif`;
+		const fetchedGif = fetch(downloadUrl);
+		const blobGif = (await fetchedGif).blob();
+		const urlGif = URL.createObjectURL(await blobGif);
+		const saveImg = document.createElement("a");
+		saveImg.href = urlGif;
+		saveImg.download = "downloaded-guifo.gif";
+		saveImg.style = 'display: "none"';
+		document.body.appendChild(saveImg);
+		saveImg.click();
+		document.body.removeChild(saveImg);
+	}
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
 		await searchResults.data.forEach(gif => {
@@ -466,26 +498,43 @@ const myGifsSection = () => {
 			width: 480,
 			hidden: 240
 		});
+		gifRecorder = new RecordRTCPromisesHandler(stream, {
+			disableLogs: true,
+			type: "gif",
+			frameRate: 1,
+			quality: 10,
+			width: 360,
+			hidden: 240,
+			onGifPreview: function(gifURL) {
+				$outputPreview.src = gifURL;
+			}
+		});
 		await videoRecorder.startRecording();
+		await gifRecorder.startRecording();
 		// helps releasing camera on stopRecording
 		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
 		await videoRecorder.stopRecording();
 		$inputPreview.srcObject = null;
-		let blob = await videoRecorder.getBlob();
-		// $outputPreview.src = await URL.createObjectURL(blob);
-		$inputPreview.src = URL.createObjectURL(blob);
-		videoSrc = await blob;
+		const videoBlob = await videoRecorder.getBlob();
+		$inputPreview.src = URL.createObjectURL(videoBlob);
 		videoRecorder.stream.getTracks(t => t.stop());
 		// reset Recorder's state & clear the memory
 		await videoRecorder.reset();
 		await videoRecorder.destroy();
+
+		await gifRecorder.stopRecording();
+		const gifBlob = await gifRecorder.getBlob();
+		gifSrc = await gifBlob;
+		$outputPreview.src = URL.createObjectURL(await gifBlob);
+		await gifRecorder.destroy();
+		gifRecorder = await null;
 	}
 	async function uploadCreatedGif() {
-		/* console.log("***Upload started***");
+		console.log("***Upload started***");
 		const formData = new FormData();
-		formData.append("file", videoSrc, "myWebm.webm");
+		formData.append("file", gifSrc, "myGif.gif");
 		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
@@ -495,14 +544,8 @@ const myGifsSection = () => {
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
-		await localStorage.setItem(`gif-${data.data.id}`, data.data.id); */
-		setTimeout(() => {
-			fetch("https://jsonplaceholder.typicode.com/todos/1")
-				.then(response => response.json())
-				.then(json => console.log(json));
-		}, 1000);
+		return await data;
 	}
-
 	return {};
 };
 const Stopwatch = (elem, options) => {
@@ -570,36 +613,49 @@ const Stopwatch = (elem, options) => {
 };
 const LoadingBar = subElems => {
 	// Local variables
-	let running = false;
 	let progress = 0;
+	let interval;
+
 	function start(totalTime = 100) {
-		if (!running) {
-			reset();
-			running = true;
-			const id = setInterval(frame, totalTime);
-			function frame() {
-				if (progress >= 100) {
-					clearInterval(id);
-					running = false;
-				} else {
-					progress++;
-					let progCounter = Math.floor(progress / (100 / subElems.length));
-					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
-				}
+		stop();
+		interval = setInterval(frame, totalTime);
+		function frame() {
+			if (progress >= 100) {
+				clearInterval(interval);
+			} else {
+				progress++;
+				let progCounter = Math.floor(progress / (100 / subElems.length));
+				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+				subElems[progCounter].classList.remove("empty");
 			}
 		}
 	}
-	function reset() {
-		running = false;
+	function stop() {
+		clearInterval(interval);
 		progress = 0;
 		subElems.forEach(elem => {
 			elem.classList.add("empty");
 		});
 	}
+	function loop(totalTime = 10) {
+		stop();
+		interval = setInterval(frame, totalTime);
+		function frame() {
+			if (progress >= 100) {
+				stop();
+				interval = setInterval(frame, totalTime);
+			} else {
+				progress++;
+				let progCounter = Math.floor(progress / (100 / subElems.length));
+				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+				subElems[progCounter].classList.remove("empty");
+			}
+		}
+	}
 	// Public Functions
 	return {
 		start: start,
-		stop: reset
+		stop: stop,
+		loop: loop
 	};
 };

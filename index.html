@@ -23,7 +23,7 @@
 			</h1>
 		</header>
 		<nav class="container navbar">
-			<button id="home-button">
+			<button id="home-button" class="close-window">
 				<div class="brand-container"></div>
 			</button>
 			<div class="nav-item-container">
@@ -114,7 +114,7 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-secondary" id="create-gif-cancel">
+							<button class="btn-secondary close-window" id="create-gif-cancel">
 								<span class="btn-text-container">Cancelar</span>
 							</button>
 							<button class="btn-primary" id="create-gif-continue">
@@ -124,12 +124,14 @@
 					</div>
 				</div>
 				<div class="window-element window-size-lg hidden" id="stage2">
-					<div class="gradient-header" id="create-gif-section-header">
-						Un Chequeo Antes de Empezar
+					<div class="gradient-header">
+						<span id="create-gif-section-header">
+							Un Chequeo Antes de Empezar
+						</span>
+						<button class="remove-element close-window"></button>
 					</div>
 					<div class="video-record-container content">
 						<video id="video-box" class="video-element"></video>
-						<img src="" alt="" id="gif-preview" class="video-preview-img hidden" />
 						<div class="flex-end-container">
 							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
 								<span class="btn-text-container">Capturar</span>
@@ -181,12 +183,13 @@
 				<div class="window-element window-size-lg hidden" id="stage5">
 					<div class="gradient-header">
 						Subiendo Guifo
+						<button class="remove-element close-window"></button>
 					</div>
 					<div class="content stage5" id="stage5">
 						<img src="./assets/img/globe_img.png" alt="Globe" />
 						<h2>Estamos subiendo tu guifo...</h2>
-						<div class="loading-bar-container" id="timer-loading-bar">
-							<div class="loading-bar" id="loading-bar">
+						<div class="loading-bar-container">
+							<div class="loading-bar" id="upload-loading-bar">
 								<span class="progress-block empty"></span>
 								<span class="progress-block empty"></span>
 								<span class="progress-block empty"></span>
@@ -217,11 +220,12 @@
 				<div class="window-element window-size-md hidden" id="stage6">
 					<div class="gradient-header">
 						Guifo Subido con Éxito
+						<button class="remove-element close-window"></button>
 					</div>
 					<div class="content stage6" id="stage6">
 						<div class="content-split">
 							<div class="img-container">
-								<img src="./assets/img/gifOF_logo.png" alt="" />
+								<img src="" alt="" id="gif-preview" class="video-preview-img" />
 							</div>
 							<div>
 								<div class="options-container">
@@ -245,6 +249,7 @@
 				<div class="window-element window-size-md hidden" id="stage7">
 					<div class="gradient-header">
 						Algo Salió Mal
+						<button class="remove-element close-window"></button>
 					</div>
 					<!-- TODO - Error section -->
 					<div class="content stage6" id="stage7">
