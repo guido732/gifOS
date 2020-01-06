@@ -6,6 +6,7 @@
 // TODO replace flex declarations for include
 // TODO replace border styles for class with border/shadow/etec
 // TODO fixed width buttons
+// TODO cleanup duplicated window item class
 
 // Uitlity Classes
 .container {
@@ -220,6 +221,16 @@
 		white-space: nowrap;
 		font-size: 0.875rem;
 		text-overflow: ellipsis;
+		position: relative;
+		.remove-element {
+			background: url(../assets/icons/close.svg);
+			width: 1rem;
+			height: 0.875rem;
+			position: absolute;
+			right: 0.5rem;
+			top: 0.5rem;
+			z-index: 1;
+		}
 	}
 	.content-split {
 		display: flex;

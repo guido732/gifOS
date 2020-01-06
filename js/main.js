@@ -351,8 +351,8 @@ const myGifsSection = () => {
 
 	// Bind events
 	$createGifContinue.onclick = () => {
-		hideElements($stage1);
-		showElements($stage2);
+		hideElements($stage1, $stage3);
+		showElements($stage2, $startRecording);
 		try {
 			initiateWebcam();
 		} catch (e) {
@@ -360,15 +360,10 @@ const myGifsSection = () => {
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
 		}
 	};
-	$createGifCancel.onclick = () => {
-		// TODO Replace for executingfor main screen components init function
-		hideElements($stage1);
-		showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
-	};
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		hideElements($startRecording, $timerLoadingBar);
-		showElements($stage3);
+		hideElements($startRecording, $timerLoadingBar, $stage4);
+		showElements($stage3, $stopRecording);
 		startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
@@ -388,12 +383,15 @@ const myGifsSection = () => {
 		await startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
+		myLoadingBar.stop();
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
+		// TODO check that status of request is 200
 		hideElements($stage2);
 		showElements($stage5);
 		uploadLoadingBar.loop();
+		myLoadingBar.stop();
 		try {
 			const newGif = await uploadCreatedGif();
 			newGifId = await newGif.data.id;
@@ -414,10 +412,10 @@ const myGifsSection = () => {
 		$inputPreview.play();
 	};
 	$endProcess.forEach(element => {
-		element.onclick = () => {
-			hideElements($stage6, $stage7);
-			showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
-		};
+		element.addEventListener("click", () => {
+			hideElements($stage1, $stage2, $stage5, $stage6, $stage7);
+			showElements(document.querySelector(".nav-item-container"));
+		});
 	});
 	$copyGifLink.onclick = () => {
 		copyCreatedGifLink();
@@ -442,7 +440,6 @@ const myGifsSection = () => {
 		gifIds = gifIds.slice(0, -1);
 		fetchMyGifs(gifIds);
 	}
-
 	function saveGifToLocalStorage(gifId) {
 		localStorage.setItem(`gif-${gifId}`, gifId);
 	}
