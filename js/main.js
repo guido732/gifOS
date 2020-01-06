@@ -312,6 +312,7 @@ const myGifsSection = () => {
 	// Local variables
 	let totalTime = 0;
 	let myGifs = {};
+	let newGifURL = "";
 
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
@@ -322,6 +323,7 @@ const myGifsSection = () => {
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
+	const $copyGifLink = document.querySelector("#copy-link");
 	const $endProcess = document.querySelectorAll(".close-window");
 	const $uploadRecording = document.querySelector("#upload-gif");
 	const $stage1 = document.querySelector("#stage1");
@@ -392,7 +394,9 @@ const myGifsSection = () => {
 		showElements($stage5);
 		uploadLoadingBar.loop();
 		try {
-			await uploadCreatedGif();
+			const newGif = await uploadCreatedGif();
+			newGifURL = `https://giphy.com/gifs/${await newGif.data.id}`;
+			saveCreatedGif(await newGif.data.id);
 			await hideElements($stage5);
 			await showElements($stage6);
 			await _render();
@@ -414,6 +418,17 @@ const myGifsSection = () => {
 			showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
 		};
 	});
+	$copyGifLink.onclick = () => {
+		const tempElement = document.createElement("textarea");
+		tempElement.value = newGifURL;
+		tempElement.setAttribute("readonly", "");
+		tempElement.style = { position: "absolute", left: "-9999px", display: "none" };
+		document.body.appendChild(tempElement);
+		tempElement.select();
+		document.execCommand("copy");
+		console.log("Copied data to clipboard!");
+		document.body.removeChild(tempElement);
+	};
 
 	// On Load functions
 	_render();
@@ -434,6 +449,9 @@ const myGifsSection = () => {
 		fetchMyGifs(gifIds);
 	}
 
+	function saveCreatedGif(gifId) {
+		localStorage.setItem(`gif-${gifId}`, gifId);
+	}
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
 		await searchResults.data.forEach(gif => {
@@ -511,7 +529,7 @@ const myGifsSection = () => {
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
-		await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
+		return await data;
 	}
 	return {};
 };
