@@ -136,7 +136,7 @@ async function fetchTrendingGifs(limit) {
 		$trendingGifs.append(newElement("trend", gif, aspectRatio));
 	});
 
-	// Fit girds so no gaps are visible by having only a pair number of item-double elements
+	// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
 	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
 	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
 		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
@@ -338,11 +338,13 @@ const myGifsSection = () => {
 	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
-	const $progressBlocks = document.querySelectorAll("#loading-bar .progress-block");
+	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
+	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
 
 	// Timer + Stopwatch inicialization
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
-	const myLoadingBar = LoadingBar($progressBlocks);
+	const myLoadingBar = LoadingBar($previewProgressBlocks);
+	const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
 	// Bind events
 	$createGifContinue.onclick = () => {
@@ -388,26 +390,23 @@ const myGifsSection = () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
 		hideElements($stage2);
 		showElements($stage5);
+		uploadLoadingBar.loop();
 		try {
+			uploadLoadingBar.reset();
 			await uploadCreatedGif();
+			await hideElements($stage5);
 			await showElements($stage6);
-			hideElements($stage5);
 			await _render();
 		} catch (e) {
+			uploadLoadingBar.reset();
 			await showElements($stage7);
-			hideElements($stage5);
+			await hideElements($stage5);
 			console.log(`Error: ${e}\n${e.message}`);
 		}
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
 		$inputPreview.play();
-		/* 
-		Replace preview window for video again
-		make video NOT play by default
-		if video playing -> stop / reset timer / reset loading bar
-		if video !playing -> play once / start timer / start loading bar with video max time as param
-		*/
 	};
 	$endProcess.forEach(element => {
 		element.onclick = () => {
@@ -496,11 +495,9 @@ const myGifsSection = () => {
 		console.log(await data);
 		console.log("***Upload ended***");
 		await localStorage.setItem(`gif-${data.data.id}`, data.data.id); */
-		setTimeout(() => {
-			fetch("https://jsonplaceholder.typicode.com/todos/1")
-				.then(response => response.json())
-				.then(json => console.log(json));
-		}, 1000);
+		fetch("https://jsonplaceholder.typicode.com/todos/1")
+			.then(response => response.json())
+			.then(json => console.log(json));
 	}
 
 	return {};
@@ -570,36 +567,49 @@ const Stopwatch = (elem, options) => {
 };
 const LoadingBar = subElems => {
 	// Local variables
-	let running = false;
 	let progress = 0;
+	let interval;
+
 	function start(totalTime = 100) {
-		if (!running) {
-			reset();
-			running = true;
-			const id = setInterval(frame, totalTime);
-			function frame() {
-				if (progress >= 100) {
-					clearInterval(id);
-					running = false;
-				} else {
-					progress++;
-					let progCounter = Math.floor(progress / (100 / subElems.length));
-					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
-				}
+		reset();
+		interval = setInterval(frame, totalTime);
+		function frame() {
+			if (progress >= 100) {
+				clearInterval(interval);
+			} else {
+				progress++;
+				let progCounter = Math.floor(progress / (100 / subElems.length));
+				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+				subElems[progCounter].classList.remove("empty");
 			}
 		}
 	}
 	function reset() {
-		running = false;
+		clearInterval(interval);
 		progress = 0;
 		subElems.forEach(elem => {
 			elem.classList.add("empty");
 		});
 	}
+	function loop(totalTime = 10) {
+		reset();
+		interval = setInterval(frame, totalTime);
+		function frame() {
+			if (progress >= 100) {
+				reset();
+				interval = setInterval(frame, totalTime);
+			} else {
+				progress++;
+				let progCounter = Math.floor(progress / (100 / subElems.length));
+				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+				subElems[progCounter].classList.remove("empty");
+			}
+		}
+	}
 	// Public Functions
 	return {
 		start: start,
-		stop: reset
+		reset: reset,
+		loop: loop
 	};
 };
