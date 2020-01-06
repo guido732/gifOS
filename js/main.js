@@ -373,11 +373,11 @@ const myGifsSection = () => {
 		showElements($stage5);
 		try {
 			await uploadCreatedGif();
-			await _render();
-			showElements($stage6);
+			await showElements($stage6);
 			hideElements($stage5);
+			await _render();
 		} catch (e) {
-			showElements($stage7);
+			await showElements($stage7);
 			hideElements($stage5);
 			console.log(`Error: ${e}\n${e.message}`);
 		}
@@ -394,7 +394,8 @@ const myGifsSection = () => {
 	};
 	$endProcess.forEach(element => {
 		element.onclick = () => {
-			// TODO end function
+			hideElements($stage6, $stage7);
+			showElements(document.querySelector("#my-gifs"), document.querySelector(".nav-item-container"));
 			console.log("end process function");
 		};
 	});
@@ -466,7 +467,7 @@ const myGifsSection = () => {
 		await videoRecorder.destroy();
 	}
 	async function uploadCreatedGif() {
-		console.log("***Upload started***");
+		/* console.log("***Upload started***");
 		const formData = new FormData();
 		formData.append("file", videoSrc, "myWebm.webm");
 		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
@@ -478,10 +479,12 @@ const myGifsSection = () => {
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
-		await localStorage.setItem(`gif-${data.data.id}`, data.data.id);
-		/* setTimeout(() => {
-			console.log("gif uploaded");
-		}, 1000); */
+		await localStorage.setItem(`gif-${data.data.id}`, data.data.id); */
+		setTimeout(() => {
+			fetch("https://jsonplaceholder.typicode.com/todos/1")
+				.then(response => response.json())
+				.then(json => console.log(json));
+		}, 1000);
 	}
 
 	return {};
