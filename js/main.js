@@ -361,7 +361,7 @@ const myGifsSection = () => {
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $stage3, $inputPreview);
-		hideElements($stage4, $startRecording, $outputPreview);
+		hideElements($stage4, $startRecording, $outputPreview, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
 		await startRecording();
@@ -433,7 +433,7 @@ const myGifsSection = () => {
 		videoRecorder = new RecordRTCPromisesHandler(stream, {
 			type: "video",
 			mimeType: "video/webm; codecs=vp8",
-			// disableLogs: true,
+			disableLogs: true,
 			videoBitsPerSecond: 128000,
 			frameRate: 30,
 			quality: 10,

@@ -3,6 +3,8 @@
 @import "extends";
 
 // TODO replace media queries for mixins
+// TODO replace flex declarations for include
+// TODO replace border styles for class with border/shadow/etec
 
 // Uitlity Classes
 .container {
@@ -15,6 +17,9 @@
 }
 .underline {
 	border-bottom: 1px solid;
+}
+.strikethrough {
+	text-decoration: line-through;
 }
 .item-double {
 	grid-column: span 1;
@@ -103,6 +108,9 @@
 		padding: 0.1rem 0.2rem 0.1rem 0.3rem;
 		font-size: 0.7rem;
 	}
+}
+.btn-full-width {
+	width: 100%;
 }
 .input-bar {
 	width: 100%;
@@ -259,6 +267,51 @@
 		width: 100%;
 		height: auto;
 	}
+	.stage5 {
+		@include flexCenter(column, nowrap);
+		padding: 8.75rem 0;
+		background: #ffffff;
+		border: 1px solid #979797;
+		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+		img {
+			margin-bottom: 0.5rem;
+		}
+		h2 {
+			margin-bottom: 2.5rem;
+		}
+		.loading-bar-container {
+			margin-bottom: 0.5rem;
+			width: 20rem;
+			.loading-bar {
+				width: 100%;
+			}
+		}
+	}
+	.stage6 {
+		.content-split {
+			align-items: center;
+			margin-bottom: 3.75rem;
+		}
+		.options-container {
+			padding-left: 1.5rem;
+			h2 {
+				margin-bottom: 1rem;
+			}
+			button {
+				margin-bottom: 0.875rem;
+			}
+		}
+		.img-container {
+			width: 24rem;
+			flex: 0 0 auto;
+			background: #ffffff;
+			border: 1px solid #979797;
+			box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
+			img {
+				width: 100%;
+			}
+		}
+	}
 }
 .window-size-md {
 	max-width: 700px;
@@ -269,7 +322,7 @@
 .window-size-lg {
 	max-width: 860px;
 	.content {
-		margin: 1rem;
+		margin: 0.875rem;
 	}
 }
 .loading-bar-container {
@@ -312,6 +365,10 @@ h1 {
 h2 {
 	font-size: 1rem;
 	font-weight: bold;
+}
+h3 {
+	font-size: 0.75rem;
+	font-weight: normal;
 }
 section {
 	margin-bottom: 4rem;
