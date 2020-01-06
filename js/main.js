@@ -420,7 +420,7 @@ const myGifsSection = () => {
 		};
 	});
 	$copyGifLink.onclick = () => {
-		copyGifLink();
+		copyCreatedGifLink();
 	};
 	$donwloadGif.onclick = () => {
 		downloadCreatedGif();
@@ -446,31 +446,29 @@ const myGifsSection = () => {
 	function saveGifToLocalStorage(gifId) {
 		localStorage.setItem(`gif-${gifId}`, gifId);
 	}
-	function copyGifLink() {
+	function copyCreatedGifLink() {
 		const tempElement = document.createElement("textarea");
 		tempElement.value = `https://giphy.com/gifs/${newGifId}`;
 		tempElement.setAttribute("readonly", "");
-		tempElement.style = { position: "absolute", left: "-9999px", display: "none" };
+		tempElement.style = 'display: "none"';
 		document.body.appendChild(tempElement);
 		tempElement.select();
 		document.execCommand("copy");
 		console.log("Copied data to clipboard!");
 		document.body.removeChild(tempElement);
 	}
-	function downloadCreatedGif() {
+	async function downloadCreatedGif() {
 		const downloadUrl = `https://media.giphy.com/media/${newGifId}/giphy.gif`;
-		const downloading = browser.downloads.download({
-			url: downloadUrl,
-			filename: "downloaded-guifo.gif",
-			conflictAction: "uniquify"
-		});
-		downloading.then(onStartedDownload, onFailed);
-		function onStartedDownload(id) {
-			console.log(`Started downloading: ${id}`);
-		}
-		function onFailed(error) {
-			console.log(`Download failed: ${error}`);
-		}
+		const fetchedGif = fetch(downloadUrl);
+		const blobGif = (await fetchedGif).blob();
+		const urlGif = URL.createObjectURL(await blobGif);
+		const saveImg = document.createElement("a");
+		saveImg.href = urlGif;
+		saveImg.download = "downloaded-guifo.gif";
+		saveImg.style = 'display: "none"';
+		document.body.appendChild(saveImg);
+		saveImg.click();
+		document.body.removeChild(saveImg);
 	}
 	async function fetchMyGifs(gifIds) {
 		searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
