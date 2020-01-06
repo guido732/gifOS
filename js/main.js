@@ -13,12 +13,14 @@ document.querySelector("#trend-grid")
  */
 
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+const colorThemes = ["sailor_day", "sailor_night"];
 
 // Fetch new items on page load for trending and suggestions section
 window.onload = () => {
 	fetchSuggestionGifs(4);
 	fetchTrendingGifs(16);
 	document.querySelector("#search-bar").focus();
+	!localStorage.getItem("colorTheme") ? localStorage.setItem("colorTheme", colorThemes[0]) : null;
 };
 document.querySelector("#home-button").onclick = e => {
 	hideElements(document.querySelector("#create-gif"), document.querySelector("#my-gifs"));
@@ -75,6 +77,11 @@ document.querySelector("#btn-my-gifs").onclick = e => {
 document.querySelector("#btn-create-gif").onclick = e => {
 	createGifSection();
 };
+document.querySelectorAll(".color-theme-option").forEach((colorThemeBtn, index) => {
+	colorThemeBtn.onclick = () => {
+		setColorTheme(index);
+	};
+});
 
 async function handleSearchFunctionality(searchValue) {
 	replaceSearchText(searchValue);
@@ -293,7 +300,10 @@ function createGifSection() {
 		document.querySelector("#my-gifs")
 	);
 }
-// localStorage.setItem("color-theme", "light");
+function setColorTheme(indexNum) {
+	const $styleSheet = document.querySelector("#color-theme-stylesheet");
+	$styleSheet.setAttribute("href", `./css/themes/${colorThemes[indexNum]}.min.css`);
+}
 
 const myGifsSection = () => {
 	// Local variables
