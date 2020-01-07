@@ -325,6 +325,7 @@ const myGifsSection = () => {
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
 	const $errorMsg = document.querySelector("#error-msg");
+	const $errorImg = document.querySelector("#error-img");
 	const $copyGifLink = document.querySelector("#copy-link");
 	const $donwloadGif = document.querySelector("#download-gif");
 	const $endProcess = document.querySelectorAll(".close-window");
@@ -389,7 +390,6 @@ const myGifsSection = () => {
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
-		// TODO check that status of request is 200
 		hideElements($stage2);
 		showElements($stage5);
 		uploadLoadingBar.loop();
@@ -410,9 +410,13 @@ const myGifsSection = () => {
 				$errorMsg.innerText = `${e.name}\n${e.message}`;
 			}
 		} catch (e) {
+			$errorImg.src = "";
 			await showElements($stage7);
 			await hideElements($stage5);
 			await uploadLoadingBar.stop();
+			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+			errorData = await errorGif.json();
+			$errorImg.src = await errorData.data.image_url;
 			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
 	};
@@ -548,7 +552,8 @@ const myGifsSection = () => {
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,
