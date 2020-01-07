@@ -580,14 +580,13 @@ const myGifsSection = () => {
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		// const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`;				//Fake url for testing upload fail
+		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,
 			json: true
 		});
-
 		const data = await response.json();
 		console.log(await data);
 		console.log("***Upload ended***");
