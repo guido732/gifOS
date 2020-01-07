@@ -401,8 +401,8 @@ const myGifsSection = () => {
 				saveGifToLocalStorage(await newGif.data.id);
 				await hideElements($stage5);
 				await showElements($stage6);
-				await _render();
 				await uploadLoadingBar.stop();
+				await _render();
 			} else {
 				await showElements($stage7);
 				await hideElements($stage5);
@@ -420,8 +420,36 @@ const myGifsSection = () => {
 			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
 	};
-	$retryUpload.onclick = () => {
-		//
+	$retryUpload.onclick = async () => {
+		$createGifHeader.innerText = "Subiendo Guifo";
+		hideElements($stage7);
+		showElements($stage5);
+		uploadLoadingBar.loop();
+		try {
+			const newGif = await uploadCreatedGif();
+			if ((await newGif.meta.status) === 200) {
+				newGifId = await newGif.data.id;
+				saveGifToLocalStorage(await newGif.data.id);
+				await hideElements($stage5);
+				await showElements($stage6);
+				await uploadLoadingBar.stop();
+				await _render();
+			} else {
+				await showElements($stage7);
+				await hideElements($stage5);
+				await uploadLoadingBar.stop();
+				$errorMsg.innerText = `${e.name}\n${e.message}`;
+			}
+		} catch (e) {
+			$errorImg.src = "";
+			await showElements($stage7);
+			await hideElements($stage5);
+			await uploadLoadingBar.stop();
+			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+			errorData = await errorGif.json();
+			$errorImg.src = await errorData.data.image_url;
+			$errorMsg.innerText = `${e.name}\n${e.message}`;
+		}
 	};
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
