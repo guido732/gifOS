@@ -304,7 +304,9 @@ function createGifSection() {
 }
 function setColorTheme(selectedColorTheme) {
 	const $styleSheet = document.querySelector("#color-theme-stylesheet");
+	const $favicon = document.querySelector("#favicon");
 	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
+	$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme || "sailor_day"}.ico`);
 	localStorage.setItem("colorTheme", selectedColorTheme);
 }
 
@@ -317,12 +319,13 @@ const myGifsSection = () => {
 	// Cache DOM
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	const $createGifContinue = document.querySelector("#create-gif-continue");
-	const $createGifCancel = document.querySelector("#create-gif-cancel");
 	const $createGifHeader = document.querySelector("#create-gif-section-header");
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
 	const $retryUpload = document.querySelector("#retry-upload");
+	const $errorMsg = document.querySelector("#error-msg");
+	const $errorImg = document.querySelector("#error-img");
 	const $copyGifLink = document.querySelector("#copy-link");
 	const $donwloadGif = document.querySelector("#download-gif");
 	const $endProcess = document.querySelectorAll(".close-window");
@@ -387,24 +390,65 @@ const myGifsSection = () => {
 	};
 	$uploadRecording.onclick = async () => {
 		$createGifHeader.innerText = "Subiendo Guifo";
-		// TODO check that status of request is 200
 		hideElements($stage2);
 		showElements($stage5);
 		uploadLoadingBar.loop();
 		myLoadingBar.stop();
 		try {
 			const newGif = await uploadCreatedGif();
-			newGifId = await newGif.data.id;
-			saveGifToLocalStorage(await newGif.data.id);
-			await hideElements($stage5);
-			await showElements($stage6);
-			await _render();
-			await uploadLoadingBar.stop();
+			if ((await newGif.meta.status) === 200) {
+				newGifId = await newGif.data.id;
+				saveGifToLocalStorage(await newGif.data.id);
+				await hideElements($stage5);
+				await showElements($stage6);
+				await uploadLoadingBar.stop();
+				await _render();
+			} else {
+				await showElements($stage7);
+				await hideElements($stage5);
+				await uploadLoadingBar.stop();
+				$errorMsg.innerText = `${e.name}\n${e.message}`;
+			}
 		} catch (e) {
+			$errorImg.src = "";
 			await showElements($stage7);
 			await hideElements($stage5);
 			await uploadLoadingBar.stop();
-			console.log(`Error: ${e}\n${e.message}`);
+			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+			errorData = await errorGif.json();
+			$errorImg.src = await errorData.data.image_url;
+			$errorMsg.innerText = `${e.name}\n${e.message}`;
+		}
+	};
+	$retryUpload.onclick = async () => {
+		$createGifHeader.innerText = "Subiendo Guifo";
+		hideElements($stage7);
+		showElements($stage5);
+		uploadLoadingBar.loop();
+		try {
+			const newGif = await uploadCreatedGif();
+			if ((await newGif.meta.status) === 200) {
+				newGifId = await newGif.data.id;
+				saveGifToLocalStorage(await newGif.data.id);
+				await hideElements($stage5);
+				await showElements($stage6);
+				await uploadLoadingBar.stop();
+				await _render();
+			} else {
+				await showElements($stage7);
+				await hideElements($stage5);
+				await uploadLoadingBar.stop();
+				$errorMsg.innerText = `${e.name}\n${e.message}`;
+			}
+		} catch (e) {
+			$errorImg.src = "";
+			await showElements($stage7);
+			await hideElements($stage5);
+			await uploadLoadingBar.stop();
+			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+			errorData = await errorGif.json();
+			$errorImg.src = await errorData.data.image_url;
+			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
 	};
 	$playPreview.onclick = () => {
@@ -535,7 +579,9 @@ const myGifsSection = () => {
 		console.log("***Upload started***");
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
-		const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`;				//Fake url for testing upload fail
+		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,

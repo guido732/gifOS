@@ -7,6 +7,27 @@
 		<title>gifOS - Gifs Gifs Gifs!</title>
 
 		<!-- TODO Favicon -->
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="./assets/img/favicon/apple-touch-icon-57x57.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="./assets/img/favicon/apple-touch-icon-114x114.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="./assets/img/favicon/apple-touch-icon-72x72.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="./assets/img/favicon/apple-touch-icon-144x144.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="./assets/img/favicon/apple-touch-icon-60x60.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="./assets/img/favicon/apple-touch-icon-120x120.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="./assets/img/favicon/apple-touch-icon-76x76.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="152x152" href="./assets/img/favicon/apple-touch-icon-152x152.png" />
+		<link rel="icon" type="image/png" href="./assets/img/favicon/favicon-196x196.png" sizes="196x196" />
+		<link rel="icon" type="image/png" href="./assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/png" href="./assets/img/favicon/favicon-32x32.png" sizes="32x32" />
+		<link rel="icon" type="image/png" href="./assets/img/favicon/favicon-16x16.png" sizes="16x16" />
+		<link rel="icon" type="image/png" href="./assets/img/favicon/favicon-128.png" sizes="128x128" />
+		<meta name="application-name" content="gifOS" />
+		<meta name="msapplication-TileColor" content="#FFFFFF" />
+		<meta name="msapplication-TileImage" content="mstile-144x144.png" />
+		<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
+		<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
+		<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
+		<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+		<link rel="shortcut icon" href="./assets/img/favicon/favicon.ico" type="image/x-icon" id="favicon" />
 
 		<!-- StyleSheets -->
 		<link rel="stylesheet" href="./css/styles.min.css" />
@@ -251,22 +272,16 @@
 						Algo Salió Mal
 						<button class="remove-element close-window"></button>
 					</div>
-					<!-- TODO - Error section -->
-					<div class="content stage6" id="stage7">
-						<div class="content-split">
-							<div class="img-container">
-								<img src="./assets/img/gifOF_logo.png" alt="" />
-							</div>
-							<div>
-								<div class="options-container">
-									<h2>Tu Guifo no pudo ser creado</h2>
-									<button class="btn-secondary btn-full-width" id="retry-upload">
-										<span class="btn-text-container">Reintentar</span>
-									</button>
-								</div>
-							</div>
+					<div class="content stage7" id="stage7">
+						<div class="img-container">
+							<img src="./assets/img/oops.jpg" alt="Error, algo salió mal" id="error-img" />
 						</div>
-						<div class="flex-end-container">
+						<h2>Tu Guifo no pudo ser creado</h2>
+						<p id="error-msg"></p>
+						<div class="">
+							<button class="btn-secondary" id="retry-upload">
+								<span class="btn-text-container">Reintentar</span>
+							</button>
 							<button class="btn-primary close-window">
 								<span class="btn-text-container">Listo</span>
 							</button>
