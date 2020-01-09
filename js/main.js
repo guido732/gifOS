@@ -282,6 +282,12 @@
 			? setColorTheme(localStorage.getItem("colorTheme"))
 			: setColorTheme(colorThemes[0]);
 	}
+	function isEmpty(obj) {
+		for (let key in obj) {
+			if (obj.hasOwnProperty(key)) return false;
+		}
+		return true;
+	}
 
 	const myGifsSection = () => {
 		// Local variables
@@ -290,19 +296,6 @@
 		let newGifId = "";
 
 		// Cache DOM
-		const $gifsGrid = document.querySelector("#my-gifs-grid");
-		const $createGifContinue = document.querySelector("#create-gif-continue");
-		const $createGifHeader = document.querySelector("#create-gif-section-header");
-		const $startRecording = document.querySelector("#start-recording");
-		const $stopRecording = document.querySelector("#stop-recording");
-		const $redoRecording = document.querySelector("#redo-recording");
-		const $retryUpload = document.querySelector("#retry-upload");
-		const $errorMsg = document.querySelector("#error-msg");
-		const $errorImg = document.querySelector("#error-img");
-		const $copyGifLink = document.querySelector("#copy-link");
-		const $donwloadGif = document.querySelector("#download-gif");
-		const $endProcess = document.querySelectorAll(".close-window");
-		const $uploadRecording = document.querySelector("#upload-gif");
 		const $stage1 = document.querySelector("#stage1");
 		const $stage2 = document.querySelector("#stage2");
 		const $stage3 = document.querySelector("#stage3");
@@ -310,8 +303,21 @@
 		const $stage5 = document.querySelector("#stage5");
 		const $stage6 = document.querySelector("#stage6");
 		const $stage7 = document.querySelector("#stage7");
+		const $createGifHeader = document.querySelector("#create-gif-section-header");
+		const $endProcess = document.querySelectorAll(".close-window");
+		const $createGifContinue = document.querySelector("#create-gif-continue");
+		const $startRecording = document.querySelector("#start-recording");
+		const $stopRecording = document.querySelector("#stop-recording");
+		const $redoRecording = document.querySelector("#redo-recording");
+		const $uploadRecording = document.querySelector("#upload-gif");
+		const $copyGifLink = document.querySelector("#copy-link");
+		const $donwloadGif = document.querySelector("#download-gif");
 		const $inputPreview = document.querySelector("#video-box");
 		const $outputPreview = document.querySelector("#gif-preview");
+		const $errorMsg = document.querySelector("#error-msg");
+		const $errorImg = document.querySelector("#error-img");
+		const $retryUpload = document.querySelector("#retry-upload");
+		const $gifsGrid = document.querySelector("#my-gifs-grid");
 		// Timer elements
 		const $timer = document.querySelector("#timer");
 		// Loading Bar elements
@@ -445,19 +451,19 @@
 		_render();
 
 		function _render() {
-			console.log("rendered");
-
 			myGifs = {};
+			let gifIds = "";
 			$gifsGrid.innerHTML = "";
 			Object.keys(localStorage).forEach(element => {
 				element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 			});
-			let gifIds = "";
-			for (let key in myGifs) {
-				gifIds += `${myGifs[key]},`;
+			if (!isEmpty(myGifs)) {
+				for (let key in myGifs) {
+					gifIds += `${myGifs[key]},`;
+				}
+				gifIds = gifIds.slice(0, -1);
+				fetchMyGifs(gifIds);
 			}
-			gifIds = gifIds.slice(0, -1);
-			fetchMyGifs(gifIds);
 		}
 		function saveGifToLocalStorage(gifId) {
 			localStorage.setItem(`gif-${gifId}`, gifId);
