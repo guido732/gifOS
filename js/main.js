@@ -332,14 +332,15 @@
 		const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
 		// Bind events
-		$createGifContinue.onclick = () => {
+		$createGifContinue.onclick = async () => {
 			hideElements($stage1, $stage3);
 			showElements($stage2, $startRecording);
 			try {
-				initiateWebcam();
+				await initiateWebcam();
 			} catch (e) {
 				// TODO - styled modal popup
 				alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+				$startRecording.disabled = true;
 			}
 		};
 		$startRecording.onclick = () => {
@@ -508,7 +509,7 @@
 					height: { max: 480 }
 				}
 			});
-			$inputPreview.srcObject = await stream;
+			$inputPreview.srcObject = stream;
 			await $inputPreview.play();
 		}
 		async function startRecording() {
