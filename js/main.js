@@ -1,3 +1,4 @@
+"use strict";
 (function() {
 	// Local variables
 	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
@@ -119,7 +120,7 @@
 	async function fetchTrendingGifs(limit) {
 		const gifOffset = Math.floor(Math.random() * 50);
 
-		gifsTrending = await fetchURL(
+		const gifsTrending = await fetchURL(
 			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
 		);
 		await gifsTrending.data.forEach(gif => {
@@ -152,7 +153,7 @@
 		];
 		const suggestion = Math.floor(Math.random() * (suggestionTopicsArray.length - 1));
 
-		gifsSuggestions = await fetchURL(
+		const gifsSuggestions = await fetchURL(
 			`https://api.giphy.com/v1/gifs/search?q=${suggestionTopicsArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
 		);
 
@@ -294,6 +295,9 @@
 		let totalTime = 0;
 		let myGifs = {};
 		let newGifId = "";
+		let videoRecorder;
+		let gifRecorder;
+		let gifSrc;
 
 		// Cache DOM
 		const $stage1 = document.querySelector("#stage1");
@@ -452,6 +456,7 @@
 		_render();
 
 		function _render() {
+			console.log("Render myGifs Section");
 			myGifs = {};
 			let gifIds = "";
 			$gifsGrid.innerHTML = "";
@@ -494,7 +499,7 @@
 			document.body.removeChild(saveImg);
 		}
 		async function fetchMyGifs(gifIds) {
-			searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
+			const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
 			await searchResults.data.forEach(gif => {
 				let aspectRatio = "";
 				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
