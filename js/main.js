@@ -264,14 +264,12 @@
 		document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 	}
 	function showMyGifsSection() {
-		myGifsSection();
-		hideElements($suggestionsSection, $searchResultsSection, $searchBox, $trendsSection, $myGifsSection);
-		showElements($myGifsSection);
+		createGifs.mount();
+		hideElements($createGifSection, $suggestionsSection, $searchResultsSection, $searchBox, $trendsSection);
 	}
 	function showCreateGifSection() {
-		myGifsSection();
+		createGifs.mount();
 		hideElements($suggestionsSection, $searchResultsSection, $searchBox, $trendsSection, $navItems);
-		showElements($createGifSection, $myGifsSection, document.querySelector("#stage1"));
 	}
 	function setColorTheme(selectedColorTheme) {
 		$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
@@ -290,7 +288,118 @@
 		return true;
 	}
 
-	const myGifsSection = () => {
+	const Stopwatch = (elem, options) => {
+		let timer = elem,
+			offset,
+			clock,
+			interval;
+
+		// default options
+		options = options || {};
+		options.delay = options.delay || 1;
+
+		// initialize
+		reset();
+
+		// private functions
+		function start() {
+			if (!interval) {
+				offset = Date.now();
+				interval = setInterval(update, options.delay);
+			}
+		}
+		function stop() {
+			if (interval) {
+				clearInterval(interval);
+				interval = null;
+			}
+			return clock;
+		}
+		function reset() {
+			clock = 0;
+			render();
+		}
+		function update() {
+			clock += delta();
+			render();
+		}
+		function delta() {
+			let now = Date.now(),
+				d = now - offset;
+			offset = now;
+			return d;
+		}
+		function msToTime(duration) {
+			let milliseconds = parseInt((duration % 1000) / 10),
+				seconds = Math.floor((duration / 1000) % 60),
+				minutes = Math.floor((duration / (1000 * 60)) % 60),
+				hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+			hours = hours < 10 ? "0" + hours : hours;
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds;
+
+			return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+		}
+		function render() {
+			timer.innerHTML = msToTime(clock);
+		}
+		// Exposed Functions
+		return {
+			start: start,
+			stop: stop,
+			reset: reset
+		};
+	};
+	const LoadingBar = subElems => {
+		// Local variables
+		let progress = 0;
+		let interval;
+
+		function start(totalTime = 100) {
+			stop();
+			interval = setInterval(frame, totalTime);
+			function frame() {
+				if (progress >= 100) {
+					clearInterval(interval);
+				} else {
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
+				}
+			}
+		}
+		function stop() {
+			clearInterval(interval);
+			progress = 0;
+			subElems.forEach(elem => {
+				elem.classList.add("empty");
+			});
+		}
+		function loop(totalTime = 10) {
+			stop();
+			interval = setInterval(frame, totalTime);
+			function frame() {
+				if (progress >= 100) {
+					stop();
+					interval = setInterval(frame, totalTime);
+				} else {
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
+				}
+			}
+		}
+		// Public Functions
+		return {
+			start: start,
+			stop: stop,
+			loop: loop
+		};
+	};
+	const createGifs = (() => {
 		// Local variables
 		let totalTime = 0;
 		let myGifs = {};
@@ -308,6 +417,7 @@
 		const $stage6 = document.querySelector("#stage6");
 		const $stage7 = document.querySelector("#stage7");
 		const $createGifHeader = document.querySelector("#create-gif-section-header");
+		const $createGifSection = document.querySelector("#create-gif-section");
 		const $endProcess = document.querySelectorAll(".close-window");
 		const $createGifContinue = document.querySelector("#create-gif-continue");
 		const $startRecording = document.querySelector("#start-recording");
@@ -315,7 +425,7 @@
 		const $redoRecording = document.querySelector("#redo-recording");
 		const $uploadRecording = document.querySelector("#upload-gif");
 		const $copyGifLink = document.querySelector("#copy-link");
-		const $donwloadGif = document.querySelector("#download-gif");
+		const $downloadGif = document.querySelector("#download-gif");
 		const $inputPreview = document.querySelector("#video-box");
 		const $outputPreview = document.querySelector("#gif-preview");
 		const $errorMsg = document.querySelector("#error-msg");
@@ -448,13 +558,18 @@
 		$copyGifLink.onclick = () => {
 			copyCreatedGifLink();
 		};
-		$donwloadGif.onclick = () => {
+		$downloadGif.onclick = () => {
 			downloadCreatedGif();
 		};
 
-		// On Load functions
-		_render();
-
+		function mount() {
+			hideElements($stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
+			showElements($createGifSection, $myGifsSection, $stage1);
+			_render();
+		}
+		function unmount() {
+			hideElements($createGifSection, $myGifsSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
+		}
 		function _render() {
 			console.log("Render myGifs Section");
 			myGifs = {};
@@ -579,117 +694,54 @@
 			console.log("***Upload ended***");
 			return await data;
 		}
-		return {};
-	};
-	const Stopwatch = (elem, options) => {
-		let timer = elem,
-			offset,
-			clock,
-			interval;
-
-		// default options
-		options = options || {};
-		options.delay = options.delay || 1;
-
-		// initialize
-		reset();
-
-		// private functions
-		function start() {
-			if (!interval) {
-				offset = Date.now();
-				interval = setInterval(update, options.delay);
-			}
-		}
-		function stop() {
-			if (interval) {
-				clearInterval(interval);
-				interval = null;
-			}
-			return clock;
-		}
-		function reset() {
-			clock = 0;
-			render();
-		}
-		function update() {
-			clock += delta();
-			render();
-		}
-		function delta() {
-			let now = Date.now(),
-				d = now - offset;
-			offset = now;
-			return d;
-		}
-		function msToTime(duration) {
-			let milliseconds = parseInt((duration % 1000) / 10),
-				seconds = Math.floor((duration / 1000) % 60),
-				minutes = Math.floor((duration / (1000 * 60)) % 60),
-				hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-			hours = hours < 10 ? "0" + hours : hours;
-			minutes = minutes < 10 ? "0" + minutes : minutes;
-			seconds = seconds < 10 ? "0" + seconds : seconds;
-
-			return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-		}
-		function render() {
-			timer.innerHTML = msToTime(clock);
-		}
-		// Exposed Functions
 		return {
-			start: start,
-			stop: stop,
-			reset: reset
+			mount: mount,
+			unmount: unmount
 		};
-	};
-	const LoadingBar = subElems => {
+	})();
+	const myGifs = (() => {
 		// Local variables
-		let progress = 0;
-		let interval;
+		let myGifs = {};
 
-		function start(totalTime = 100) {
-			stop();
-			interval = setInterval(frame, totalTime);
-			function frame() {
-				if (progress >= 100) {
-					clearInterval(interval);
-				} else {
-					progress++;
-					let progCounter = Math.floor(progress / (100 / subElems.length));
-					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+		// Cache DOM
+		const $gifsGrid = document.querySelector("#my-gifs-grid");
+
+		// Bind events
+		function mount() {
+			showElements($myGifsSection, $gifsGrid);
+			_render();
+		}
+		function unmount() {
+			hideElements($myGifsSection, $gifsGrid);
+		}
+		function _render() {
+			console.log("Render myGifs Section");
+			myGifs = {};
+			let gifIds = "";
+			$gifsGrid.innerHTML = "";
+			Object.keys(localStorage).forEach(element => {
+				element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
+			});
+			if (!isEmpty(myGifs)) {
+				for (let key in myGifs) {
+					gifIds += `${myGifs[key]},`;
 				}
+				gifIds = gifIds.slice(0, -1);
+				fetchMyGifs(gifIds);
 			}
 		}
-		function stop() {
-			clearInterval(interval);
-			progress = 0;
-			subElems.forEach(elem => {
-				elem.classList.add("empty");
+		async function fetchMyGifs(gifIds) {
+			const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
+			await searchResults.data.forEach(gif => {
+				let aspectRatio = "";
+				gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+				$gifsGrid.append(newElement("trend", gif, aspectRatio));
+				// console.log("element appended");
 			});
 		}
-		function loop(totalTime = 10) {
-			stop();
-			interval = setInterval(frame, totalTime);
-			function frame() {
-				if (progress >= 100) {
-					stop();
-					interval = setInterval(frame, totalTime);
-				} else {
-					progress++;
-					let progCounter = Math.floor(progress / (100 / subElems.length));
-					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
-				}
-			}
-		}
-		// Public Functions
 		return {
-			start: start,
-			stop: stop,
-			loop: loop
+			mount: mount,
+			unmount: unmount
 		};
-	};
+	})();
 })();
