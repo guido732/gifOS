@@ -530,7 +530,7 @@ const createGifs = (() => {
 				await showElements($stage7);
 				await hideElements($stage5);
 				await uploadLoadingBar.stop();
-				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
 				let errorData = await errorGif.json();
 				$errorImg.src = await errorData.data.image_url;
 				$errorMsg.innerText = `${e.name}\n${e.message}`;
@@ -650,7 +650,7 @@ const createGifs = (() => {
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`;				//Fake url for testing upload fail
+		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
 		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
