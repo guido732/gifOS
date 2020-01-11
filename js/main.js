@@ -288,7 +288,7 @@ function isEmpty(obj) {
 	}
 	return true;
 }
-const eventHandler = {
+const events = {
 	events: {},
 	on: function(eventName, fn) {
 		this.events[eventName] = this.events[eventName] || [];
@@ -426,7 +426,6 @@ const LoadingBar = subElems => {
 const createGifs = (() => {
 	// Local variables
 	let totalTime = 0;
-	let myGifs = {};
 	let newGifId = "";
 	let videoRecorder;
 	let gifRecorder;
@@ -455,7 +454,6 @@ const createGifs = (() => {
 	const $errorMsg = document.querySelector("#error-msg");
 	const $errorImg = document.querySelector("#error-img");
 	const $retryUpload = document.querySelector("#retry-upload");
-	const $gifsGrid = document.querySelector("#my-gifs-grid");
 	// Timer elements
 	const $timer = document.querySelector("#timer");
 	// Loading Bar elements
@@ -520,7 +518,7 @@ const createGifs = (() => {
 				await hideElements($stage5);
 				await showElements($stage6);
 				await uploadLoadingBar.stop();
-				await _render();
+				await events.emit("myGifsChanged");
 			} else {
 				await showElements($stage7);
 				await hideElements($stage5);
@@ -533,8 +531,10 @@ const createGifs = (() => {
 			await hideElements($stage5);
 			await uploadLoadingBar.stop();
 			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
-			errorData = await errorGif.json();
+			let errorData = await errorGif.json();
 			$errorImg.src = await errorData.data.image_url;
+			console.log(e);
+
 			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
 	};
@@ -551,7 +551,7 @@ const createGifs = (() => {
 				await hideElements($stage5);
 				await showElements($stage6);
 				await uploadLoadingBar.stop();
-				await _render();
+				await events.emit("myGifsChanged", "");
 			} else {
 				await showElements($stage7);
 				await hideElements($stage5);
@@ -564,7 +564,7 @@ const createGifs = (() => {
 			await hideElements($stage5);
 			await uploadLoadingBar.stop();
 			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
-			errorData = await errorGif.json();
+			let errorData = await errorGif.json();
 			$errorImg.src = await errorData.data.image_url;
 			$errorMsg.innerText = `${e.name}\n${e.message}`;
 		}
@@ -590,26 +590,10 @@ const createGifs = (() => {
 		console.log("createGifsSection mounted");
 		hideElements($stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements($createGifSection, $myGifsSection, $stage1);
-		_render();
 	}
 	function unmount() {
 		console.log("createGifsSection unmounted");
 		hideElements($createGifSection, $myGifsSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
-	}
-	function _render() {
-		myGifs = {};
-		let gifIds = "";
-		$gifsGrid.innerHTML = "";
-		Object.keys(localStorage).forEach(element => {
-			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
-		});
-		if (!isEmpty(myGifs)) {
-			for (let key in myGifs) {
-				gifIds += `${myGifs[key]},`;
-			}
-			gifIds = gifIds.slice(0, -1);
-			fetchMyGifs(gifIds);
-		}
 	}
 	function saveGifToLocalStorage(gifId) {
 		localStorage.setItem(`gif-${gifId}`, gifId);
@@ -637,15 +621,6 @@ const createGifs = (() => {
 		document.body.appendChild(saveImg);
 		saveImg.click();
 		document.body.removeChild(saveImg);
-	}
-	async function fetchMyGifs(gifIds) {
-		const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
-		await searchResults.data.forEach(gif => {
-			let aspectRatio = "";
-			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-			$gifsGrid.append(newElement("trend", gif, aspectRatio));
-			// console.log("element appended");
-		});
 	}
 	async function initiateWebcam() {
 		const stream = await navigator.mediaDevices.getUserMedia({
@@ -733,6 +708,8 @@ const myGifs = (() => {
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 
 	// Bind events
+	events.on("myGifsChanged", _render);
+
 	function mount() {
 		console.log("myGifs Section mounted");
 		showElements($myGifsSection, $gifsGrid);
