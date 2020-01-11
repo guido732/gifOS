@@ -446,14 +446,13 @@ const createGifs = (() => {
 	const $startRecording = document.querySelector("#start-recording");
 	const $stopRecording = document.querySelector("#stop-recording");
 	const $redoRecording = document.querySelector("#redo-recording");
-	const $uploadRecording = document.querySelector("#upload-gif");
+	const $uploadRecording = document.querySelectorAll(".gif-upload");
 	const $copyGifLink = document.querySelector("#copy-link");
 	const $downloadGif = document.querySelector("#download-gif");
 	const $inputPreview = document.querySelector("#video-box");
 	const $outputPreview = document.querySelector("#gif-preview");
 	const $errorMsg = document.querySelector("#error-msg");
 	const $errorImg = document.querySelector("#error-img");
-	const $retryUpload = document.querySelector("#retry-upload");
 	// Timer elements
 	const $timer = document.querySelector("#timer");
 	// Loading Bar elements
@@ -504,71 +503,40 @@ const createGifs = (() => {
 		myStopwatch.start();
 		myLoadingBar.stop();
 	};
-	$uploadRecording.onclick = async () => {
-		$createGifHeader.innerText = "Subiendo Guifo";
-		hideElements($stage2);
-		showElements($stage5);
-		uploadLoadingBar.loop();
-		myLoadingBar.stop();
-		try {
-			const newGif = await uploadCreatedGif();
-			if ((await newGif.meta.status) === 200) {
-				newGifId = await newGif.data.id;
-				saveGifToLocalStorage(await newGif.data.id);
-				await hideElements($stage5);
-				await showElements($stage6);
-				await uploadLoadingBar.stop();
-				await events.emit("myGifsChanged");
-			} else {
+	$uploadRecording.forEach(uploadSubmission => {
+		uploadSubmission.onclick = async () => {
+			$createGifHeader.innerText = "Subiendo Guifo";
+			hideElements($stage2, $stage7);
+			showElements($stage5);
+			uploadLoadingBar.loop();
+			myLoadingBar.stop();
+			try {
+				const newGif = await uploadCreatedGif();
+				if ((await newGif.meta.status) === 200) {
+					newGifId = await newGif.data.id;
+					saveGifToLocalStorage(await newGif.data.id);
+					await hideElements($stage5);
+					await showElements($stage6);
+					await uploadLoadingBar.stop();
+					await events.emit("myGifsChanged");
+				} else {
+					await showElements($stage7);
+					await hideElements($stage5);
+					await uploadLoadingBar.stop();
+					$errorMsg.innerText = `${e.name}\n${e.message}`;
+				}
+			} catch (e) {
+				$errorImg.src = "";
 				await showElements($stage7);
 				await hideElements($stage5);
 				await uploadLoadingBar.stop();
+				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
+				let errorData = await errorGif.json();
+				$errorImg.src = await errorData.data.image_url;
 				$errorMsg.innerText = `${e.name}\n${e.message}`;
 			}
-		} catch (e) {
-			$errorImg.src = "";
-			await showElements($stage7);
-			await hideElements($stage5);
-			await uploadLoadingBar.stop();
-			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
-			let errorData = await errorGif.json();
-			$errorImg.src = await errorData.data.image_url;
-			console.log(e);
-
-			$errorMsg.innerText = `${e.name}\n${e.message}`;
-		}
-	};
-	$retryUpload.onclick = async () => {
-		$createGifHeader.innerText = "Subiendo Guifo";
-		hideElements($stage7);
-		showElements($stage5);
-		uploadLoadingBar.loop();
-		try {
-			const newGif = await uploadCreatedGif();
-			if ((await newGif.meta.status) === 200) {
-				newGifId = await newGif.data.id;
-				saveGifToLocalStorage(await newGif.data.id);
-				await hideElements($stage5);
-				await showElements($stage6);
-				await uploadLoadingBar.stop();
-				await events.emit("myGifsChanged", "");
-			} else {
-				await showElements($stage7);
-				await hideElements($stage5);
-				await uploadLoadingBar.stop();
-				$errorMsg.innerText = `${e.name}\n${e.message}`;
-			}
-		} catch (e) {
-			$errorImg.src = "";
-			await showElements($stage7);
-			await hideElements($stage5);
-			await uploadLoadingBar.stop();
-			const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=error`);
-			let errorData = await errorGif.json();
-			$errorImg.src = await errorData.data.image_url;
-			$errorMsg.innerText = `${e.name}\n${e.message}`;
-		}
-	};
+		};
+	});
 	$playPreview.onclick = () => {
 		myLoadingBar.start(totalTime / 100);
 		$inputPreview.play();
