@@ -41,7 +41,9 @@ $searchBar.focus();
 // Bind events
 $homeButton.addEventListener("click", () => {
 	// Takes user to default window view
-	hideElements($createGifSection, $myGifsSection, $searchResultsSection, $searchTags);
+	myGifs.unmount();
+	createGifs.unmount();
+	hideElements($searchResultsSection, $searchTags);
 	showElements($searchBox, $suggestionsSection, $trendsSection, $navItems);
 });
 $themeSelector.addEventListener("click", () => {
@@ -471,7 +473,7 @@ const createGifs = (() => {
 		hideElements($stage1, $stage3);
 		showElements($stage2, $startRecording);
 		try {
-			await initiateWebcam();
+			await _initiateWebcam();
 		} catch (e) {
 			// TODO - styled modal popup
 			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
@@ -482,7 +484,7 @@ const createGifs = (() => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording, $timerLoadingBar, $stage4);
 		showElements($stage3, $stopRecording);
-		startRecording();
+		_startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
 	};
@@ -490,15 +492,15 @@ const createGifs = (() => {
 		$createGifHeader.innerText = "Vista Previa";
 		hideElements($stopRecording);
 		showElements($stage4, $timerLoadingBar);
-		stopRecording();
+		_stopRecording();
 		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
 		showElements($stopRecording, $inputPreview);
 		hideElements($stage4, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
-		await initiateWebcam();
-		await startRecording();
+		await _initiateWebcam();
+		await _startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
 		myLoadingBar.stop();
@@ -511,10 +513,10 @@ const createGifs = (() => {
 			uploadLoadingBar.loop();
 			myLoadingBar.stop();
 			try {
-				const newGif = await uploadCreatedGif();
+				const newGif = await _uploadCreatedGif();
 				if ((await newGif.meta.status) === 200) {
 					newGifId = await newGif.data.id;
-					saveGifToLocalStorage(await newGif.data.id);
+					_saveGifToLocalStorage(await newGif.data.id);
 					await hideElements($stage5);
 					await showElements($stage6);
 					await uploadLoadingBar.stop();
@@ -543,30 +545,31 @@ const createGifs = (() => {
 	};
 	$endProcess.forEach(element => {
 		element.addEventListener("click", () => {
-			hideElements($stage1, $stage2, $stage5, $stage6, $stage7);
-			showElements(document.querySelector(".nav-item-container"));
+			unmount();
+			events.emit("createGifEnded");
+			// hideElements($stage1, $stage2, $stage5, $stage6, $stage7);
+			// showElements(document.querySelector(".nav-item-container"));
 		});
 	});
 	$copyGifLink.onclick = () => {
-		copyCreatedGifLink();
+		_copyCreatedGifLink();
 	};
 	$downloadGif.onclick = () => {
-		downloadCreatedGif();
+		_downloadCreatedGif();
 	};
 
 	function mount() {
-		console.log("createGifsSection mounted");
 		hideElements($stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements($createGifSection, $myGifsSection, $stage1);
 	}
 	function unmount() {
-		console.log("createGifsSection unmounted");
 		hideElements($createGifSection, $myGifsSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
+		showElements(document.querySelector(".nav-item-container"));
 	}
-	function saveGifToLocalStorage(gifId) {
+	function _saveGifToLocalStorage(gifId) {
 		localStorage.setItem(`gif-${gifId}`, gifId);
 	}
-	function copyCreatedGifLink() {
+	function _copyCreatedGifLink() {
 		const tempElement = document.createElement("textarea");
 		tempElement.value = `https://giphy.com/gifs/${newGifId}`;
 		tempElement.setAttribute("readonly", "");
@@ -577,7 +580,7 @@ const createGifs = (() => {
 		console.log("Copied data to clipboard!");
 		document.body.removeChild(tempElement);
 	}
-	async function downloadCreatedGif() {
+	async function _downloadCreatedGif() {
 		const downloadUrl = `https://media.giphy.com/media/${newGifId}/giphy.gif`;
 		const fetchedGif = fetch(downloadUrl);
 		const blobGif = (await fetchedGif).blob();
@@ -590,7 +593,7 @@ const createGifs = (() => {
 		saveImg.click();
 		document.body.removeChild(saveImg);
 	}
-	async function initiateWebcam() {
+	async function _initiateWebcam() {
 		const stream = await navigator.mediaDevices.getUserMedia({
 			audio: false,
 			video: {
@@ -600,7 +603,7 @@ const createGifs = (() => {
 		$inputPreview.srcObject = stream;
 		await $inputPreview.play();
 	}
-	async function startRecording() {
+	async function _startRecording() {
 		const stream = $inputPreview.srcObject;
 		videoRecorder = new RecordRTCPromisesHandler(stream, {
 			type: "video",
@@ -628,7 +631,7 @@ const createGifs = (() => {
 		// helps releasing camera on stopRecording
 		videoRecorder.stream = stream;
 	}
-	async function stopRecording() {
+	async function _stopRecording() {
 		await videoRecorder.stopRecording();
 		$inputPreview.srcObject = null;
 		const videoBlob = await videoRecorder.getBlob();
@@ -645,13 +648,13 @@ const createGifs = (() => {
 		await gifRecorder.destroy();
 		gifRecorder = await null;
 	}
-	async function uploadCreatedGif() {
+	async function _uploadCreatedGif() {
 		console.log("***Upload started***");
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = "https://cors-anywhere.herokuapp.com/" + `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
-		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
+		// const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,
@@ -677,14 +680,13 @@ const myGifs = (() => {
 
 	// Bind events
 	events.on("myGifsChanged", _render);
+	events.on("createGifEnded", mount);
 
 	function mount() {
-		console.log("myGifs Section mounted");
 		showElements($myGifsSection, $gifsGrid);
 		_render();
 	}
 	function unmount() {
-		console.log("myGifs Section unmounted");
 		hideElements($myGifsSection, $gifsGrid);
 	}
 	function _render() {
