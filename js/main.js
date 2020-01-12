@@ -1,4 +1,11 @@
 "use strict";
+// Current list of events:
+/* 
+	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
+	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
+	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
+*/
+
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 const colorThemes = ["sailor_day", "sailor_night"];
@@ -41,8 +48,7 @@ $searchBar.focus();
 // Bind events
 $homeButton.addEventListener("click", () => {
 	// Takes user to default window view
-	myGifs.unmount();
-	createGifs.unmount();
+	events.emit("gotoHome");
 	hideElements($searchResultsSection, $searchTags);
 	showElements($searchBox, $suggestionsSection, $trendsSection, $navItems);
 });
@@ -74,12 +80,9 @@ document.searchform.addEventListener("submit", e => {
 	e.preventDefault();
 	handleSearchFunctionality($searchBar.value);
 });
-$btnMyGifs.addEventListener("click", () => {
-	showMyGifsSection();
-});
-$btnCreateGif.addEventListener("click", () => {
-	showCreateGifSection();
-});
+$btnMyGifs.addEventListener("click", showMyGifsSection);
+$btnCreateGif.addEventListener("click", showCreateGifSection);
+
 $colorThemeOptions.forEach((colorThemeOption, index) => {
 	colorThemeOption.onclick = () => {
 		setColorTheme(colorThemes[index]);
@@ -468,6 +471,8 @@ const createGifs = (() => {
 	const myLoadingBar = LoadingBar($previewProgressBlocks);
 	const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
+	events.on("gotoHome", unmount);
+
 	// Bind events
 	$createGifContinue.onclick = async () => {
 		hideElements($stage1, $stage3);
@@ -681,6 +686,7 @@ const myGifs = (() => {
 	// Bind events
 	events.on("myGifsChanged", _render);
 	events.on("createGifEnded", mount);
+	events.on("gotoHome", unmount);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
