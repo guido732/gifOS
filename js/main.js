@@ -153,6 +153,7 @@ const searchSection = (() => {
 	events.on("searchBarInputChanged", searchBarInputChanged);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
+	events.on("searchStarted", hideSearchSuggestions);
 
 	document.searchform.addEventListener("submit", e => {
 		// Gets search results from form submission
@@ -189,7 +190,6 @@ const searchSection = (() => {
 		$searchResulsContainer.innerHTML = "";
 		await fetchSearchResultGifs(16, searchValue);
 		events.emit("searchStarted");
-		hideElements($trendsSection, $myGifsSection, $createGifSection, $searchSuggestions);
 		$searchSuggestions.innerHTML = "";
 		await showElements($searchResultsSection, $searchTags);
 	}
@@ -245,7 +245,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-const gifSuggestions = (() => {
+const gifSuggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -296,7 +296,49 @@ const gifSuggestions = (() => {
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * (array.length - 1));
 	}
-	return {};
+})();
+const gifTrendingSection = (() => {
+	// Local variables
+
+	// Cache DOM
+	const $trendsSection = document.querySelector("#trends-section");
+	const $trendingGifs = document.querySelector("#trend-grid");
+
+	// Bind events
+	events.on("pageLoad", _render);
+	events.on("pageLoad", mount);
+	events.on("gotoHome", mount);
+	events.on("myGifs", unmount);
+	events.on("createGif", unmount);
+	events.on("searchStarted", unmount);
+
+	function mount() {
+		showElements($trendsSection, $trendingGifs);
+	}
+	function unmount() {
+		hideElements($trendsSection, $trendingGifs);
+	}
+	function _render() {
+		fetchTrendingGifs(16);
+	}
+	async function fetchTrendingGifs(limit) {
+		const gifOffset = Math.floor(Math.random() * 50);
+
+		const gifsTrending = await fetchURL(
+			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+		);
+		await gifsTrending.data.forEach(gif => {
+			let aspectRatio = "";
+			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+			$trendingGifs.append(newElement("trend", gif, aspectRatio));
+		});
+
+		// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
+		const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
+		if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+			itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+		}
+	}
 })();
 const createGifs = (() => {
 	// Local variables
@@ -341,8 +383,9 @@ const createGifs = (() => {
 	const myLoadingBar = LoadingBar($previewProgressBlocks);
 	const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
-	events.on("gotoHome", unmount);
 	events.on("createGif", mount);
+	events.on("gotoHome", unmount);
+	events.on("searchStarted", unmount);
 
 	// Bind events
 	$createGifContinue.onclick = async () => {
@@ -556,6 +599,7 @@ const myGifs = (() => {
 	events.on("createGif", mount);
 	events.on("myGifs", mount);
 	events.on("gotoHome", unmount);
+	events.on("searchStarted", unmount);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
@@ -620,15 +664,11 @@ const $btnMyGifs = document.querySelector("#btn-my-gifs");
 const $myGifsSection = document.querySelector("#my-gifs-section");
 const $btnCreateGif = document.querySelector("#btn-create-gif");
 
-const $trendsSection = document.querySelector("#trends-section");
-const $trendingGifs = document.querySelector("#trend-grid");
-
 const $searchResultsSection = document.querySelector("#search-results-section");
 const $searchSuggestions = document.querySelector("#search-suggestions");
 const $searchTags = document.querySelector("#search-tags");
 
 // On Load functions
-fetchTrendingGifs(16);
 loadColorTheme();
 events.emit("pageLoad");
 
@@ -637,7 +677,7 @@ $homeButton.addEventListener("click", () => {
 	// Takes user to default window view
 	events.emit("gotoHome");
 	hideElements($searchResultsSection, $searchTags);
-	showElements($trendsSection, $navItems);
+	showElements($navItems);
 });
 $themeSelector.addEventListener("click", () => {
 	// Dropdown list visibility toggle
@@ -653,7 +693,6 @@ document.addEventListener("keydown", e => {
 	e.key === "Escape" ? hideElements($dropdownList) : null;
 	e.key === "Escape" ? events.emit("closeOpenedElements") : null;
 });
-
 $btnMyGifs.addEventListener("click", showMyGifsSection);
 $btnCreateGif.addEventListener("click", showCreateGifSection);
 $colorThemeOptions.forEach((colorThemeOption, index) => {
@@ -661,25 +700,6 @@ $colorThemeOptions.forEach((colorThemeOption, index) => {
 		setColorTheme(colorThemes[index]);
 	};
 });
-
-async function fetchTrendingGifs(limit) {
-	const gifOffset = Math.floor(Math.random() * 50);
-
-	const gifsTrending = await fetchURL(
-		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
-	);
-	await gifsTrending.data.forEach(gif => {
-		let aspectRatio = "";
-		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-		$trendingGifs.append(newElement("trend", gif, aspectRatio));
-	});
-
-	// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
-	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
-	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-	}
-}
 
 // Generic fetch function
 function fetchURL(url) {
@@ -754,11 +774,11 @@ function replaceSearchText(newText) {
 }
 function showMyGifsSection() {
 	events.emit("myGifs");
-	hideElements($searchResultsSection, $trendsSection);
+	hideElements($searchResultsSection);
 }
 function showCreateGifSection() {
 	events.emit("createGif");
-	hideElements($searchResultsSection, $trendsSection, $navItems);
+	hideElements($searchResultsSection, $navItems);
 }
 function setColorTheme(selectedColorTheme) {
 	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
