@@ -135,6 +135,33 @@ const LoadingBar = subElems => {
 		loop: loop
 	};
 };
+const searchBar = (() => {
+	// Local variables
+
+	// Cache DOM
+	const $searchBar = document.querySelector("#search-bar");
+	const $searchButton = document.querySelector("#search-button");
+	const $searchResulsContainer = document.querySelector("#search-result-container");
+	const $searchBox = document.querySelector("#search-box");
+
+	// Bind events
+	events.on("pageLoad", mount);
+	events.on("gotoHome", mount);
+	events.on("pageLoad", () => $searchBar.focus());
+	events.on("gotoHome", () => $searchBar.focus());
+	events.on("closeOpenedElements", hideSearchSuggestions);
+
+	function mount() {
+		showElements($searchBox);
+	}
+	function unmount() {
+		hideElements($searchBox);
+	}
+	function hideSearchSuggestions() {
+		hideElements($searchSuggestions);
+	}
+	function _render() {}
+})();
 const gifSuggestions = (() => {
 	// Local variables
 	const suggestionTopics = [
@@ -496,6 +523,7 @@ const myGifs = (() => {
 	searchStarted -> starts search
 	createGif -> starts createGif section
 	myGifs -> starts myGifs section
+	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
 */
 
 // Local variables
@@ -532,7 +560,6 @@ const $searchTags = document.querySelector("#search-tags");
 // On Load functions
 fetchTrendingGifs(16);
 loadColorTheme();
-$searchBar.focus();
 events.emit("pageLoad");
 
 // Bind events
@@ -540,7 +567,7 @@ $homeButton.addEventListener("click", () => {
 	// Takes user to default window view
 	events.emit("gotoHome");
 	hideElements($searchResultsSection, $searchTags);
-	showElements($searchBox, $trendsSection, $navItems);
+	showElements($trendsSection, $navItems);
 });
 $themeSelector.addEventListener("click", () => {
 	// Dropdown list visibility toggle
@@ -548,12 +575,13 @@ $themeSelector.addEventListener("click", () => {
 	$dropdownList.classList.toggle("hidden");
 });
 window.addEventListener("click", e => {
+	events.emit("closeOpenedElements");
 	// Closes dropdown on click outside or "Escape" keypress
-	hideElements($searchSuggestions);
 	!e.target.closest("#theme-selector") ? hideElements($dropdownList) : null;
 });
 document.addEventListener("keydown", e => {
-	e.key === "Escape" ? hideElements($dropdownList, $searchSuggestions) : null;
+	e.key === "Escape" ? hideElements($dropdownList) : null;
+	e.key === "Escape" ? events.emit("closeOpenedElements") : null;
 });
 $searchBar.addEventListener("input", e => {
 	// Handles search bar functionality
