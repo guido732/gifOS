@@ -213,6 +213,7 @@ const searchSection = (() => {
 	const $searchSuggestions = document.querySelector("#search-suggestions");
 	const $searchTags = document.querySelector("#search-tags");
 	const $searchResultsSection = document.querySelector("#search-results-section");
+	const $searchResultTitle = document.querySelector("#search-results-input");
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 
 	// Bind events
@@ -255,7 +256,7 @@ const searchSection = (() => {
 		}
 	}
 	async function handleSearchFunctionality(searchValue) {
-		replaceSearchText(searchValue);
+		$searchResultTitle.setAttribute("placeholder", `Resultados de búsqueda: ${searchValue}`);
 		$searchBar.value = "";
 		$searchBar.focus();
 		$searchButton.disabled = true;
@@ -340,8 +341,7 @@ const suggestionsSection = (() => {
 	const $suggestedGifs = document.querySelector("#suggested-container");
 
 	// Bind events
-	events.on("pageLoad", render);
-	events.on("pageLoad", mount);
+	events.on("pageLoad", render, mount);
 	events.on("gotoHome", mount);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
@@ -377,8 +377,7 @@ const trendingSection = (() => {
 	const $trendingGifs = document.querySelector("#trend-grid");
 
 	// Bind events
-	events.on("pageLoad", render);
-	events.on("pageLoad", mount);
+	events.on("pageLoad", render, mount);
 	events.on("gotoHome", mount);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
@@ -662,10 +661,10 @@ const myGifsSection = (() => {
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 
 	// Bind events
-	events.on("myGifsChanged", render);
-	events.on("createGifEnded", mount);
-	events.on("createGif", mount);
 	events.on("myGifs", mount);
+	events.on("myGifsChanged", render);
+	events.on("createGif", mount);
+	events.on("createGifEnded", mount);
 	events.on("gotoHome", unmount);
 	events.on("searchStarted", unmount);
 
@@ -688,10 +687,10 @@ const myGifsSection = (() => {
 				gifIds += `${myGifs[key]},`;
 			}
 			gifIds = gifIds.slice(0, -1);
-			_fetchMyGifs(gifIds);
+			fetchMyGifs(gifIds);
 		}
 	}
-	async function _fetchMyGifs(gifIds) {
+	async function fetchMyGifs(gifIds) {
 		const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
@@ -774,9 +773,6 @@ function showElements(...elements) {
 }
 function processSearchValues(inputValues) {
 	return inputValues.split(" ").join("+");
-}
-function replaceSearchText(newText) {
-	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
 function isEmpty(obj) {
 	for (let key in obj) {
