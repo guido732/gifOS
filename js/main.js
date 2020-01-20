@@ -274,7 +274,7 @@ const suggestionsSection = (() => {
 	const $suggestedGifs = document.querySelector("#suggested-container");
 
 	// Bind events
-	events.on("pageLoad", _render);
+	events.on("pageLoad", render);
 	events.on("pageLoad", mount);
 	events.on("gotoHome", mount);
 	events.on("myGifs", unmount);
@@ -287,7 +287,7 @@ const suggestionsSection = (() => {
 	function unmount() {
 		hideElements($suggestionsSection);
 	}
-	function _render() {
+	function render() {
 		fetchSuggestionGifs(4);
 	}
 	async function fetchSuggestionGifs(limit) {
@@ -305,13 +305,13 @@ const suggestionsSection = (() => {
 })();
 const trendingSection = (() => {
 	// Local variables
-
+	const amountOfTrendingGifs = 16;
 	// Cache DOM
 	const $trendsSection = document.querySelector("#trends-section");
 	const $trendingGifs = document.querySelector("#trend-grid");
 
 	// Bind events
-	events.on("pageLoad", _render);
+	events.on("pageLoad", render);
 	events.on("pageLoad", mount);
 	events.on("gotoHome", mount);
 	events.on("myGifs", unmount);
@@ -324,8 +324,8 @@ const trendingSection = (() => {
 	function unmount() {
 		hideElements($trendsSection, $trendingGifs);
 	}
-	function _render() {
-		fetchTrendingGifs(16);
+	function render() {
+		fetchTrendingGifs(amountOfTrendingGifs);
 	}
 	async function fetchTrendingGifs(limit) {
 		const gifOffset = Math.floor(Math.random() * 50);
@@ -596,7 +596,7 @@ const myGifsSection = (() => {
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
 
 	// Bind events
-	events.on("myGifsChanged", _render);
+	events.on("myGifsChanged", render);
 	events.on("createGifEnded", mount);
 	events.on("createGif", mount);
 	events.on("myGifs", mount);
@@ -605,12 +605,12 @@ const myGifsSection = (() => {
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
-		_render();
+		render();
 	}
 	function unmount() {
 		hideElements($myGifsSection, $gifsGrid);
 	}
-	function _render() {
+	function render() {
 		myGifs = {};
 		let gifIds = "";
 		$gifsGrid.innerHTML = "";
@@ -787,8 +787,9 @@ function isEmpty(obj) {
 	return true;
 }
 
-// Current list of events:
 /* 
+	// Current list of events:
+	
 	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
 	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
 	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
@@ -797,4 +798,5 @@ function isEmpty(obj) {
 	createGif -> starts createGif section
 	myGifs -> starts myGifs section
 	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
+	
 */
