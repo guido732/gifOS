@@ -505,7 +505,7 @@ const createGifsSection = (() => {
 				const newGif = await uploadCreatedGif();
 				if ((await newGif.meta.status) === 200) {
 					newGifId = await newGif.data.id;
-					saveGifToLocalStorage(await newGif.data.id);
+					saveGifToLocalStorage(await newGifId);
 					await hideElements($stage5);
 					await showElements($stage6);
 					await uploadLoadingBar.stop();
@@ -553,8 +553,14 @@ const createGifsSection = (() => {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements(document.querySelector(".nav-item-container"));
 	}
-	function saveGifToLocalStorage(gifId) {
-		localStorage.setItem(`gif-${gifId}`, gifId);
+
+	async function saveGifToLocalStorage(gif) {
+		const generatedGif = await fetch(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
+		const response = await generatedGif.json();
+		const data = response.data;
+		const gifID = data.id;
+		const stringifiedData = JSON.stringify(data);
+		localStorage.setItem(`gif-${gifID}`, stringifiedData);
 	}
 	function copyCreatedGifLink() {
 		const tempElement = document.createElement("textarea");
@@ -702,7 +708,6 @@ const myGifsSection = (() => {
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-
 // On Load functions
 events.emit("pageLoad");
 
