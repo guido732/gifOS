@@ -158,22 +158,21 @@ const gifSuggestions = (() => {
 	const $suggestedGifs = document.querySelector("#suggested-container");
 
 	// Bind events
+	events.on("pageLoad", _render);
 	events.on("pageLoad", mount);
 	events.on("gotoHome", mount);
-	events.on("searchStarted", unmount);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
+	events.on("searchStarted", unmount);
 
 	function mount() {
 		showElements($suggestionsSection, $suggestedGifs);
-		_render();
 	}
 	function unmount() {
 		hideElements($suggestionsSection);
 	}
 	function _render() {
-		console.log("gifSuggestions rendered");
-		// TODO replace this for call to fetchSuggestionsGif with default limit
+		fetchSuggestionGifs(4);
 	}
 	async function fetchSuggestionGifs(limit) {
 		const suggestion = getRandomElement(suggestionTopics);
@@ -187,9 +186,7 @@ const gifSuggestions = (() => {
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * (array.length - 1));
 	}
-	return {
-		fetchSuggestionGifs: fetchSuggestionGifs
-	};
+	return {};
 })();
 const createGifs = (() => {
 	// Local variables
@@ -235,6 +232,7 @@ const createGifs = (() => {
 	const uploadLoadingBar = LoadingBar($uploadProgressBlocks);
 
 	events.on("gotoHome", unmount);
+	events.on("createGif", mount);
 
 	// Bind events
 	$createGifContinue.onclick = async () => {
@@ -536,7 +534,6 @@ fetchTrendingGifs(16);
 loadColorTheme();
 $searchBar.focus();
 events.emit("pageLoad");
-gifSuggestions.fetchSuggestionGifs(4);
 
 // Bind events
 $homeButton.addEventListener("click", () => {
@@ -741,7 +738,6 @@ function showMyGifsSection() {
 }
 function showCreateGifSection() {
 	events.emit("createGif");
-	createGifs.mount();
 	hideElements($searchResultsSection, $searchBox, $trendsSection, $navItems);
 }
 function setColorTheme(selectedColorTheme) {
