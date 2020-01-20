@@ -683,26 +683,22 @@ const myGifsSection = (() => {
 	}
 	function render() {
 		myGifs = {};
-		let gifIds = "";
 		$gifsGrid.innerHTML = "";
+
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
-		if (!isEmpty(myGifs)) {
-			for (let key in myGifs) {
-				gifIds += `${myGifs[key]},`;
-			}
-			gifIds = gifIds.slice(0, -1);
-			fetchMyGifs(gifIds);
-		}
+		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
 	}
-	async function fetchMyGifs(gifIds) {
-		const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
-		await searchResults.data.forEach(gif => {
+	function loadMyGifs(myGifs) {
+		for (let doggo in myGifs) {
+			const gifData = JSON.parse(myGifs[doggo]);
 			let aspectRatio = "";
-			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-			$gifsGrid.append(newElement("trend", gif, aspectRatio));
-		});
+			gifData.images["480w_still"].width / gifData.images["480w_still"].height >= 1.5
+				? (aspectRatio = "item-double")
+				: null;
+			$gifsGrid.append(newElement("trend", gifData, aspectRatio));
+		}
 	}
 })();
 
@@ -779,11 +775,11 @@ function showElements(...elements) {
 function processSearchValues(inputValues) {
 	return inputValues.split(" ").join("+");
 }
-function isEmpty(obj) {
+function isNotEmpty(obj) {
 	for (let key in obj) {
-		if (obj.hasOwnProperty(key)) return false;
+		if (obj.hasOwnProperty(key)) return true;
 	}
-	return true;
+	return false;
 }
 
 /* 
