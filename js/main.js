@@ -141,7 +141,6 @@ const searchSection = (() => {
 	const $searchButton = document.querySelector("#search-button");
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 	const $searchBox = document.querySelector("#search-box");
-
 	const $searchResultsSection = document.querySelector("#search-results-section");
 	const $searchSuggestions = document.querySelector("#search-suggestions");
 	const $searchTags = document.querySelector("#search-tags");
@@ -252,7 +251,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-const gifSuggestionsSection = (() => {
+const suggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -304,7 +303,7 @@ const gifSuggestionsSection = (() => {
 		return Math.floor(Math.random() * (array.length - 1));
 	}
 })();
-const gifTrendingSection = (() => {
+const trendingSection = (() => {
 	// Local variables
 
 	// Cache DOM
@@ -330,7 +329,6 @@ const gifTrendingSection = (() => {
 	}
 	async function fetchTrendingGifs(limit) {
 		const gifOffset = Math.floor(Math.random() * 50);
-
 		const gifsTrending = await fetchURL(
 			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
 		);
@@ -347,7 +345,7 @@ const gifTrendingSection = (() => {
 		}
 	}
 })();
-const createGifs = (() => {
+const createGifsSection = (() => {
 	// Local variables
 	let totalTime = 0;
 	let newGifId = "";
@@ -589,7 +587,7 @@ const createGifs = (() => {
 		return await data;
 	}
 })();
-const myGifs = (() => {
+const myGifsSection = (() => {
 	// Local variables
 	let myGifs = {};
 
