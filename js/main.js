@@ -298,11 +298,7 @@ const searchSection = (() => {
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
 
-		// Fit grids so no gaps are visible by having only a pair number of item-double elements
-		const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
-		if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-			itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-		}
+		await fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
 		$searchTags.innerHTML = "";
 		searchResults.data.map(element => {
@@ -402,12 +398,7 @@ const trendingSection = (() => {
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
-
-		// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
-		const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
-		if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-			itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-		}
+		await fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 	}
 })();
 const createGifsSection = (() => {
@@ -689,6 +680,7 @@ const myGifsSection = (() => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
 		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
+		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
 	}
 	function loadMyGifs(myGifs) {
 		for (let myGifKey in myGifs) {
@@ -780,6 +772,13 @@ function isNotEmpty(obj) {
 		if (obj.hasOwnProperty(key)) return true;
 	}
 	return false;
+}
+async function fitDoubleSpanGifsGrid(gifGridID) {
+	// Fit grids so no gaps are visible by having only a pair number of item-double elements
+	const doubleSpanItems = document.querySelectorAll(`${gifGridID} .item-double`);
+	if (doubleSpanItems.length % 2 !== 0 && doubleSpanItems.length > 1) {
+		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
+	}
 }
 
 /* 
