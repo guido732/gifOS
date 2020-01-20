@@ -144,13 +144,19 @@ const searchSection = (() => {
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 	const $searchBox = document.querySelector("#search-box");
 
+	const $searchResultsSection = document.querySelector("#search-results-section");
+	const $searchSuggestions = document.querySelector("#search-suggestions");
+	const $searchTags = document.querySelector("#search-tags");
+
 	// Bind events
 	events.on("pageLoad", mount);
-	events.on("gotoHome", mount);
 	events.on("pageLoad", () => $searchBar.focus());
+	events.on("gotoHome", mount);
+	events.on("gotoHome", hideSearchResults);
 	events.on("gotoHome", () => $searchBar.focus());
 	events.on("closeOpenedElements", hideSearchSuggestions);
 	events.on("searchBarInputChanged", searchBarInputChanged);
+	events.on("myGifs", unmount);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
 	events.on("searchStarted", hideSearchSuggestions);
@@ -168,10 +174,13 @@ const searchSection = (() => {
 		showElements($searchBox);
 	}
 	function unmount() {
-		hideElements($searchBox);
+		hideElements($searchBox, $searchResultsSection, $searchTags);
 	}
 	function hideSearchSuggestions() {
 		hideElements($searchSuggestions);
+	}
+	function hideSearchResults() {
+		hideElements($searchResultsSection, $searchTags);
 	}
 	function searchBarInputChanged(inputValue) {
 		if (inputValue !== "") {
@@ -660,13 +669,9 @@ const $styleSheet = document.querySelector("#color-theme-stylesheet");
 const $favicon = document.querySelector("#favicon");
 
 const $createGifSection = document.querySelector("#create-gif-section");
-const $btnMyGifs = document.querySelector("#btn-my-gifs");
 const $myGifsSection = document.querySelector("#my-gifs-section");
+const $btnMyGifs = document.querySelector("#btn-my-gifs");
 const $btnCreateGif = document.querySelector("#btn-create-gif");
-
-const $searchResultsSection = document.querySelector("#search-results-section");
-const $searchSuggestions = document.querySelector("#search-suggestions");
-const $searchTags = document.querySelector("#search-tags");
 
 // On Load functions
 loadColorTheme();
@@ -676,7 +681,6 @@ events.emit("pageLoad");
 $homeButton.addEventListener("click", () => {
 	// Takes user to default window view
 	events.emit("gotoHome");
-	hideElements($searchResultsSection, $searchTags);
 	showElements($navItems);
 });
 $themeSelector.addEventListener("click", () => {
@@ -701,7 +705,7 @@ $colorThemeOptions.forEach((colorThemeOption, index) => {
 	};
 });
 
-// Generic fetch function
+// Generic functions
 function fetchURL(url) {
 	const fetchData = fetch(url)
 		.then(response => {
@@ -774,11 +778,10 @@ function replaceSearchText(newText) {
 }
 function showMyGifsSection() {
 	events.emit("myGifs");
-	hideElements($searchResultsSection);
 }
 function showCreateGifSection() {
 	events.emit("createGif");
-	hideElements($searchResultsSection, $navItems);
+	hideElements($navItems);
 }
 function setColorTheme(selectedColorTheme) {
 	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
