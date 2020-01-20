@@ -505,7 +505,7 @@ const createGifsSection = (() => {
 				const newGif = await uploadCreatedGif();
 				if ((await newGif.meta.status) === 200) {
 					newGifId = await newGif.data.id;
-					saveGifToLocalStorage(await newGif.data.id);
+					saveGifToLocalStorage(await newGifId);
 					await hideElements($stage5);
 					await showElements($stage6);
 					await uploadLoadingBar.stop();
@@ -553,8 +553,14 @@ const createGifsSection = (() => {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements(document.querySelector(".nav-item-container"));
 	}
-	function saveGifToLocalStorage(gifId) {
-		localStorage.setItem(`gif-${gifId}`, gifId);
+
+	async function saveGifToLocalStorage(gif) {
+		const generatedGif = await fetch(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
+		const response = await generatedGif.json();
+		const data = response.data;
+		const gifID = data.id;
+		const stringifiedData = JSON.stringify(data);
+		localStorage.setItem(`gif-${gifID}`, stringifiedData);
 	}
 	function copyCreatedGifLink() {
 		const tempElement = document.createElement("textarea");
@@ -677,32 +683,27 @@ const myGifsSection = (() => {
 	}
 	function render() {
 		myGifs = {};
-		let gifIds = "";
 		$gifsGrid.innerHTML = "";
+
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
-		if (!isEmpty(myGifs)) {
-			for (let key in myGifs) {
-				gifIds += `${myGifs[key]},`;
-			}
-			gifIds = gifIds.slice(0, -1);
-			fetchMyGifs(gifIds);
-		}
+		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
 	}
-	async function fetchMyGifs(gifIds) {
-		const searchResults = await fetchURL(`https://api.giphy.com/v1/gifs?api_key=${APIkey}&ids=${gifIds}`);
-		await searchResults.data.forEach(gif => {
+	function loadMyGifs(myGifs) {
+		for (let myGifKey in myGifs) {
+			const parsedGifData = JSON.parse(myGifs[myGifKey]);
 			let aspectRatio = "";
-			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-			$gifsGrid.append(newElement("trend", gif, aspectRatio));
-		});
+			parsedGifData.images["480w_still"].width / parsedGifData.images["480w_still"].height >= 1.5
+				? (aspectRatio = "item-double")
+				: null;
+			$gifsGrid.append(newElement("trend", parsedGifData, aspectRatio));
+		}
 	}
 })();
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-
 // On Load functions
 events.emit("pageLoad");
 
@@ -774,11 +775,11 @@ function showElements(...elements) {
 function processSearchValues(inputValues) {
 	return inputValues.split(" ").join("+");
 }
-function isEmpty(obj) {
+function isNotEmpty(obj) {
 	for (let key in obj) {
-		if (obj.hasOwnProperty(key)) return false;
+		if (obj.hasOwnProperty(key)) return true;
 	}
-	return true;
+	return false;
 }
 
 /* 
