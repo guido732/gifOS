@@ -113,9 +113,11 @@ const LoadingBar = subElems => {
 };
 const events = {
 	events: {},
-	on: function(eventName, fn) {
-		this.events[eventName] = this.events[eventName] || [];
-		this.events[eventName].push(fn);
+	on: function(eventName, ...fn) {
+		fn.forEach(inputFn => {
+			this.events[eventName] = this.events[eventName] || [];
+			this.events[eventName].push(inputFn);
+		});
 	},
 	off: function(eventName, fn) {
 		if (this.events[eventName]) {
@@ -205,23 +207,19 @@ const navBar = (() => {
 })();
 const searchSection = (() => {
 	// Cache DOM
+	const $searchBox = document.querySelector("#search-box");
 	const $searchBar = document.querySelector("#search-bar");
 	const $searchButton = document.querySelector("#search-button");
-	const $searchResulsContainer = document.querySelector("#search-result-container");
-	const $searchBox = document.querySelector("#search-box");
-	const $searchResultsSection = document.querySelector("#search-results-section");
 	const $searchSuggestions = document.querySelector("#search-suggestions");
 	const $searchTags = document.querySelector("#search-tags");
+	const $searchResultsSection = document.querySelector("#search-results-section");
+	const $searchResulsContainer = document.querySelector("#search-result-container");
 
 	// Bind events
-	events.on("pageLoad", mount);
-	events.on("pageLoad", () => $searchBar.focus());
-	events.on("gotoHome", mount);
-	events.on("gotoHome", hideSearchResults);
-	events.on("gotoHome", () => $searchBar.focus());
+	events.on("pageLoad", mount, () => $searchBar.focus());
+	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus());
 	events.on("closeOpenedElements", hideSearchSuggestions);
 	events.on("searchBarInputChanged", searchBarInputChanged);
-	events.on("myGifs", unmount);
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
 	events.on("searchStarted", hideSearchSuggestions);
