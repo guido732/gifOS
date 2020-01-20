@@ -47,13 +47,13 @@
 			<button id="home-button" class="close-window">
 				<div class="brand-container"></div>
 			</button>
-			<div class="nav-item-container">
+			<div class="nav-item-container" id="nav-items">
 				<button class="nav-item btn-primary" id="btn-create-gif">
 					<span class="btn-text-container">Crear Guifos</span>
 				</button>
 
 				<div class="nav-item dropdown-container-outer">
-					<button class=" btn-primary btn-primary--icon-after icon-dropdown" id="dropdown-btn">
+					<button class=" btn-primary btn-primary--icon-after icon-dropdown" id="theme-selector">
 						<span class="btn-text-container">Elegir Tema</span>
 					</button>
 					<div class="dropdown-list hidden" id="dropdown-list">
@@ -65,7 +65,7 @@
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search-container" id="search-box">
+			<section class="search-container hidden" id="search-box">
 				<div class="search">
 					<div class="search-header">
 						<!-- ! review - header bottom border color -->
@@ -90,7 +90,7 @@
 				</div>
 				<div class="search-tags hidden" id="search-tags"></div>
 			</section>
-			<section class="search-results hidden" id="search-results">
+			<section class="search-results hidden" id="search-results-section">
 				<input
 					type="text"
 					name="search-results-input"
@@ -101,15 +101,15 @@
 				/>
 				<div class="result-container" id="search-result-container"></div>
 			</section>
-			<section class="suggestions" id="suggestions">
+			<section class="suggestions hidden" id="suggestions-section">
 				<input type="text" name="suggestion-results-input" class="input-bar" placeholder="Hoy te sugerimos:" disabled />
 				<div class="result-container" id="suggested-container"></div>
 			</section>
-			<section class="trends" id="trends">
+			<section class="trends hidden" id="trends-section">
 				<input type="text" name="suggestion-results-input" class="input-bar" placeholder="Tendencias:" disabled />
 				<div class="trend-grid" id="trend-grid"></div>
 			</section>
-			<section class="create-gif-section hidden" id="create-gif">
+			<section class="create-gif-section hidden" id="create-gif-section">
 				<div class="window-element window-size-md" id="stage1">
 					<div class="gradient-header">
 						Crear Guifos
@@ -194,7 +194,7 @@
 							<div class="hidden" id="stage4">
 								<button class="btn-secondary " id="redo-recording">
 									<span class="btn-text-container">Repetir Captura</span></button
-								><button class="btn-primary" id="upload-gif">
+								><button class="btn-primary gif-upload" id="upload-gif">
 									<span class="btn-text-container">Subir Guifo</span>
 								</button>
 							</div>
@@ -279,7 +279,7 @@
 						<h2>Tu Guifo no pudo ser creado</h2>
 						<p id="error-msg"></p>
 						<div class="">
-							<button class="btn-secondary" id="retry-upload">
+							<button class="btn-secondary gif-upload" id="retry-upload">
 								<span class="btn-text-container">Reintentar</span>
 							</button>
 							<button class="btn-primary close-window">
@@ -289,7 +289,7 @@
 					</div>
 				</div>
 			</section>
-			<section class="my-gifs hidden" id="my-gifs">
+			<section class="my-gifs hidden" id="my-gifs-section">
 				<input type="text" name="my-gifs-results-input" class="input-bar" placeholder="Mis guifos:" disabled />
 				<div class="trend-grid" id="my-gifs-grid"></div>
 			</section>
