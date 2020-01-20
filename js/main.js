@@ -135,7 +135,7 @@ const LoadingBar = subElems => {
 		loop: loop
 	};
 };
-const searchBar = (() => {
+const searchSection = (() => {
 	// Local variables
 
 	// Cache DOM
@@ -181,7 +181,69 @@ const searchBar = (() => {
 			hideSearchSuggestions();
 		}
 	}
-	function _render() {}
+	async function handleSearchFunctionality(searchValue) {
+		replaceSearchText(searchValue);
+		$searchBar.value = "";
+		$searchBar.focus();
+		$searchButton.disabled = true;
+		$searchResulsContainer.innerHTML = "";
+		await fetchSearchResultGifs(16, searchValue);
+		events.emit("searchStarted");
+		hideElements($trendsSection, $myGifsSection, $createGifSection, $searchSuggestions);
+		$searchSuggestions.innerHTML = "";
+		await showElements($searchResultsSection, $searchTags);
+	}
+	async function handleSearchSuggestionSearch(limit, keywords) {
+		processedKeywords = processSearchValues(keywords);
+		const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
+		searchResults = await fetchURL(url);
+		$searchSuggestions.innerHTML = "";
+		showElements($searchSuggestions);
+		searchResults.data.length
+			? searchResults.data.forEach(searchTitle => {
+					searchTitle.title && searchTitle.title !== " "
+						? $searchSuggestions.append(newElement("searchTitle", searchTitle))
+						: null;
+			  })
+			: hideElements($searchSuggestions);
+
+		const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+		$searchSuggestionsButtons.forEach(element => {
+			element.onclick = () => {
+				handleSearchFunctionality(element.innerText);
+			};
+		});
+	}
+	async function fetchSearchResultGifs(limit, keywords) {
+		processedKeywords = processSearchValues(keywords);
+		searchResults = await fetchURL(
+			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+		);
+		await searchResults.data.forEach(gif => {
+			let aspectRatio = "";
+			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
+		});
+
+		// Fit grids so no gaps are visible by having only a pair number of item-double elements
+		const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
+		if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+			itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+		}
+
+		$searchTags.innerHTML = "";
+		searchResults.data.map(element => {
+			element.title && element.title !== " " && element.title !== "&emsp;"
+				? $searchTags.appendChild(newElement("tag", element))
+				: null;
+		});
+
+		document.querySelectorAll(".btn-tag").forEach(tag => {
+			tag.onclick = () => {
+				handleSearchFunctionality(tag.innerText);
+			};
+		});
+	}
 })();
 const gifSuggestions = (() => {
 	// Local variables
@@ -479,10 +541,6 @@ const createGifs = (() => {
 		console.log("***Upload ended***");
 		return await data;
 	}
-	return {
-		mount: mount,
-		unmount: unmount
-	};
 })();
 const myGifs = (() => {
 	// Local variables
@@ -529,10 +587,6 @@ const myGifs = (() => {
 			$gifsGrid.append(newElement("trend", gif, aspectRatio));
 		});
 	}
-	return {
-		mount: mount,
-		unmount: unmount
-	};
 })();
 
 // Current list of events:
@@ -560,11 +614,6 @@ const $dropdownList = document.querySelector("#dropdown-list");
 const $colorThemeOptions = document.querySelectorAll(".color-theme-option");
 const $styleSheet = document.querySelector("#color-theme-stylesheet");
 const $favicon = document.querySelector("#favicon");
-
-const $searchBar = document.querySelector("#search-bar");
-const $searchButton = document.querySelector("#search-button");
-const $searchResulsContainer = document.querySelector("#search-result-container");
-const $searchBox = document.querySelector("#search-box");
 
 const $createGifSection = document.querySelector("#create-gif-section");
 const $btnMyGifs = document.querySelector("#btn-my-gifs");
@@ -613,39 +662,6 @@ $colorThemeOptions.forEach((colorThemeOption, index) => {
 	};
 });
 
-async function handleSearchFunctionality(searchValue) {
-	replaceSearchText(searchValue);
-	$searchBar.value = "";
-	$searchBar.focus();
-	$searchButton.disabled = true;
-	$searchResulsContainer.innerHTML = "";
-	await fetchSearchResultGifs(16, searchValue);
-	events.emit("searchStarted");
-	hideElements($trendsSection, $myGifsSection, $createGifSection, $searchSuggestions);
-	$searchSuggestions.innerHTML = "";
-	await showElements($searchResultsSection, $searchTags);
-}
-async function handleSearchSuggestionSearch(limit, keywords) {
-	processedKeywords = processSearchValues(keywords);
-	const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
-	searchResults = await fetchURL(url);
-	$searchSuggestions.innerHTML = "";
-	showElements($searchSuggestions);
-	searchResults.data.length
-		? searchResults.data.forEach(searchTitle => {
-				searchTitle.title && searchTitle.title !== " "
-					? $searchSuggestions.append(newElement("searchTitle", searchTitle))
-					: null;
-		  })
-		: hideElements($searchSuggestions);
-
-	const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
-	$searchSuggestionsButtons.forEach(element => {
-		element.onclick = () => {
-			handleSearchFunctionality(element.innerText);
-		};
-	});
-}
 async function fetchTrendingGifs(limit) {
 	const gifOffset = Math.floor(Math.random() * 50);
 
@@ -663,36 +679,6 @@ async function fetchTrendingGifs(limit) {
 	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
 		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
 	}
-}
-async function fetchSearchResultGifs(limit, keywords) {
-	processedKeywords = processSearchValues(keywords);
-	searchResults = await fetchURL(
-		`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
-	);
-	await searchResults.data.forEach(gif => {
-		let aspectRatio = "";
-		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-		$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
-	});
-
-	// Fit grids so no gaps are visible by having only a pair number of item-double elements
-	const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
-	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-	}
-
-	$searchTags.innerHTML = "";
-	searchResults.data.map(element => {
-		element.title && element.title !== " " && element.title !== "&emsp;"
-			? $searchTags.appendChild(newElement("tag", element))
-			: null;
-	});
-
-	document.querySelectorAll(".btn-tag").forEach(tag => {
-		tag.onclick = () => {
-			handleSearchFunctionality(tag.innerText);
-		};
-	});
 }
 
 // Generic fetch function
