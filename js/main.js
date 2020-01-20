@@ -150,6 +150,18 @@ const searchBar = (() => {
 	events.on("pageLoad", () => $searchBar.focus());
 	events.on("gotoHome", () => $searchBar.focus());
 	events.on("closeOpenedElements", hideSearchSuggestions);
+	events.on("searchBarInputChanged", searchBarInputChanged);
+	events.on("myGifs", unmount);
+	events.on("createGif", unmount);
+
+	document.searchform.addEventListener("submit", e => {
+		// Gets search results from form submission
+		e.preventDefault();
+		handleSearchFunctionality(e.explicitOriginalTarget.value);
+	});
+	$searchBar.addEventListener("input", e => {
+		events.emit("searchBarInputChanged", e.target.value);
+	});
 
 	function mount() {
 		showElements($searchBox);
@@ -159,6 +171,15 @@ const searchBar = (() => {
 	}
 	function hideSearchSuggestions() {
 		hideElements($searchSuggestions);
+	}
+	function searchBarInputChanged(inputValue) {
+		if (inputValue !== "") {
+			$searchButton.disabled = false;
+			handleSearchSuggestionSearch(8, inputValue);
+		} else {
+			$searchButton.disabled = true;
+			hideSearchSuggestions();
+		}
 	}
 	function _render() {}
 })();
@@ -583,24 +604,9 @@ document.addEventListener("keydown", e => {
 	e.key === "Escape" ? hideElements($dropdownList) : null;
 	e.key === "Escape" ? events.emit("closeOpenedElements") : null;
 });
-$searchBar.addEventListener("input", e => {
-	// Handles search bar functionality
-	if (e.target.value !== "") {
-		$searchButton.disabled = false;
-		handleSearchSuggestionSearch(8, $searchBar.value);
-	} else {
-		$searchButton.disabled = true;
-		hideElements($searchSuggestions);
-	}
-});
-document.searchform.addEventListener("submit", e => {
-	// Gets search results from form submission
-	e.preventDefault();
-	handleSearchFunctionality($searchBar.value);
-});
+
 $btnMyGifs.addEventListener("click", showMyGifsSection);
 $btnCreateGif.addEventListener("click", showCreateGifSection);
-
 $colorThemeOptions.forEach((colorThemeOption, index) => {
 	colorThemeOption.onclick = () => {
 		setColorTheme(colorThemes[index]);
@@ -762,11 +768,11 @@ function replaceSearchText(newText) {
 }
 function showMyGifsSection() {
 	events.emit("myGifs");
-	hideElements($searchResultsSection, $searchBox, $trendsSection);
+	hideElements($searchResultsSection, $trendsSection);
 }
 function showCreateGifSection() {
 	events.emit("createGif");
-	hideElements($searchResultsSection, $searchBox, $trendsSection, $navItems);
+	hideElements($searchResultsSection, $trendsSection, $navItems);
 }
 function setColorTheme(selectedColorTheme) {
 	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
