@@ -691,13 +691,13 @@ const myGifsSection = (() => {
 		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
 	}
 	function loadMyGifs(myGifs) {
-		for (let doggo in myGifs) {
-			const gifData = JSON.parse(myGifs[doggo]);
+		for (let myGifKey in myGifs) {
+			const parsedGifData = JSON.parse(myGifs[myGifKey]);
 			let aspectRatio = "";
-			gifData.images["480w_still"].width / gifData.images["480w_still"].height >= 1.5
+			parsedGifData.images["480w_still"].width / parsedGifData.images["480w_still"].height >= 1.5
 				? (aspectRatio = "item-double")
 				: null;
-			$gifsGrid.append(newElement("trend", gifData, aspectRatio));
+			$gifsGrid.append(newElement("trend", parsedGifData, aspectRatio));
 		}
 	}
 })();
