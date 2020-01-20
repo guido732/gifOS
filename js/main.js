@@ -488,10 +488,10 @@ const createGifs = (() => {
 
 	function mount() {
 		hideElements($stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
-		showElements($createGifSection, $myGifsSection, $stage1);
+		showElements($createGifSection, $stage1);
 	}
 	function unmount() {
-		hideElements($createGifSection, $myGifsSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
+		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements(document.querySelector(".nav-item-container"));
 	}
 	function _saveGifToLocalStorage(gifId) {
@@ -641,69 +641,87 @@ const myGifs = (() => {
 		});
 	}
 })();
+const navBar = (() => {
+	// Local variables
+	const colorThemes = ["sailor_day", "sailor_night"];
 
-// Current list of events:
-/* 
-	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
-	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
-	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
-	pageLoad -> onLoad event to set initial states
-	searchStarted -> starts search
-	createGif -> starts createGif section
-	myGifs -> starts myGifs section
-	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
-*/
+	// Cache DOM
+	const $navItems = document.querySelector("#nav-items");
+	const $homeButton = document.querySelector("#home-button");
+
+	const $themeSelector = document.querySelector("#theme-selector");
+	const $dropdownList = document.querySelector("#dropdown-list");
+	const $colorThemeOptions = document.querySelectorAll(".color-theme-option");
+	const $styleSheet = document.querySelector("#color-theme-stylesheet");
+	const $favicon = document.querySelector("#favicon");
+
+	const $btnMyGifs = document.querySelector("#btn-my-gifs");
+	const $btnCreateGif = document.querySelector("#btn-create-gif");
+
+	// Bind events
+	events.on("pageLoad", loadColorTheme);
+	$homeButton.addEventListener("click", () => {
+		// Takes user to default window view
+		events.emit("gotoHome");
+		mount();
+	});
+	$themeSelector.addEventListener("click", () => {
+		// Dropdown list visibility toggle
+		$dropdownList.classList.toggle("hidden");
+	});
+	window.addEventListener("click", e => {
+		events.emit("closeOpenedElements");
+		// Closes dropdown on click outside or "Escape" keypress
+		!e.target.closest("#theme-selector") ? hideElements($dropdownList) : null;
+	});
+	document.addEventListener("keydown", e => {
+		if (e.key === "Escape") {
+			hideElements($dropdownList);
+			events.emit("closeOpenedElements");
+		}
+	});
+	$colorThemeOptions.forEach((colorThemeOption, index) => {
+		colorThemeOption.onclick = () => {
+			setColorTheme(colorThemes[index]);
+		};
+	});
+	$btnMyGifs.addEventListener("click", showMyGifsSection);
+	$btnCreateGif.addEventListener("click", showCreateGifSection);
+
+	function loadColorTheme() {
+		localStorage.getItem("colorTheme")
+			? setColorTheme(localStorage.getItem("colorTheme"))
+			: setColorTheme(colorThemes[0]);
+	}
+	function setColorTheme(selectedColorTheme) {
+		$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
+		$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme || "sailor_day"}.ico`);
+		localStorage.setItem("colorTheme", selectedColorTheme);
+	}
+	function showMyGifsSection() {
+		events.emit("myGifs");
+	}
+	function showCreateGifSection() {
+		events.emit("createGif");
+		hideElements($navItems);
+	}
+	function mount() {
+		showElements($navItems, $homeButton);
+	}
+	function unmount() {
+		hideElements();
+	}
+})();
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-const colorThemes = ["sailor_day", "sailor_night"];
 
 // Cache DOM
-const $navItems = document.querySelector("#nav-items");
-const $homeButton = document.querySelector("#home-button");
 
-const $themeSelector = document.querySelector("#theme-selector");
-const $dropdownList = document.querySelector("#dropdown-list");
-const $colorThemeOptions = document.querySelectorAll(".color-theme-option");
-const $styleSheet = document.querySelector("#color-theme-stylesheet");
-const $favicon = document.querySelector("#favicon");
-
-const $createGifSection = document.querySelector("#create-gif-section");
-const $myGifsSection = document.querySelector("#my-gifs-section");
-const $btnMyGifs = document.querySelector("#btn-my-gifs");
-const $btnCreateGif = document.querySelector("#btn-create-gif");
+// const $myGifsSection = document.querySelector("#my-gifs-section");
 
 // On Load functions
-loadColorTheme();
 events.emit("pageLoad");
-
-// Bind events
-$homeButton.addEventListener("click", () => {
-	// Takes user to default window view
-	events.emit("gotoHome");
-	showElements($navItems);
-});
-$themeSelector.addEventListener("click", () => {
-	// Dropdown list visibility toggle
-	// e.preventDefault();
-	$dropdownList.classList.toggle("hidden");
-});
-window.addEventListener("click", e => {
-	events.emit("closeOpenedElements");
-	// Closes dropdown on click outside or "Escape" keypress
-	!e.target.closest("#theme-selector") ? hideElements($dropdownList) : null;
-});
-document.addEventListener("keydown", e => {
-	e.key === "Escape" ? hideElements($dropdownList) : null;
-	e.key === "Escape" ? events.emit("closeOpenedElements") : null;
-});
-$btnMyGifs.addEventListener("click", showMyGifsSection);
-$btnCreateGif.addEventListener("click", showCreateGifSection);
-$colorThemeOptions.forEach((colorThemeOption, index) => {
-	colorThemeOption.onclick = () => {
-		setColorTheme(colorThemes[index]);
-	};
-});
 
 // Generic functions
 function fetchURL(url) {
@@ -776,26 +794,21 @@ function processSearchValues(inputValues) {
 function replaceSearchText(newText) {
 	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
 }
-function showMyGifsSection() {
-	events.emit("myGifs");
-}
-function showCreateGifSection() {
-	events.emit("createGif");
-	hideElements($navItems);
-}
-function setColorTheme(selectedColorTheme) {
-	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
-	$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme || "sailor_day"}.ico`);
-	localStorage.setItem("colorTheme", selectedColorTheme);
-}
-function loadColorTheme() {
-	localStorage.getItem("colorTheme")
-		? setColorTheme(localStorage.getItem("colorTheme"))
-		: setColorTheme(colorThemes[0]);
-}
 function isEmpty(obj) {
 	for (let key in obj) {
 		if (obj.hasOwnProperty(key)) return false;
 	}
 	return true;
 }
+
+// Current list of events:
+/* 
+	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
+	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
+	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
+	pageLoad -> onLoad event to set initial states
+	searchStarted -> starts search
+	createGif -> starts createGif section
+	myGifs -> starts myGifs section
+	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
+*/
