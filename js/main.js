@@ -1,298 +1,5 @@
-"use strict";
-// Current list of events:
-/* 
-	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
-	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
-	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
-*/
+// "use strict";
 
-// Local variables
-const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-const colorThemes = ["sailor_day", "sailor_night"];
-
-// Cache DOM
-const $navItems = document.querySelector("#nav-items");
-const $homeButton = document.querySelector("#home-button");
-
-const $themeSelector = document.querySelector("#theme-selector");
-const $dropdownList = document.querySelector("#dropdown-list");
-const $colorThemeOptions = document.querySelectorAll(".color-theme-option");
-const $styleSheet = document.querySelector("#color-theme-stylesheet");
-const $favicon = document.querySelector("#favicon");
-
-const $searchBar = document.querySelector("#search-bar");
-const $searchButton = document.querySelector("#search-button");
-const $searchResulsContainer = document.querySelector("#search-result-container");
-const $searchBox = document.querySelector("#search-box");
-
-const $createGifSection = document.querySelector("#create-gif-section");
-const $btnMyGifs = document.querySelector("#btn-my-gifs");
-const $myGifsSection = document.querySelector("#my-gifs-section");
-const $btnCreateGif = document.querySelector("#btn-create-gif");
-
-const $trendsSection = document.querySelector("#trends-section");
-const $trendingGifs = document.querySelector("#trend-grid");
-
-const $searchResultsSection = document.querySelector("#search-results-section");
-const $searchSuggestions = document.querySelector("#search-suggestions");
-const $searchTags = document.querySelector("#search-tags");
-const $suggestionsSection = document.querySelector("#suggestions-section");
-const $suggestedGifs = document.querySelector("#suggested-container");
-
-// On Load functions
-fetchSuggestionGifs(4);
-fetchTrendingGifs(16);
-loadColorTheme();
-$searchBar.focus();
-
-// Bind events
-$homeButton.addEventListener("click", () => {
-	// Takes user to default window view
-	events.emit("gotoHome");
-	hideElements($searchResultsSection, $searchTags);
-	showElements($searchBox, $suggestionsSection, $trendsSection, $navItems);
-});
-$themeSelector.addEventListener("click", () => {
-	// Dropdown list visibility toggle
-	// e.preventDefault();
-	$dropdownList.classList.toggle("hidden");
-});
-window.addEventListener("click", e => {
-	// Closes dropdown on click outside or "Escape" keypress
-	hideElements($searchSuggestions);
-	!e.target.closest("#theme-selector") ? hideElements($dropdownList) : null;
-});
-document.addEventListener("keydown", e => {
-	e.key === "Escape" ? hideElements($dropdownList, $searchSuggestions) : null;
-});
-$searchBar.addEventListener("input", e => {
-	// Handles search bar functionality
-	if (e.target.value !== "") {
-		$searchButton.disabled = false;
-		handleSearchSuggestionSearch(8, $searchBar.value);
-	} else {
-		$searchButton.disabled = true;
-		hideElements($searchSuggestions);
-	}
-});
-document.searchform.addEventListener("submit", e => {
-	// Gets search results from form submission
-	e.preventDefault();
-	handleSearchFunctionality($searchBar.value);
-});
-$btnMyGifs.addEventListener("click", showMyGifsSection);
-$btnCreateGif.addEventListener("click", showCreateGifSection);
-
-$colorThemeOptions.forEach((colorThemeOption, index) => {
-	colorThemeOption.onclick = () => {
-		setColorTheme(colorThemes[index]);
-	};
-});
-
-async function handleSearchFunctionality(searchValue) {
-	replaceSearchText(searchValue);
-	$searchBar.value = "";
-	$searchBar.focus();
-	$searchButton.disabled = true;
-	$searchResulsContainer.innerHTML = "";
-	await fetchSearchResultGifs(16, searchValue);
-	hideElements($trendsSection, $suggestionsSection, $myGifsSection, $createGifSection, $searchSuggestions);
-	$searchSuggestions.innerHTML = "";
-	await showElements($searchResultsSection, $searchTags);
-}
-async function handleSearchSuggestionSearch(limit, keywords) {
-	processedKeywords = processSearchValues(keywords);
-	const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
-	searchResults = await fetchURL(url);
-	$searchSuggestions.innerHTML = "";
-	showElements($searchSuggestions);
-	searchResults.data.length
-		? searchResults.data.forEach(searchTitle => {
-				searchTitle.title && searchTitle.title !== " "
-					? $searchSuggestions.append(newElement("searchTitle", searchTitle))
-					: null;
-		  })
-		: hideElements($searchSuggestions);
-
-	const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
-	$searchSuggestionsButtons.forEach(element => {
-		element.onclick = () => {
-			handleSearchFunctionality(element.innerText);
-		};
-	});
-}
-async function fetchTrendingGifs(limit) {
-	const gifOffset = Math.floor(Math.random() * 50);
-
-	const gifsTrending = await fetchURL(
-		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
-	);
-	await gifsTrending.data.forEach(gif => {
-		let aspectRatio = "";
-		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-		$trendingGifs.append(newElement("trend", gif, aspectRatio));
-	});
-
-	// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
-	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
-	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-	}
-}
-async function fetchSuggestionGifs(limit) {
-	const suggestionTopicsArray = [
-		"baby+yoda",
-		"adventure+time",
-		"oh+shit",
-		"rick+and+morty",
-		"the+office",
-		"sillicon+valley",
-		"the+mandalorian",
-		"pulp+fiction",
-		"fight+club",
-		"it",
-		"godzilla",
-		"wtf",
-		"trippy"
-	];
-	const suggestion = Math.floor(Math.random() * (suggestionTopicsArray.length - 1));
-
-	const gifsSuggestions = await fetchURL(
-		`https://api.giphy.com/v1/gifs/search?q=${suggestionTopicsArray[suggestion]}&api_key=${APIkey}&limit=${limit}`
-	);
-
-	gifsSuggestions.data.forEach(gif => {
-		$suggestedGifs.append(newElement("window", gif));
-	});
-}
-async function fetchSearchResultGifs(limit, keywords) {
-	processedKeywords = processSearchValues(keywords);
-	searchResults = await fetchURL(
-		`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
-	);
-	await searchResults.data.forEach(gif => {
-		let aspectRatio = "";
-		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
-		$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
-	});
-
-	// Fit grids so no gaps are visible by having only a pair number of item-double elements
-	const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
-	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
-		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
-	}
-
-	$searchTags.innerHTML = "";
-	searchResults.data.map(element => {
-		element.title && element.title !== " " && element.title !== "&emsp;"
-			? $searchTags.appendChild(newElement("tag", element))
-			: null;
-	});
-
-	document.querySelectorAll(".btn-tag").forEach(tag => {
-		tag.onclick = () => {
-			handleSearchFunctionality(tag.innerText);
-		};
-	});
-}
-
-// Generic fetch function
-function fetchURL(url) {
-	const fetchData = fetch(url)
-		.then(response => {
-			return response.json();
-		})
-		.catch(error => {
-			return error;
-		});
-	return fetchData;
-}
-function newElement(type, element, ratio = "") {
-	element.title === "" ? (element.title = "&emsp;") : null;
-	const $container = document.createElement("div");
-	switch (type) {
-		case "window":
-			$container.innerHTML = `<div class="window-item ${ratio}">
-			<div class="wi-header">
-					${element.title}
-				<button class="remove-element"></button>
-			</div>
-			<div class="img-container">
-			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
-			</div>
-		</div>`;
-			return $container.firstChild;
-
-		case "trend":
-			const titleToArray = element.title.split(" ");
-			let titleArrayToTags = "";
-			titleToArray.forEach(word => {
-				titleArrayToTags += `#${word} `;
-			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
-				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
-					<div class="trend-header">
-						${titleArrayToTags}
-					</div>
-				</a>
-			</div>
-		</div>`;
-			return $container.firstChild;
-
-		case "searchTitle":
-			$container.innerHTML = `<button class="search-element btn-search-suggestion">
-		<span>${element.title}</span>
-		</button>`;
-			return $container.firstChild;
-		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag"><span class="btn-text-container">${element.title}</span></button>`;
-			return $container.firstChild;
-	}
-}
-function hideElements(...elements) {
-	elements.forEach(element => {
-		element.classList.add("hidden");
-	});
-}
-function showElements(...elements) {
-	elements.forEach(element => {
-		element.classList.remove("hidden");
-	});
-}
-function processSearchValues(inputValues) {
-	return (outputValues = inputValues.split(" ").join("+"));
-}
-function replaceSearchText(newText) {
-	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
-}
-function showMyGifsSection() {
-	// createGifs.mount();
-	myGifs.mount();
-	hideElements($suggestionsSection, $searchResultsSection, $searchBox, $trendsSection);
-}
-function showCreateGifSection() {
-	createGifs.mount();
-	myGifs.mount();
-	hideElements($suggestionsSection, $searchResultsSection, $searchBox, $trendsSection, $navItems);
-}
-function setColorTheme(selectedColorTheme) {
-	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
-	$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme || "sailor_day"}.ico`);
-	localStorage.setItem("colorTheme", selectedColorTheme);
-}
-function loadColorTheme() {
-	localStorage.getItem("colorTheme")
-		? setColorTheme(localStorage.getItem("colorTheme"))
-		: setColorTheme(colorThemes[0]);
-}
-function isEmpty(obj) {
-	for (let key in obj) {
-		if (obj.hasOwnProperty(key)) return false;
-	}
-	return true;
-}
 const events = {
 	events: {},
 	on: function(eventName, fn) {
@@ -428,6 +135,62 @@ const LoadingBar = subElems => {
 		loop: loop
 	};
 };
+const gifSuggestions = (() => {
+	// Local variables
+	const suggestionTopics = [
+		"baby+yoda",
+		"adventure+time",
+		"oh+shit",
+		"rick+and+morty",
+		"the+office",
+		"sillicon+valley",
+		"the+mandalorian",
+		"pulp+fiction",
+		"fight+club",
+		"it",
+		"godzilla",
+		"wtf",
+		"trippy"
+	];
+
+	// Cache DOM
+	const $suggestionsSection = document.querySelector("#suggestions-section");
+	const $suggestedGifs = document.querySelector("#suggested-container");
+
+	// Bind events
+	events.on("pageLoad", mount);
+	events.on("gotoHome", mount);
+	events.on("searchStarted", unmount);
+	events.on("myGifs", unmount);
+	events.on("createGif", unmount);
+
+	function mount() {
+		showElements($suggestionsSection, $suggestedGifs);
+		_render();
+	}
+	function unmount() {
+		hideElements($suggestionsSection);
+	}
+	function _render() {
+		console.log("gifSuggestions rendered");
+		// TODO replace this for call to fetchSuggestionsGif with default limit
+	}
+	async function fetchSuggestionGifs(limit) {
+		const suggestion = getRandomElement(suggestionTopics);
+		const gifsSuggestions = await fetchURL(
+			`https://api.giphy.com/v1/gifs/search?q=${suggestionTopics[suggestion]}&api_key=${APIkey}&limit=${limit}`
+		);
+		gifsSuggestions.data.forEach(gif => {
+			$suggestedGifs.append(newElement("window", gif));
+		});
+	}
+	function getRandomElement(array) {
+		return Math.floor(Math.random() * (array.length - 1));
+	}
+	return {
+		fetchSuggestionGifs: fetchSuggestionGifs
+	};
+})();
 const createGifs = (() => {
 	// Local variables
 	let totalTime = 0;
@@ -686,6 +449,8 @@ const myGifs = (() => {
 	// Bind events
 	events.on("myGifsChanged", _render);
 	events.on("createGifEnded", mount);
+	events.on("createGif", mount);
+	events.on("myGifs", mount);
 	events.on("gotoHome", unmount);
 
 	function mount() {
@@ -723,3 +488,275 @@ const myGifs = (() => {
 		unmount: unmount
 	};
 })();
+
+// Current list of events:
+/* 
+	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
+	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
+	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
+	pageLoad -> onLoad event to set initial states
+	searchStarted -> starts search
+	createGif -> starts createGif section
+	myGifs -> starts myGifs section
+*/
+
+// Local variables
+const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+const colorThemes = ["sailor_day", "sailor_night"];
+
+// Cache DOM
+const $navItems = document.querySelector("#nav-items");
+const $homeButton = document.querySelector("#home-button");
+
+const $themeSelector = document.querySelector("#theme-selector");
+const $dropdownList = document.querySelector("#dropdown-list");
+const $colorThemeOptions = document.querySelectorAll(".color-theme-option");
+const $styleSheet = document.querySelector("#color-theme-stylesheet");
+const $favicon = document.querySelector("#favicon");
+
+const $searchBar = document.querySelector("#search-bar");
+const $searchButton = document.querySelector("#search-button");
+const $searchResulsContainer = document.querySelector("#search-result-container");
+const $searchBox = document.querySelector("#search-box");
+
+const $createGifSection = document.querySelector("#create-gif-section");
+const $btnMyGifs = document.querySelector("#btn-my-gifs");
+const $myGifsSection = document.querySelector("#my-gifs-section");
+const $btnCreateGif = document.querySelector("#btn-create-gif");
+
+const $trendsSection = document.querySelector("#trends-section");
+const $trendingGifs = document.querySelector("#trend-grid");
+
+const $searchResultsSection = document.querySelector("#search-results-section");
+const $searchSuggestions = document.querySelector("#search-suggestions");
+const $searchTags = document.querySelector("#search-tags");
+
+// On Load functions
+fetchTrendingGifs(16);
+loadColorTheme();
+$searchBar.focus();
+events.emit("pageLoad");
+gifSuggestions.fetchSuggestionGifs(4);
+
+// Bind events
+$homeButton.addEventListener("click", () => {
+	// Takes user to default window view
+	events.emit("gotoHome");
+	hideElements($searchResultsSection, $searchTags);
+	showElements($searchBox, $trendsSection, $navItems);
+});
+$themeSelector.addEventListener("click", () => {
+	// Dropdown list visibility toggle
+	// e.preventDefault();
+	$dropdownList.classList.toggle("hidden");
+});
+window.addEventListener("click", e => {
+	// Closes dropdown on click outside or "Escape" keypress
+	hideElements($searchSuggestions);
+	!e.target.closest("#theme-selector") ? hideElements($dropdownList) : null;
+});
+document.addEventListener("keydown", e => {
+	e.key === "Escape" ? hideElements($dropdownList, $searchSuggestions) : null;
+});
+$searchBar.addEventListener("input", e => {
+	// Handles search bar functionality
+	if (e.target.value !== "") {
+		$searchButton.disabled = false;
+		handleSearchSuggestionSearch(8, $searchBar.value);
+	} else {
+		$searchButton.disabled = true;
+		hideElements($searchSuggestions);
+	}
+});
+document.searchform.addEventListener("submit", e => {
+	// Gets search results from form submission
+	e.preventDefault();
+	handleSearchFunctionality($searchBar.value);
+});
+$btnMyGifs.addEventListener("click", showMyGifsSection);
+$btnCreateGif.addEventListener("click", showCreateGifSection);
+
+$colorThemeOptions.forEach((colorThemeOption, index) => {
+	colorThemeOption.onclick = () => {
+		setColorTheme(colorThemes[index]);
+	};
+});
+
+async function handleSearchFunctionality(searchValue) {
+	replaceSearchText(searchValue);
+	$searchBar.value = "";
+	$searchBar.focus();
+	$searchButton.disabled = true;
+	$searchResulsContainer.innerHTML = "";
+	await fetchSearchResultGifs(16, searchValue);
+	events.emit("searchStarted");
+	hideElements($trendsSection, $myGifsSection, $createGifSection, $searchSuggestions);
+	$searchSuggestions.innerHTML = "";
+	await showElements($searchResultsSection, $searchTags);
+}
+async function handleSearchSuggestionSearch(limit, keywords) {
+	processedKeywords = processSearchValues(keywords);
+	const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
+	searchResults = await fetchURL(url);
+	$searchSuggestions.innerHTML = "";
+	showElements($searchSuggestions);
+	searchResults.data.length
+		? searchResults.data.forEach(searchTitle => {
+				searchTitle.title && searchTitle.title !== " "
+					? $searchSuggestions.append(newElement("searchTitle", searchTitle))
+					: null;
+		  })
+		: hideElements($searchSuggestions);
+
+	const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+	$searchSuggestionsButtons.forEach(element => {
+		element.onclick = () => {
+			handleSearchFunctionality(element.innerText);
+		};
+	});
+}
+async function fetchTrendingGifs(limit) {
+	const gifOffset = Math.floor(Math.random() * 50);
+
+	const gifsTrending = await fetchURL(
+		`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+	);
+	await gifsTrending.data.forEach(gif => {
+		let aspectRatio = "";
+		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+		$trendingGifs.append(newElement("trend", gif, aspectRatio));
+	});
+
+	// Fits grid elements so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#trend-grid .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
+}
+async function fetchSearchResultGifs(limit, keywords) {
+	processedKeywords = processSearchValues(keywords);
+	searchResults = await fetchURL(
+		`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+	);
+	await searchResults.data.forEach(gif => {
+		let aspectRatio = "";
+		gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
+		$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
+	});
+
+	// Fit grids so no gaps are visible by having only a pair number of item-double elements
+	const itemsDoubleSpan = await document.querySelectorAll("#search-results .item-double");
+	if ((await itemsDoubleSpan.length) % 2 !== 0 && (await itemsDoubleSpan.length) > 1) {
+		itemsDoubleSpan[itemsDoubleSpan.length - 1].classList.remove("item-double");
+	}
+
+	$searchTags.innerHTML = "";
+	searchResults.data.map(element => {
+		element.title && element.title !== " " && element.title !== "&emsp;"
+			? $searchTags.appendChild(newElement("tag", element))
+			: null;
+	});
+
+	document.querySelectorAll(".btn-tag").forEach(tag => {
+		tag.onclick = () => {
+			handleSearchFunctionality(tag.innerText);
+		};
+	});
+}
+
+// Generic fetch function
+function fetchURL(url) {
+	const fetchData = fetch(url)
+		.then(response => {
+			return response.json();
+		})
+		.catch(error => {
+			return error;
+		});
+	return fetchData;
+}
+function newElement(type, element, ratio = "") {
+	element.title === "" ? (element.title = "&emsp;") : null;
+	const $container = document.createElement("div");
+	switch (type) {
+		case "window":
+			$container.innerHTML = `<div class="window-item ${ratio}">
+			<div class="wi-header">
+					${element.title}
+				<button class="remove-element"></button>
+			</div>
+			<div class="img-container">
+			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
+				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
+			</div>
+		</div>`;
+			return $container.firstChild;
+
+		case "trend":
+			const titleToArray = element.title.split(" ");
+			let titleArrayToTags = "";
+			titleToArray.forEach(word => {
+				titleArrayToTags += `#${word} `;
+			});
+			$container.innerHTML = `<div class="trend-item ${ratio}">
+				<a href="${element.bitly_url}" target="_blank">
+					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					<div class="trend-header">
+						${titleArrayToTags}
+					</div>
+				</a>
+			</div>
+		</div>`;
+			return $container.firstChild;
+
+		case "searchTitle":
+			$container.innerHTML = `<button class="search-element btn-search-suggestion">
+		<span>${element.title}</span>
+		</button>`;
+			return $container.firstChild;
+		case "tag":
+			$container.innerHTML = `<button type="button" class="btn-primary btn-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			return $container.firstChild;
+	}
+}
+function hideElements(...elements) {
+	elements.forEach(element => {
+		element.classList.add("hidden");
+	});
+}
+function showElements(...elements) {
+	elements.forEach(element => {
+		element.classList.remove("hidden");
+	});
+}
+function processSearchValues(inputValues) {
+	return (outputValues = inputValues.split(" ").join("+"));
+}
+function replaceSearchText(newText) {
+	document.querySelector("#search-results-input").setAttribute("placeholder", `Resultados de búsqueda: ${newText}`);
+}
+function showMyGifsSection() {
+	events.emit("myGifs");
+	hideElements($searchResultsSection, $searchBox, $trendsSection);
+}
+function showCreateGifSection() {
+	events.emit("createGif");
+	createGifs.mount();
+	hideElements($searchResultsSection, $searchBox, $trendsSection, $navItems);
+}
+function setColorTheme(selectedColorTheme) {
+	$styleSheet.setAttribute("href", `./css/themes/${selectedColorTheme}.min.css`);
+	$favicon.setAttribute("href", `./assets/img/favicon/${selectedColorTheme || "sailor_day"}.ico`);
+	localStorage.setItem("colorTheme", selectedColorTheme);
+}
+function loadColorTheme() {
+	localStorage.getItem("colorTheme")
+		? setColorTheme(localStorage.getItem("colorTheme"))
+		: setColorTheme(colorThemes[0]);
+}
+function isEmpty(obj) {
+	for (let key in obj) {
+		if (obj.hasOwnProperty(key)) return false;
+	}
+	return true;
+}
