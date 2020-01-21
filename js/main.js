@@ -656,6 +656,7 @@ const myGifsSection = (() => {
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
+	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 
 	// Bind events
 	events.on("myGifs", mount);
@@ -680,6 +681,12 @@ const myGifsSection = (() => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
 		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
+
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+		$removeGifButtons.forEach(removeGifButton => {
+			removeGifButton.onclick = deleteGif;
+		});
+
 		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
 	}
 	function loadMyGifs(myGifs) {
@@ -689,8 +696,11 @@ const myGifsSection = (() => {
 			parsedGifData.images["480w_still"].width / parsedGifData.images["480w_still"].height >= 1.5
 				? (aspectRatio = "item-double")
 				: null;
-			$gifsGrid.append(newElement("trend", parsedGifData, aspectRatio));
+			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
+	}
+	function deleteGif() {
+		console.log(confirm("Estás seguro de que querés eliminar éste guifo?"));
 	}
 })();
 
@@ -728,7 +738,7 @@ function newElement(type, element, ratio = "") {
 			return $container.firstChild;
 
 		case "trend":
-			const titleToArray = element.title.split(" ");
+			let titleToArray = element.title.split(" ");
 			let titleArrayToTags = "";
 			titleToArray.forEach(word => {
 				titleArrayToTags += `#${word} `;
@@ -736,10 +746,28 @@ function newElement(type, element, ratio = "") {
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					</a>
 					<div class="trend-header">
 						${titleArrayToTags}
 					</div>
-				</a>
+			</div>
+		</div>`;
+			return $container.firstChild;
+
+		case "myGif":
+			let titleToArray2 = element.title.split(" ");
+			let titleArrayToTags2 = "";
+			titleToArray2.forEach(word => {
+				titleArrayToTags2 += `#${word} `;
+			});
+			$container.innerHTML = `<div class="trend-item ${ratio}">
+				<a href="${element.bitly_url}" target="_blank">
+					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					</a>
+					<div class="trend-header">						
+						<button class="remove-element"></button>
+						${titleArrayToTags2}
+					</div>
 			</div>
 		</div>`;
 			return $container.firstChild;
