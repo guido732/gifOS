@@ -674,14 +674,22 @@ const myGifsSection = (() => {
 		hideElements($myGifsSection, $gifsGrid);
 	}
 	function render() {
-		myGifs = {};
+		// myGifs = {};
 		$gifsGrid.innerHTML = "";
-
+		myGifs = getGifItemsFromLS();
+		// isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
+		isNotEmpty(myGifs) && loadMyGifs(myGifs);
+		parseDeleteButtons();
+		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
+	}
+	function getGifItemsFromLS() {
+		const myGifs = {};
 		Object.keys(localStorage).forEach(element => {
 			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
-		isNotEmpty(myGifs) ? loadMyGifs(myGifs) : null;
-
+		return myGifs;
+	}
+	function parseDeleteButtons() {
 		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton.closest(".trend-item").querySelector("img").src;
@@ -690,8 +698,6 @@ const myGifsSection = (() => {
 				deleteGif(localStorageGifID);
 			});
 		});
-
-		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
 	}
 	function loadMyGifs(myGifs) {
 		for (let myGifKey in myGifs) {
