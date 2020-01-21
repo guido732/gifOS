@@ -660,11 +660,11 @@ const myGifsSection = (() => {
 
 	// Bind events
 	events.on("myGifs", mount);
-	events.on("myGifsChanged", render);
 	events.on("createGif", mount);
-	events.on("createGifEnded", mount);
-	events.on("gotoHome", unmount);
+	events.on("myGifsChanged", render);
+	events.on("createGifEnded", render);
 	events.on("searchStarted", unmount);
+	events.on("gotoHome", unmount);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
