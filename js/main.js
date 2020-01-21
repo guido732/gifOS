@@ -684,7 +684,13 @@ const myGifsSection = (() => {
 
 		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 		$removeGifButtons.forEach(removeGifButton => {
-			removeGifButton.onclick = deleteGif;
+			const localGifElementURL = removeGifButton.closest(".trend-item").querySelector("img").src;
+			const localStorageKey = localGifElementURL.split("/")[4];
+			console.log(localStorageKey);
+
+			removeGifButton.addEventListener("click", () => {
+				deleteGif(localStorageKey);
+			});
 		});
 
 		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
@@ -699,8 +705,8 @@ const myGifsSection = (() => {
 			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
 	}
-	function deleteGif() {
-		console.log(confirm("Estás seguro de que querés eliminar éste guifo?"));
+	function deleteGif(gifKey) {
+		console.log(confirm("Estás seguro de que querés eliminar éste guifo?" + gifKey));
 	}
 })();
 
@@ -763,11 +769,11 @@ function newElement(type, element, ratio = "") {
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
-					</a>
-					<div class="trend-header">						
-						<button class="remove-element"></button>
-						${titleArrayToTags2}
-					</div>
+				</a>
+				<div class="trend-header">						
+					<button class="remove-element"></button>
+					${titleArrayToTags2}
+				</div>
 			</div>
 		</div>`;
 			return $container.firstChild;
