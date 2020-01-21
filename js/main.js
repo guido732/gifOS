@@ -685,11 +685,9 @@ const myGifsSection = (() => {
 		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton.closest(".trend-item").querySelector("img").src;
-			const localStorageKey = localGifElementURL.split("/")[4];
-			console.log(localStorageKey);
-
+			const localStorageGifID = localGifElementURL.split("/")[4];
 			removeGifButton.addEventListener("click", () => {
-				deleteGif(localStorageKey);
+				deleteGif(localStorageGifID);
 			});
 		});
 
@@ -705,8 +703,10 @@ const myGifsSection = (() => {
 			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
 	}
-	function deleteGif(gifKey) {
-		console.log(confirm("Estás seguro de que querés eliminar éste guifo?" + gifKey));
+	function deleteGif(gifID) {
+		const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
+		deleteConfirmation && localStorage.removeItem(`gif-${gifID}`);
+		events.emit("myGifsChanged");
 	}
 })();
 
