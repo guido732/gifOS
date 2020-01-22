@@ -813,9 +813,9 @@ function isNotEmpty(obj) {
 	}
 	return false;
 }
-async function fitDoubleSpanGifsGrid(gifGridID) {
+function fitDoubleSpanGifsGrid(gifGridID) {
 	// Fit grids so no gaps are visible by having only a pair number of item-double elements
-	let doubleSpanItems = document.querySelectorAll(`#${gifGridID} .item-double`);
+	const doubleSpanItems = document.querySelectorAll(`#${gifGridID} .item-double`);
 	if (doubleSpanItems.length % 2 !== 0 && doubleSpanItems.length > 1) {
 		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
 	}
