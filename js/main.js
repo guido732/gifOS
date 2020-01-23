@@ -1,116 +1,5 @@
 "use strict";
 
-const Stopwatch = (elem, options) => {
-	let timer = elem,
-		offset,
-		clock,
-		interval;
-
-	// default options
-	options = options || {};
-	options.delay = options.delay || 1;
-
-	// initialize
-	reset();
-
-	// private functions
-	function start() {
-		if (!interval) {
-			offset = Date.now();
-			interval = setInterval(update, options.delay);
-		}
-	}
-	function stop() {
-		if (interval) {
-			clearInterval(interval);
-			interval = null;
-		}
-		return clock;
-	}
-	function reset() {
-		clock = 0;
-		render();
-	}
-	function update() {
-		clock += delta();
-		render();
-	}
-	function delta() {
-		let now = Date.now(),
-			d = now - offset;
-		offset = now;
-		return d;
-	}
-	function msToTime(duration) {
-		let milliseconds = parseInt((duration % 1000) / 10),
-			seconds = Math.floor((duration / 1000) % 60),
-			minutes = Math.floor((duration / (1000 * 60)) % 60),
-			hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-		hours = hours < 10 ? "0" + hours : hours;
-		minutes = minutes < 10 ? "0" + minutes : minutes;
-		seconds = seconds < 10 ? "0" + seconds : seconds;
-
-		return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-	}
-	function render() {
-		timer.innerHTML = msToTime(clock);
-	}
-	// Exposed Functions
-	return {
-		start: start,
-		stop: stop,
-		reset: reset
-	};
-};
-const LoadingBar = subElems => {
-	// Local variables
-	let progress = 0;
-	let interval;
-
-	function start(totalTime = 100) {
-		stop();
-		interval = setInterval(frame, totalTime);
-		function frame() {
-			if (progress >= 100) {
-				clearInterval(interval);
-			} else {
-				progress++;
-				let progCounter = Math.floor(progress / (100 / subElems.length));
-				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-				subElems[progCounter].classList.remove("empty");
-			}
-		}
-	}
-	function stop() {
-		clearInterval(interval);
-		progress = 0;
-		subElems.forEach(elem => {
-			elem.classList.add("empty");
-		});
-	}
-	function loop(totalTime = 10) {
-		stop();
-		interval = setInterval(frame, totalTime);
-		function frame() {
-			if (progress >= 100) {
-				stop();
-				interval = setInterval(frame, totalTime);
-			} else {
-				progress++;
-				let progCounter = Math.floor(progress / (100 / subElems.length));
-				progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-				subElems[progCounter].classList.remove("empty");
-			}
-		}
-	}
-	// Public Functions
-	return {
-		start: start,
-		stop: stop,
-		loop: loop
-	};
-};
 const events = {
 	events: {},
 	on: function(eventName, ...fn) {
@@ -439,6 +328,118 @@ const createGifsSection = (() => {
 	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
 	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
 
+	// Stopwatch + Loadingbar generator functions
+	const Stopwatch = (elem, options) => {
+		let timer = elem,
+			offset,
+			clock,
+			interval;
+
+		// default options
+		options = options || {};
+		options.delay = options.delay || 1;
+
+		// initialize
+		reset();
+
+		// private functions
+		function start() {
+			if (!interval) {
+				offset = Date.now();
+				interval = setInterval(update, options.delay);
+			}
+		}
+		function stop() {
+			if (interval) {
+				clearInterval(interval);
+				interval = null;
+			}
+			return clock;
+		}
+		function reset() {
+			clock = 0;
+			render();
+		}
+		function update() {
+			clock += delta();
+			render();
+		}
+		function delta() {
+			let now = Date.now(),
+				d = now - offset;
+			offset = now;
+			return d;
+		}
+		function msToTime(duration) {
+			let milliseconds = parseInt((duration % 1000) / 10),
+				seconds = Math.floor((duration / 1000) % 60),
+				minutes = Math.floor((duration / (1000 * 60)) % 60),
+				hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+			hours = hours < 10 ? "0" + hours : hours;
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds;
+
+			return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+		}
+		function render() {
+			timer.innerHTML = msToTime(clock);
+		}
+		// Exposed Functions
+		return {
+			start: start,
+			stop: stop,
+			reset: reset
+		};
+	};
+	const LoadingBar = subElems => {
+		// Local variables
+		let progress = 0;
+		let interval;
+
+		function start(totalTime = 100) {
+			stop();
+			interval = setInterval(frame, totalTime);
+			function frame() {
+				if (progress >= 100) {
+					clearInterval(interval);
+				} else {
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
+				}
+			}
+		}
+		function stop() {
+			clearInterval(interval);
+			progress = 0;
+			subElems.forEach(elem => {
+				elem.classList.add("empty");
+			});
+		}
+		function loop(totalTime = 10) {
+			stop();
+			interval = setInterval(frame, totalTime);
+			function frame() {
+				if (progress >= 100) {
+					stop();
+					interval = setInterval(frame, totalTime);
+				} else {
+					progress++;
+					let progCounter = Math.floor(progress / (100 / subElems.length));
+					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
+					subElems[progCounter].classList.remove("empty");
+				}
+			}
+		}
+		// Public Functions
+		return {
+			start: start,
+			stop: stop,
+			loop: loop
+		};
+	};
 	// Timer + Stopwatch inicialization
 	const myStopwatch = Stopwatch($timer, { delay: 10 });
 	const myLoadingBar = LoadingBar($previewProgressBlocks);
