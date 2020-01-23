@@ -218,7 +218,9 @@ const suggestionsSection = (() => {
 		"it",
 		"godzilla",
 		"wtf",
-		"trippy"
+		"trippy",
+		"ron+swanson",
+		"radiohead"
 	];
 
 	// Cache DOM
@@ -251,7 +253,7 @@ const suggestionsSection = (() => {
 		});
 	}
 	function getRandomElement(array) {
-		return Math.floor(Math.random() * (array.length - 1));
+		return Math.floor(Math.random() * array.length);
 	}
 })();
 const trendingSection = (() => {
