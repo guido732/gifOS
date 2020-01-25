@@ -251,6 +251,7 @@ const suggestionsSection = (() => {
 		gifsSuggestions.data.forEach(gif => {
 			$suggestedGifs.append(newElement("window", gif));
 		});
+		events.emit("imagesToLazyLoad");
 	}
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * array.length);
@@ -289,7 +290,8 @@ const trendingSection = (() => {
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
-		await fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
+		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
+		events.emit("imagesToLazyLoad");
 	}
 })();
 const createGifsSection = (() => {
@@ -723,6 +725,7 @@ const myGifsSection = (() => {
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // On Load functions
 events.emit("pageLoad");
+events.on("imagesToLazyLoad", lazyLoadImages);
 
 // Generic functions
 function fetchURL(url) {
@@ -748,7 +751,12 @@ function newElement(type, element, ratio = "") {
 				<button class="remove-element"></button>
 			</div>
 			<div class="img-container">
-			<img class="lazy img-element loading-animation" src="${element.images.preview_webp.url}" alt="${element.title}" /> 	
+			<img 
+				class="lazy img-element loading-animation" 
+				src="" 
+				data-src="${element.images.preview_webp.url}"
+				data-srcset="${element.images.preview_webp.url}"
+				alt="${element.title}" /> 	
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
 			</div>
 		</div>`;
@@ -762,7 +770,13 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.preview_webp.url}" alt="${element.title}" class="lazy img-element loading-animation" />
+					<img 
+						class="lazy img-element loading-animation" 
+						src="" 
+						data-src="${element.images.preview_webp.url}"
+						data-srcset="${element.images.preview_webp.url}"
+						alt="${element.title}" 
+						/>
 					</a>
 					<div class="trend-header">
 						${titleArrayToTags}
@@ -825,8 +839,6 @@ function fitDoubleSpanGifsGrid(gifGridID) {
 		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
 	}
 }
-
-document.addEventListener("DOMContentLoaded", lazyLoadImages);
 function lazyLoadImages() {
 	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
 	if (
