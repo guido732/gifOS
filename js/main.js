@@ -1,4 +1,5 @@
 "use strict";
+let controller;
 
 const events = {
 	events: {},
@@ -136,6 +137,7 @@ const searchSection = (() => {
 		hideElements($searchResultsSection, $searchTags);
 	}
 	function searchBarInputChanged(inputValue) {
+		controller ? controller.abort() : null;
 		if (inputValue !== "") {
 			$searchButton.disabled = false;
 			handleSearchSuggestionSearch(8, inputValue);
@@ -156,25 +158,30 @@ const searchSection = (() => {
 		await showElements($searchResultsSection, $searchTags);
 	}
 	async function handleSearchSuggestionSearch(limit, keywords) {
+		controller = new AbortController();
+		const signal = controller.signal;
 		const processedKeywords = processSearchValues(keywords);
 		const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
-		const searchResults = await fetchURL(url);
-		$searchSuggestions.innerHTML = "";
-		showElements($searchSuggestions);
-		searchResults.data.length
-			? searchResults.data.forEach(searchTitle => {
-					searchTitle.title && searchTitle.title !== " "
-						? $searchSuggestions.append(newElement("searchTitle", searchTitle))
-						: null;
-			  })
-			: hideElements($searchSuggestions);
 
-		const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
-		$searchSuggestionsButtons.forEach(element => {
-			element.onclick = () => {
-				handleSearchFunctionality(element.innerText);
-			};
-		});
+		const searchResults = await fetchURL(url, signal);
+		if (searchResults.data) {
+			$searchSuggestions.innerHTML = "";
+			showElements($searchSuggestions);
+			searchResults.data.length
+				? searchResults.data.forEach(searchTitle => {
+						searchTitle.title && searchTitle.title !== " "
+							? $searchSuggestions.append(newElement("searchTitle", searchTitle))
+							: null;
+				  })
+				: hideElements($searchSuggestions);
+
+			const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+			$searchSuggestionsButtons.forEach(element => {
+				element.onclick = () => {
+					handleSearchFunctionality(element.innerText);
+				};
+			});
+		}
 	}
 	async function fetchSearchResultGifs(limit, keywords) {
 		const processedKeywords = processSearchValues(keywords);
@@ -729,12 +736,15 @@ events.emit("pageLoad");
 events.on("imagesToLazyLoad", lazyLoadImages);
 
 // Generic functions
-function fetchURL(url) {
-	const fetchData = fetch(url)
+async function fetchURL(url, signal = null) {
+	const fetchData = await fetch(url, { signal })
 		.then(response => {
 			return response.json();
 		})
 		.catch(error => {
+			if (error.name !== "AbortError") {
+				console.log("Error al obtener resultados");
+			}
 			return error;
 		});
 	return fetchData;
