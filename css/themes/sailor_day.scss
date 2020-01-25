@@ -184,7 +184,6 @@ $textWhite: #fff;
 	.wi-header {
 		background: $gradient;
 		color: $textWhite;
-		font-weight: 700;
 	}
 	.img-container {
 		border: 1px dotted transparent;
@@ -205,7 +204,6 @@ $textWhite: #fff;
 	.trend-header {
 		background: $gradient;
 		color: $textWhite;
-		font-weight: bold;
 	}
 	.img-element {
 		border: 1px solid $bgGray;
@@ -241,7 +239,6 @@ $textWhite: #fff;
 	.gradient-header {
 		background: $gradient;
 		color: $textWhite;
-		font-weight: 700;
 	}
 	.video-element {
 		@extend .loading-animation;
@@ -280,7 +277,7 @@ $textWhite: #fff;
 			background-color: $colorPrimary;
 		}
 		.empty {
-			background-color: #999999;
+			background-color: $inputBorderColor;
 		}
 	}
 }
@@ -350,7 +347,6 @@ button {
 	.search-header {
 		background: $gradient;
 		color: $textWhite;
-		font-weight: 700;
 	}
 	form {
 		background: $bgGray;

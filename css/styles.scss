@@ -150,6 +150,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 		font-size: 0.875rem;
+		font-weight: 700;
 		text-overflow: ellipsis;
 		.remove-element {
 			background: url(../assets/icons/close.svg);
@@ -197,6 +198,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 		font-size: 0.875rem;
+		font-weight: bold;
 		text-overflow: ellipsis;
 		.remove-element {
 			background: url(../assets/icons/close.svg);
@@ -232,6 +234,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 		font-size: 0.875rem;
+		font-weight: 700;
 		text-overflow: ellipsis;
 		position: relative;
 		.remove-element {
@@ -486,6 +489,7 @@ section {
 			padding: 0.375rem;
 			margin: 0 2px;
 			font-size: 0.875rem;
+			font-weight: 700;
 		}
 		form {
 			@include flexCenter(column, nowrap);
