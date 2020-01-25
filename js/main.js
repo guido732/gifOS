@@ -824,7 +824,8 @@ function fitDoubleSpanGifsGrid(gifGridID) {
 	}
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", lazyLoadImages);
+function lazyLoadImages() {
 	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
 	if (
 		"IntersectionObserver" in window &&
@@ -836,7 +837,6 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (entry.isIntersecting) {
 					let lazyImage = entry.target;
 					lazyImage.src = lazyImage.dataset.src;
-					console.log(lazyImage.dataset.src);
 					lazyImage.srcset = lazyImage.dataset.srcset;
 					lazyImage.classList.remove("lazy");
 					lazyImageObserver.unobserve(lazyImage);
@@ -848,7 +848,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			lazyImageObserver.observe(lazyImage);
 		});
 	}
-});
+}
 
 /* 
 	// Current list of events:
