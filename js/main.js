@@ -186,7 +186,7 @@ const searchSection = (() => {
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
-
+		events.emit("imagesToLazyLoad");
 		await fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
 		$searchTags.innerHTML = "";
