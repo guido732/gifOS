@@ -203,7 +203,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-/* const suggestionsSection = (() => {
+const suggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -291,7 +291,7 @@ const trendingSection = (() => {
 		});
 		await fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 	}
-})(); */
+})();
 const createGifsSection = (() => {
 	// Local variables
 	let totalTime = 0;
@@ -740,13 +740,15 @@ function newElement(type, element, ratio = "") {
 	const $container = document.createElement("div");
 	switch (type) {
 		case "window":
+			console.log(element);
+
 			$container.innerHTML = `<div class="window-item ${ratio}">
 			<div class="wi-header">
 					${element.title}
 				<button class="remove-element"></button>
 			</div>
 			<div class="img-container">
-			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
+			<img class="lazy img-element loading-animation" src="${element.images.preview_webp.url}" alt="${element.title}" /> 	
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
 			</div>
 		</div>`;
@@ -760,7 +762,7 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					<img src="${element.images.preview_webp.url}" alt="${element.title}" class="lazy img-element loading-animation" />
 					</a>
 					<div class="trend-header">
 						${titleArrayToTags}
@@ -777,7 +779,7 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					<img src="${element.images.preview_webp.url}" alt="${element.title}" class="lazy img-element loading-animation" />
 				</a>
 				<div class="trend-header">						
 					<button class="remove-element"></button>
