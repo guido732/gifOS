@@ -186,8 +186,8 @@ const searchSection = (() => {
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
-
-		await fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
+		events.emit("imagesToLazyLoad");
+		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
 		$searchTags.innerHTML = "";
 		searchResults.data.map(element => {
@@ -251,6 +251,7 @@ const suggestionsSection = (() => {
 		gifsSuggestions.data.forEach(gif => {
 			$suggestedGifs.append(newElement("window", gif));
 		});
+		events.emit("imagesToLazyLoad");
 	}
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * array.length);
@@ -289,7 +290,8 @@ const trendingSection = (() => {
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
-		await fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
+		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
+		events.emit("imagesToLazyLoad");
 	}
 })();
 const createGifsSection = (() => {
@@ -684,6 +686,7 @@ const myGifsSection = (() => {
 		isNotEmpty(myGifs) && loadMyGifs(myGifs);
 		parseDeleteButtons();
 		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
+		events.emit("imagesToLazyLoad");
 	}
 	function getGifItemsFromLS() {
 		const myGifs = {};
@@ -723,6 +726,7 @@ const myGifsSection = (() => {
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // On Load functions
 events.emit("pageLoad");
+events.on("imagesToLazyLoad", lazyLoadImages);
 
 // Generic functions
 function fetchURL(url) {
@@ -746,7 +750,12 @@ function newElement(type, element, ratio = "") {
 				<button class="remove-element"></button>
 			</div>
 			<div class="img-container">
-			<img class="img-element loading-animation" src="${element.images.original.url}" alt="${element.title}" /> 	
+			<img 
+				class="lazy img-element loading-animation" 
+				src="" 
+				data-src="${element.images.preview_webp.url}"
+				data-srcset="${element.images.preview_webp.url}"
+				alt="${element.title}" /> 	
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
 			</div>
 		</div>`;
@@ -760,7 +769,13 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					<img 
+						class="lazy img-element loading-animation" 
+						src="" 
+						data-src="${element.images.preview_webp.url}"
+						data-srcset="${element.images.preview_webp.url}"
+						alt="${element.title}" 
+						/>
 					</a>
 					<div class="trend-header">
 						${titleArrayToTags}
@@ -777,7 +792,13 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.original.url}" alt="${element.title}" class="img-element loading-animation" />
+					<img 
+						src="" 
+						data-src="${element.images.downsized.url}"
+						data-srcset="${element.images.downsized.url}"
+						alt="${element.title}" 
+						class="lazy img-element loading-animation" 
+					/>
 				</a>
 				<div class="trend-header">						
 					<button class="remove-element"></button>
@@ -821,6 +842,30 @@ function fitDoubleSpanGifsGrid(gifGridID) {
 	const doubleSpanItems = document.querySelectorAll(`#${gifGridID} .item-double`);
 	if (doubleSpanItems.length % 2 !== 0 && doubleSpanItems.length > 1) {
 		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
+	}
+}
+function lazyLoadImages() {
+	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
+	if (
+		"IntersectionObserver" in window &&
+		"IntersectionObserverEntry" in window &&
+		"intersectionRatio" in window.IntersectionObserverEntry.prototype
+	) {
+		var lazyImageObserver = new IntersectionObserver(entries => {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					let lazyImage = entry.target;
+					lazyImage.src = lazyImage.dataset.src;
+					lazyImage.srcset = lazyImage.dataset.srcset;
+					lazyImage.classList.remove("lazy");
+					lazyImageObserver.unobserve(lazyImage);
+				}
+			});
+		});
+
+		lazyImages.forEach(lazyImage => {
+			lazyImageObserver.observe(lazyImage);
+		});
 	}
 }
 
