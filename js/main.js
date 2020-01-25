@@ -686,6 +686,7 @@ const myGifsSection = (() => {
 		isNotEmpty(myGifs) && loadMyGifs(myGifs);
 		parseDeleteButtons();
 		fitDoubleSpanGifsGrid($gifsGrid.attributes.id.value);
+		events.emit("imagesToLazyLoad");
 	}
 	function getGifItemsFromLS() {
 		const myGifs = {};
@@ -743,8 +744,6 @@ function newElement(type, element, ratio = "") {
 	const $container = document.createElement("div");
 	switch (type) {
 		case "window":
-			console.log(element);
-
 			$container.innerHTML = `<div class="window-item ${ratio}">
 			<div class="wi-header">
 					${element.title}
@@ -793,7 +792,13 @@ function newElement(type, element, ratio = "") {
 			});
 			$container.innerHTML = `<div class="trend-item ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
-					<img src="${element.images.preview_webp.url}" alt="${element.title}" class="lazy img-element loading-animation" />
+					<img 
+						src="" 
+						data-src="${element.images.downsized.url}"
+						data-srcset="${element.images.downsized.url}"
+						alt="${element.title}" 
+						class="lazy img-element loading-animation" 
+					/>
 				</a>
 				<div class="trend-header">						
 					<button class="remove-element"></button>
