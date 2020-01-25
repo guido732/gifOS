@@ -203,7 +203,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-const suggestionsSection = (() => {
+/* const suggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -291,7 +291,7 @@ const trendingSection = (() => {
 		});
 		await fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 	}
-})();
+})(); */
 const createGifsSection = (() => {
 	// Local variables
 	let totalTime = 0;
@@ -823,6 +823,32 @@ function fitDoubleSpanGifsGrid(gifGridID) {
 		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
 	}
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
+	if (
+		"IntersectionObserver" in window &&
+		"IntersectionObserverEntry" in window &&
+		"intersectionRatio" in window.IntersectionObserverEntry.prototype
+	) {
+		var lazyImageObserver = new IntersectionObserver(entries => {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					let lazyImage = entry.target;
+					lazyImage.src = lazyImage.dataset.src;
+					console.log(lazyImage.dataset.src);
+					lazyImage.srcset = lazyImage.dataset.srcset;
+					lazyImage.classList.remove("lazy");
+					lazyImageObserver.unobserve(lazyImage);
+				}
+			});
+		});
+
+		lazyImages.forEach(lazyImage => {
+			lazyImageObserver.observe(lazyImage);
+		});
+	}
+});
 
 /* 
 	// Current list of events:
