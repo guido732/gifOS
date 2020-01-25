@@ -187,7 +187,7 @@ const searchSection = (() => {
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
 		events.emit("imagesToLazyLoad");
-		await fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
+		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
 		$searchTags.innerHTML = "";
 		searchResults.data.map(element => {
