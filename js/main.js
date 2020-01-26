@@ -514,16 +514,16 @@ const createGifsSection = (() => {
 					await uploadLoadingBar.stop();
 					await events.emit("myGifsChanged");
 				} else {
-					await showElements($stage7);
-					await hideElements($stage5);
-					await uploadLoadingBar.stop();
+					showElements($stage7);
+					hideElements($stage5);
+					uploadLoadingBar.stop();
 					$errorMsg.innerText = `${e.name}\n${e.message}`;
 				}
 			} catch (e) {
 				$errorImg.src = "";
-				await showElements($stage7);
-				await hideElements($stage5);
-				await uploadLoadingBar.stop();
+				showElements($stage7);
+				hideElements($stage5);
+				uploadLoadingBar.stop();
 				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
 				let errorData = await errorGif.json();
 				$errorImg.src = await errorData.data.image_url;
@@ -710,7 +710,10 @@ const myGifsSection = (() => {
 	function parseDeleteButtons() {
 		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 		$removeGifButtons.forEach(removeGifButton => {
-			const localGifElementURL = removeGifButton.closest(".trend-item").querySelector("img").src;
+			const localGifElementURL = removeGifButton
+				.closest(".trend-item")
+				.querySelector("img")
+				.getAttribute("data-src");
 			const localStorageGifID = localGifElementURL.split("/")[4];
 			removeGifButton.addEventListener("click", () => {
 				deleteGif(localStorageGifID);
@@ -730,9 +733,17 @@ const myGifsSection = (() => {
 	function deleteGif(gifID) {
 		const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
 		deleteConfirmation && localStorage.removeItem(`gif-${gifID}`);
+
 		events.emit("myGifsChanged");
 	}
 })();
+const giphyEndpoints = (keywords, limit, gifOffset) => {
+	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
+	const trendingEndpoint = `https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`;
+	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
+	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+};
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
@@ -741,8 +752,8 @@ events.emit("pageLoad");
 events.on("imagesToLazyLoad", lazyLoadImages);
 
 // Generic functions
-async function fetchURL(url, signal = null) {
-	const fetchData = await fetch(url, { signal })
+async function fetchURL(url, params = null) {
+	const fetchData = await fetch(url, { params })
 		.then(response => {
 			return response.json();
 		})
