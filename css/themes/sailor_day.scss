@@ -3,9 +3,7 @@
 // }
 
 $bgColor: #fff4fd;
-$bgGray: #e6e6e6;
-
-$gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
+$bgElement: #e6e6e6;
 
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
@@ -13,28 +11,28 @@ $colorPrimaryHover: #e6bbe2;
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
 
-$colorSearch: #f0f0f0;
-$colorSearchHover: #e6e6e6;
+$colorElement: #f0f0f0;
+$colorElementHover: #dbdbdb;
+$colorElementBorder: #808080;
 
 $colorRecording: #ff6161;
-
-$insetShadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-$shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 #ffffff;
-$inputBarShadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-$itemShadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-$searchShadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
-$formShadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 0px 0 0 #ffffff;
-$tagShadow: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 #ffffff;
-$tagColor: #4180f6;
-$tagColorHover: #3a72db;
-$tagBorder: #4c2f99;
-
-$inputBorderColor: #979797;
-$colorBorder: #808080;
+$colorTag: #4180f6;
+$colorTagHover: #3a72db;
+$borderTag: #4c2f99;
+$colorInputBorder: #979797;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
+
+$gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+$shadowPrimarySecondary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+$shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
+$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 black;
+$shadowItem: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
+$shadowElement: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
+$shadowForm: inset -2px -2px 0 0 $textClear, inset 2px 0px 0 0 $textWhite;
+$shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 
 // Utility
 .underline {
@@ -76,7 +74,7 @@ $textWhite: #fff;
 	color: $textDark;
 	background: $colorPrimary;
 	border: 1px solid $textDark;
-	box-shadow: $insetShadow;
+	box-shadow: $shadowPrimarySecondary;
 	.btn-text-container {
 		border: 1px dotted $colorPrimaryHover;
 	}
@@ -90,7 +88,7 @@ $textWhite: #fff;
 .btn-primary--icon-before {
 	&::before {
 		border: 1px solid black;
-		box-shadow: $insetShadow;
+		box-shadow: $shadowPrimarySecondary;
 	}
 	&:hover::before {
 		outline: 1px dotted $textDark;
@@ -100,7 +98,7 @@ $textWhite: #fff;
 .btn-primary--icon-after {
 	&::after {
 		border: 1px solid black;
-		box-shadow: $insetShadow;
+		box-shadow: $shadowPrimarySecondary;
 	}
 	&:hover::after {
 		outline: 1px dotted black;
@@ -119,15 +117,15 @@ $textWhite: #fff;
 	}
 }
 .btn-tag {
-	background: $tagColor;
-	border: 1px solid $tagBorder;
-	box-shadow: $tagShadow;
+	background: $colorTag;
+	border: 1px solid $borderTag;
+	box-shadow: $shadowTag;
 	color: $textWhite;
 	.btn-text-container {
-		border: 1px dotted $tagColor;
+		border: 1px dotted $colorTag;
 	}
 	&:hover {
-		background: $tagColorHover;
+		background: $colorTagHover;
 		.btn-text-container {
 			border: 1px dotted $textDark;
 		}
@@ -136,7 +134,7 @@ $textWhite: #fff;
 .btn-secondary {
 	background: $colorSecondary;
 	border: 1px solid $textDark;
-	box-shadow: $insetShadow;
+	box-shadow: $shadowPrimarySecondary;
 	.btn-text-container {
 		border: 1px dotted $colorSecondaryHover;
 	}
@@ -148,14 +146,14 @@ $textWhite: #fff;
 	}
 }
 .btn-search-suggestion {
-	background: $colorSearch;
-	border: 1px solid $colorBorder;
-	box-shadow: $searchShadow;
+	background: $colorElement;
+	border: 1px solid $colorElementBorder;
+	box-shadow: $shadowElement;
 	span {
-		border: 1px dotted $colorSearch;
+		border: 1px dotted $colorElement;
 	}
 	&:hover {
-		background: $colorSearchHover;
+		background: $colorElementHover;
 		span {
 			border: 1px dotted $textDark;
 		}
@@ -169,6 +167,10 @@ $textWhite: #fff;
 	&:hover {
 		border: 1px dotted $textDark;
 	}
+	&:active {
+		color: $textDark;
+		opacity: 0.5;
+	}
 }
 .btn-full-width {
 	.btn-text-container {
@@ -180,8 +182,8 @@ $textWhite: #fff;
 	}
 }
 .window-item {
-	background: $bgGray;
-	box-shadow: $itemShadow;
+	background: $bgElement;
+	box-shadow: $shadowItem;
 	.wi-header {
 		background: $gradient;
 		color: $textWhite;
@@ -200,14 +202,14 @@ $textWhite: #fff;
 	}
 }
 .trend-item {
-	background: $bgGray;
-	box-shadow: $itemShadow;
+	background: $bgElement;
+	box-shadow: $shadowItem;
 	.trend-header {
 		background: $gradient;
 		color: $textWhite;
 	}
 	.img-element {
-		border: 1px solid $bgGray;
+		border: 1px solid $bgElement;
 		&:hover {
 			border: 1px dotted $textDark;
 		}
@@ -223,38 +225,38 @@ $textWhite: #fff;
 }
 .input-bar-mono-lg {
 	background: $textWhite;
-	border: 1px solid $inputBorderColor;
-	box-shadow: $inputBarShadow;
+	border: 1px solid $colorInputBorder;
+	box-shadow: $shadowInputBar;
 	&::placeholder {
 		color: #b4b4b4;
 	}
 }
 .input-bar-mono-sm {
 	background: $textWhite;
-	border: 1px solid $inputBorderColor;
-	box-shadow: $inputBarShadow;
+	border: 1px solid $colorInputBorder;
+	box-shadow: $shadowInputBar;
 }
 .window-element {
-	background: $bgGray;
-	box-shadow: $itemShadow;
+	background: $bgElement;
+	box-shadow: $shadowItem;
 	.gradient-header {
 		background: $gradient;
 		color: $textWhite;
 	}
 	.video-element {
 		@extend .loading-animation;
-		border: 1px solid $inputBorderColor;
-		box-shadow: $inputBarShadow;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
 	}
 	.video-preview-img {
 		@extend .loading-animation;
-		border: 1px solid $inputBorderColor;
-		box-shadow: $inputBarShadow;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
 	}
 	.stage5 {
 		background: $textWhite;
-		border: 1px solid $inputBorderColor;
-		box-shadow: $inputBarShadow;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
 	}
 	.stage6 {
 		.img-container {
@@ -270,7 +272,7 @@ $textWhite: #fff;
 .loading-bar-container {
 	.loading-bar {
 		background: #b4b4b4;
-		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000000;
+		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000;
 		.bar {
 			background: $colorPrimary;
 		}
@@ -278,7 +280,7 @@ $textWhite: #fff;
 			background-color: $colorPrimary;
 		}
 		.empty {
-			background-color: $inputBorderColor;
+			background-color: $colorInputBorder;
 		}
 	}
 }
@@ -299,13 +301,13 @@ button {
 	cursor: pointer;
 	&:disabled {
 		cursor: default;
-		background: $bgGray;
+		background: $bgElement;
 		outline: none;
 		.btn-text-container {
 			border: none;
 		}
 		&:hover {
-			background: $bgGray;
+			background: $bgElement;
 			outline: none;
 			.btn-text-container {
 				border: none;
@@ -330,12 +332,12 @@ button {
 	background-image: url(../../assets/img/gifOF_logo.png);
 }
 .dropdown-list {
-	background: $bgGray;
-	box-shadow: $itemShadow;
+	background: $bgElement;
+	box-shadow: $shadowItem;
 	.dropdown-list-item {
 		background: #f0f0f0;
-		border: 1px solid $colorBorder;
-		box-shadow: $searchShadow;
+		border: 1px solid $colorElementBorder;
+		box-shadow: $shadowElement;
 		&:hover {
 			background-color: $bgColor;
 			border: 1px solid #cca6c9;
@@ -343,20 +345,20 @@ button {
 	}
 }
 .search {
-	background: $colorSearchHover;
-	box-shadow: $itemShadow;
+	background: $bgElement;
+	box-shadow: $shadowItem;
 	.search-header {
 		background: $gradient;
 		color: $textWhite;
 	}
 	form {
-		background: $bgGray;
-		box-shadow: $formShadow;
+		background: $bgElement;
+		box-shadow: $shadowForm;
 		input:placeholder-shown ~ button[type="submit"] {
-			border: 1px solid $colorBorder;
-			box-shadow: $searchShadow;
+			border: 1px solid $colorElementBorder;
+			box-shadow: $shadowElement;
 			.btn-text-container {
-				border: 1px solid $bgGray;
+				border: 1px solid $bgElement;
 				color: $textClear;
 				&::before {
 					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
@@ -365,8 +367,8 @@ button {
 		}
 	}
 	.search-suggestions {
-		background: $colorSearchHover;
-		box-shadow: $itemShadow;
+		background: $bgElement;
+		box-shadow: $shadowItem;
 	}
 }
 
