@@ -2,7 +2,7 @@
 // 	box-shadow: inset -$distance -$distance 0 0 $color1, inset $distance $distance 0 0 $color2;
 // }
 
-$bgColor: #fff4fd;
+// $colorSecondary: #fff4fd;
 $bgElement: #e6e6e6;
 
 $colorPrimary: #f7c9f3;
@@ -287,7 +287,7 @@ $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 
 // General element styles
 body {
-	background-color: $bgColor;
+	background-color: $colorSecondary;
 }
 h1 {
 	color: $textWhite;
@@ -339,7 +339,7 @@ button {
 		border: 1px solid $colorElementBorder;
 		box-shadow: $shadowElement;
 		&:hover {
-			background-color: $bgColor;
+			background-color: $colorSecondary;
 			border: 1px solid #cca6c9;
 		}
 	}
@@ -353,7 +353,8 @@ button {
 	}
 	form {
 		background: $bgElement;
-		box-shadow: $shadowForm;
+		// box-shadow: $shadowForm;
+		box-shadow: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
 		input:placeholder-shown ~ button[type="submit"] {
 			border: 1px solid $colorElementBorder;
 			box-shadow: $shadowElement;
