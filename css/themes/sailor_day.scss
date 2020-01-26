@@ -1,8 +1,3 @@
-// @mixin shadowGen($distance: 0px, $color1: #fff, $color2: #fff) {
-// 	box-shadow: inset -$distance -$distance 0 0 $color1, inset $distance $distance 0 0 $color2;
-// }
-
-// $colorSecondary: #fff4fd;
 $bgElement: #e6e6e6;
 
 $colorPrimary: #f7c9f3;
@@ -14,25 +9,28 @@ $colorSecondaryHover: #f0e5ee;
 $colorElement: #f0f0f0;
 $colorElementHover: #dbdbdb;
 $colorElementBorder: #808080;
+$colorElementSecondaryHover: #cca6c9;
 
 $colorRecording: #ff6161;
 $colorTag: #4180f6;
 $colorTagHover: #3a72db;
 $borderTag: #4c2f99;
 $colorInputBorder: #979797;
+$colorTitleBar: #fffafe;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
 
 $gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 black;
 $shadowPrimarySecondary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
 $shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
-$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 black;
+$shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 $shadowItem: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
 $shadowElement: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
-$shadowForm: inset -2px -2px 0 0 $textClear, inset 2px 0px 0 0 $textWhite;
-$shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
+$shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
+$shadowLoadingBar: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000;
 
 // Utility
 .underline {
@@ -159,7 +157,7 @@ $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 		}
 	}
 	&:active {
-		background: #dbdbdb;
+		background: $colorElementHover;
 	}
 }
 .btn-link {
@@ -216,9 +214,9 @@ $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 	}
 }
 .input-bar {
-	background: #fffafe;
+	background: $colorTitleBar;
 	border: 1px solid $colorPrimaryHover;
-	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
+	box-shadow: $shadowTitleBar;
 	&::placeholder {
 		color: $textDark;
 	}
@@ -228,7 +226,7 @@ $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 	border: 1px solid $colorInputBorder;
 	box-shadow: $shadowInputBar;
 	&::placeholder {
-		color: #b4b4b4;
+		color: $textClear;
 	}
 }
 .input-bar-mono-sm {
@@ -271,8 +269,8 @@ $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 }
 .loading-bar-container {
 	.loading-bar {
-		background: #b4b4b4;
-		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000;
+		background: $textClear;
+		box-shadow: $shadowLoadingBar;
 		.bar {
 			background: $colorPrimary;
 		}
@@ -335,12 +333,12 @@ button {
 	background: $bgElement;
 	box-shadow: $shadowItem;
 	.dropdown-list-item {
-		background: #f0f0f0;
+		background: $colorElement;
 		border: 1px solid $colorElementBorder;
 		box-shadow: $shadowElement;
 		&:hover {
 			background-color: $colorSecondary;
-			border: 1px solid #cca6c9;
+			border: 1px solid $colorElementSecondaryHover;
 		}
 	}
 }
@@ -351,10 +349,9 @@ button {
 		background: $gradient;
 		color: $textWhite;
 	}
-	form {
+	.search-form {
 		background: $bgElement;
-		// box-shadow: $shadowForm;
-		box-shadow: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
+		box-shadow: $shadowItem;
 		input:placeholder-shown ~ button[type="submit"] {
 			border: 1px solid $colorElementBorder;
 			box-shadow: $shadowElement;

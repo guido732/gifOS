@@ -491,7 +491,7 @@ section {
 			font-size: 0.875rem;
 			font-weight: 700;
 		}
-		.formflex {
+		.search-bar-container {
 			@include flexCenter(column, nowrap);
 			justify-content: space-between;
 			align-items: center;
@@ -521,7 +521,7 @@ section {
 	}
 	@media screen and (min-width: 768px) {
 		.search-box {
-			.formflex {
+			.search-bar-container {
 				flex-direction: row;
 				input {
 					margin-bottom: 0;
