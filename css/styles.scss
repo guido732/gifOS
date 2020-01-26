@@ -420,6 +420,13 @@
 			width: 2rem;
 			height: 2rem;
 			display: block;
+			background: center no-repeat url(../assets/icons/window_img.png);
+		}
+		.error {
+			background: center no-repeat url(../assets/icons/msg_error.png);
+		}
+		.warning {
+			background: center no-repeat url(../assets/icons/msg_warning.png);
 		}
 	}
 	.popup-actions {
@@ -429,12 +436,6 @@
 	}
 }
 
-.error {
-	background: center no-repeat url(../assets/icons/msg_error.png);
-}
-.warning {
-	background: center no-repeat url(../assets/icons/msg_warning.png);
-}
 // General element styles
 body {
 	@extend %fontStack;
