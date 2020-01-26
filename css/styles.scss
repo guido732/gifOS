@@ -482,7 +482,7 @@ section {
 	}
 }
 .search-container {
-	.search {
+	.search-box {
 		position: relative;
 		padding-top: 2px;
 		.search-header {
@@ -491,7 +491,7 @@ section {
 			font-size: 0.875rem;
 			font-weight: 700;
 		}
-		form {
+		.formflex {
 			@include flexCenter(column, nowrap);
 			justify-content: space-between;
 			align-items: center;
@@ -520,8 +520,8 @@ section {
 		margin-top: 0.75rem;
 	}
 	@media screen and (min-width: 768px) {
-		.search {
-			form {
+		.search-box {
+			.formflex {
 				flex-direction: row;
 				input {
 					margin-bottom: 0;
