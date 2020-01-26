@@ -163,7 +163,7 @@ const searchSection = (() => {
 		const processedKeywords = processSearchValues(keywords);
 		const url = `https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`;
 
-		const searchResults = await fetchURL(url, signal);
+		const searchResults = await fetchURL(url, { signal });
 		if (searchResults.data) {
 			$searchSuggestions.innerHTML = "";
 			showElements($searchSuggestions);
@@ -753,17 +753,16 @@ events.on("imagesToLazyLoad", lazyLoadImages);
 
 // Generic functions
 async function fetchURL(url, params = null) {
-	const fetchData = await fetch(url, { params })
-		.then(response => {
-			return response.json();
-		})
-		.catch(error => {
-			if (error.name !== "AbortError") {
-				console.log("Error al obtener resultados");
-			}
-			return error;
-		});
-	return fetchData;
+	try {
+		const fetchData = await fetch(url, params);
+		const response = await fetchData.json();
+		return response;
+	} catch (error) {
+		if (error.name !== "AbortError") {
+			console.log("Error al obtener resultados");
+		}
+		return error;
+	}
 }
 function newElement(type, element, ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
