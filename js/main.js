@@ -629,20 +629,25 @@ const createGifsSection = (() => {
 	}
 	async function stopRecording() {
 		await videoRecorder.stopRecording();
-		$inputPreview.srcObject = null;
+		await gifRecorder.stopRecording();
 		const videoBlob = await videoRecorder.getBlob();
+		const gifBlob = await gifRecorder.getBlob();
+
 		$inputPreview.src = URL.createObjectURL(videoBlob);
-		videoRecorder.stream.getTracks(t => t.stop());
+		videoRecorder.stream.getTracks().forEach(t => t.stop());
+		$inputPreview.srcObject = null;
+
 		// reset Recorder's state & clear the memory
 		await videoRecorder.reset();
 		await videoRecorder.destroy();
+		await gifRecorder.reset();
+		await gifRecorder.destroy();
 
-		await gifRecorder.stopRecording();
-		const gifBlob = await gifRecorder.getBlob();
 		gifSrc = await gifBlob;
 		$outputPreview.src = URL.createObjectURL(await gifBlob);
-		await gifRecorder.destroy();
-		gifRecorder = await null;
+
+		gifRecorder = null;
+		videoRecorder = null;
 	}
 	async function uploadCreatedGif() {
 		console.log("***Upload started***");
