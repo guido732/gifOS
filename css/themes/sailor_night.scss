@@ -1,0 +1,35 @@
+$bgElement: #b4b4b4;
+
+$colorPrimary: #ee3efe;
+$colorPrimaryHover: #ce36db;
+
+$colorSecondary: #110038;
+$colorSecondaryHover: #110038;
+
+$colorElement: #cccccc;
+$colorElementHover: #cccccc;
+$colorElementBorder: #808080;
+$colorElementSecondaryHover: #2e32fb;
+
+$colorRecording: #ff6161;
+$colorTag: #2e32fb;
+$colorTagHover: #2629cc;
+$borderTag: #4c2f99;
+$colorInputBorder: #979797;
+$colorTitleBar: #fffafe;
+
+$textDark: #110038;
+$textClear: #b4b4b4;
+$textWhite: #fff;
+
+$gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
+$shadowPrimarySecondary: inset -1px -1px 0 0 #a72cb3, inset 1px 1px 0 0 $textWhite;
+$shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
+$shadowTag: inset -2px -2px 0 0 #2124b3, inset 2px 2px 0 0 $textWhite;
+$shadowElement: inset -2px -2px 0 0 #8f8f8f, inset 2px 2px 0 0 $textWhite;
+$shadowItem: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
+$shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #110038;
+$shadowLoadingBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
+
+@import "./_colorsheet.scss";
