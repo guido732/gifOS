@@ -406,16 +406,34 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 	min-width: 20rem;
+	max-width: 90%;
 	z-index: 1;
-
 	.popup-content {
-		padding: 1rem 2rem;
+		padding: 1rem;
+	}
+	.content-main {
+		@include flexCenter(row, nowrap);
+		justify-content: flex-start;
+		.popup-image {
+			margin-right: 1rem;
+			flex-shrink: 0;
+			width: 2rem;
+			height: 2rem;
+			display: block;
+		}
 	}
 	.popup-actions {
 		margin-top: 1rem;
 		@include flexCenter();
 		justify-content: flex-end;
 	}
+}
+
+.error {
+	background: center no-repeat url(../assets/icons/msg_error.png);
+}
+.warning {
+	background: center no-repeat url(../assets/icons/msg_warning.png);
 }
 // General element styles
 body {
