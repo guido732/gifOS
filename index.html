@@ -296,17 +296,17 @@
 			</section>
 		</main>
 		<aside>
-			<dialog class="popup-window window-element">
+			<dialog class="popup-window window-element hidden" id="popup-window">
 				<div class="gradient-header popup-header" id="popup-header">
-					<button class="remove-element close-window"></button>
-					Fatal Error!
+					<button class="remove-element close-window" id="popup-close"></button>
+					<span id="popup-header-text">Fatal Error!</span>
 				</div>
 				<div class="popup-content">
 					<div class="content-main">
-						<div class="popup-image"></div>
+						<div class="popup-icon" id="popup-icon"></div>
 						<div class="text-content">
-							<h2>gifOS has failed miserably!</h2>
-							<p>
+							<h2 id="popup-title">gifOS has failed miserably!</h2>
+							<p id="popup-message">
 								Because js is the Lorem ipsum dolor sit, amet consectetur adipisicing elit. Et, culpa. Lorem ipsum dolor
 								sit amet, consectetur adipisicing elit. Perspiciatis culpa eaque est. Reiciendis quidem molestias
 								numquam eos adipisci esse debitis laboriosam quaerat non? Repellendus, officiis. woooooorst
@@ -314,9 +314,9 @@
 						</div>
 					</div>
 					<div class="popup-actions">
-						<!-- <button class="btn-secondary close-window" id="popup-secondary">
+						<button class="btn-secondary close-window hidden" id="popup-secondary">
 							<span class="btn-text-container">Cancelar</span>
-						</button> -->
+						</button>
 						<button class="btn-primary" id="popup-primary">
 							<span class="btn-text-container">Aceptar</span>
 						</button>

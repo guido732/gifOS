@@ -414,7 +414,7 @@
 	.content-main {
 		@include flexCenter(row, nowrap);
 		justify-content: flex-start;
-		.popup-image {
+		.popup-icon {
 			margin-right: 1rem;
 			flex-shrink: 0;
 			width: 2rem;

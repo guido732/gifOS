@@ -737,6 +737,81 @@ const myGifsSection = (() => {
 		events.emit("myGifsChanged");
 	}
 })();
+const popupWindow = (() => {
+	// Local Variables
+	// DOM Cache
+	const $popupWindow = document.querySelector("#popup-window");
+	const $popupHeader = document.querySelector("#popup-header-text");
+	const $popupTitle = document.querySelector("#popup-title");
+	const $popupMessage = document.querySelector("#popup-message");
+	const $popupIcon = document.querySelector("#popup-icon");
+	const $popupPrimary = document.querySelector("#popup-primary");
+	const $popupSecondary = document.querySelector("#popup-secondary");
+	const $popupClose = document.querySelector("#popup-close");
+
+	// Bind Events
+	events.on("newPopup", mount);
+	$popupPrimary.onclick = () => {
+		events.emit("popupPrimary");
+		unmount();
+	};
+	$popupSecondary.onclick = () => {
+		events.emit("popupSecondary");
+		unmount();
+	};
+
+	$popupClose.onclick = () => {
+		events.emit("popupClose");
+		unmount();
+	};
+
+	mount();
+	newPopupMessage(
+		"Titulo del error",
+		"Me mandé una cagada guacho",
+		"Bueno la cosa es así, me mandé un moco, que se le va a hacer?",
+		true,
+		"error"
+	);
+
+	// Methods / Functions
+	function mount() {
+		showElements($popupWindow);
+	}
+	function unmount() {
+		hideElements($popupWindow);
+	}
+	function showOption() {
+		showElements($popupSecondary);
+	}
+	function hideOption() {
+		hideElements($popupSecondary);
+	}
+	function newPopupMessage(header = "error", title = "error", body = "Unknown Error", options = false, icon = "error") {
+		replaceTextContent($popupHeader, header);
+		replaceTextContent($popupTitle, title);
+		replaceTextContent($popupMessage, body);
+		options ? showOption() : hideOption();
+		popupIcon(icon);
+	}
+	function replaceTextContent(element, content) {
+		element.innerHTML = content;
+		return true;
+	}
+	function popupIcon(icon) {
+		$popupIcon.classList.remove("warning", "error");
+		switch (icon) {
+			case "error":
+				$popupIcon.classList.add("error");
+				break;
+			case "warning":
+				$popupIcon.classList.add("warning");
+				break;
+			default:
+				break;
+		}
+	}
+})();
 const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
