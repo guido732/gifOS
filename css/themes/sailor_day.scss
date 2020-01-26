@@ -5,31 +5,78 @@ $colorPrimaryHover: #e6bbe2;
 
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
+$colorSecondaryBorder: #110038;
 
 $colorElement: #f0f0f0;
 $colorElementHover: #dbdbdb;
 $colorElementBorder: #808080;
 $colorElementSecondaryHover: #cca6c9;
+$colorThemeHover: $colorSecondary;
 
 $colorRecording: #ff6161;
 $colorTag: #4180f6;
 $colorTagHover: #3a72db;
-$borderTag: #4c2f99;
 $colorInputBorder: #979797;
 $colorTitleBar: #fffafe;
+
+$borderTag: #4c2f99;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
+$textBtn: #110038;
+$textBtnDisabled: $textClear;
 
 $gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+
 $shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
-$shadowPrimarySecondary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+$shadowPrimary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+$shadowSecondary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
 $shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
 $shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
 $shadowElement: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
 $shadowItem: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
 $shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
 $shadowLoadingBar: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000;
+
+.brand-container {
+	background-image: url(../../assets/img/gifOF_logo.png);
+}
+.icon-dropdown {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/dropdown.svg");
+	}
+}
+.icon-search {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/lupa.svg");
+	}
+}
+.icon-camera {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/camera.svg");
+	}
+}
+.icon-recording {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/recording_dark.svg");
+	}
+}
+
+.search-box {
+	.search-form {
+		input:placeholder-shown ~ button[type="submit"] {
+			.btn-text-container {
+				&::before {
+					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
+				}
+			}
+		}
+	}
+}
 
 @import "./_colorsheet.scss";
