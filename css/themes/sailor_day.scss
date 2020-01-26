@@ -44,6 +44,7 @@ $textWhite: #fff;
 	background: $gradient;
 	background-size: 400% 400%;
 	animation: loading-animation 2s ease-in-out infinite;
+	color: transparent;
 }
 .icon-dropdown {
 	&::before,
