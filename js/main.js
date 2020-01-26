@@ -97,7 +97,7 @@ const navBar = (() => {
 })();
 const searchSection = (() => {
 	// Cache DOM
-	const $searchBox = document.querySelector("#search-box");
+	const $searchBox = document.querySelector("#search-section");
 	const $searchBar = document.querySelector("#search-bar");
 	const $searchButton = document.querySelector("#search-button");
 	const $searchSuggestions = document.querySelector("#search-suggestions");

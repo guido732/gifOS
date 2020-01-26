@@ -63,24 +63,26 @@
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search-container hidden" id="search-box">
-				<div class="search">
-					<div class="search-header">
-						<!-- ! review - header bottom border color -->
-						Buscar
-					</div>
-					<form name="searchform">
-						<!-- TODO boton de Limpiar búsqueda -->
-						<input
-							type="search"
-							class="input-bar input-bar-mono-lg"
-							id="search-bar"
-							placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
-							autocomplete="off"
-						/>
-						<button type="submit" id="search-button" disabled class="btn-primary submit">
-							<span class="btn-text-container icon-within icon-search">Buscar</span>
-						</button>
+			<section class="search-container hidden" id="search-section">
+				<div class="search-box">
+					<form name="searchform" class="search-form">
+						<div class="search-header">
+							<!-- ! review - header bottom border color -->
+							Buscar
+						</div>
+						<div class="search-bar-container">
+							<!-- TODO boton de Limpiar búsqueda -->
+							<input
+								type="search"
+								class="input-bar input-bar-mono-lg"
+								id="search-bar"
+								placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
+								autocomplete="off"
+							/>
+							<button type="submit" id="search-button" disabled class="btn-primary submit">
+								<span class="btn-text-container icon-within icon-search">Buscar</span>
+							</button>
+						</div>
 					</form>
 					<div class="search-suggestions hidden" id="search-suggestions">
 						<!-- ! review - width of elements -->

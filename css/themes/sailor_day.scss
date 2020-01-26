@@ -1,29 +1,46 @@
-$bgColor: #fff4fd;
-$bgGray: #e6e6e6;
-
-$gradient: linear-gradient(270deg, #f7c9f3 0%, #4180f6 100%);
+$bgElement: #e6e6e6;
 
 $colorPrimary: #f7c9f3;
 $colorPrimaryHover: #e6bbe2;
 
 $colorSecondary: #fff4fd;
 $colorSecondaryHover: #f0e5ee;
+$colorSecondaryBorder: #110038;
 
-$colorSearch: #f0f0f0;
-$colorSearchHover: #e6e6e6;
+$colorElement: #f0f0f0;
+$colorElementHover: #dbdbdb;
+$colorElementBorder: #808080;
+$colorElementSecondaryHover: #cca6c9;
+$colorThemeHover: $colorSecondary;
+
+$colorRecording: #ff6161;
+$colorTag: #4180f6;
+$colorTagHover: #3a72db;
+$colorInputBorder: #979797;
+$colorTitleBar: #fffafe;
+
+$borderTag: #4c2f99;
 
 $textDark: #110038;
 $textClear: #b4b4b4;
 $textWhite: #fff;
+$textBtn: #110038;
+$textBtnDisabled: $textClear;
 
-// Utility
-.underline {
-	border-bottom-color: $textDark;
-}
-.loading-animation {
-	background: $gradient;
-	background-size: 400% 400%;
-	animation: loading-animation 2s ease-in-out infinite;
+$gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+
+$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
+$shadowPrimary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+$shadowSecondary: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 $textWhite;
+$shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
+$shadowTag: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 $textWhite;
+$shadowElement: inset -2px -2px 0 0 $textClear, inset 2px 2px 0 0 $textWhite;
+$shadowItem: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
+$shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
+$shadowLoadingBar: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000;
+
+.brand-container {
+	background-image: url(../../assets/img/gifOF_logo.png);
 }
 .icon-dropdown {
 	&::before,
@@ -46,308 +63,20 @@ $textWhite: #fff;
 .icon-recording {
 	&::before,
 	&::after {
-		background-image: url("../../assets/icons/recording.svg");
+		background-image: url("../../assets/icons/recording_dark.svg");
 	}
 }
 
-// Components
-.btn-primary {
-	color: $textDark;
-	background: $colorPrimary;
-	border: 1px solid $textDark;
-	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	.btn-text-container {
-		border: 1px dotted $colorPrimaryHover;
-	}
-	&:hover {
-		background: $colorPrimaryHover;
-		.btn-text-container {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.btn-primary--icon-before {
-	&::before {
-		border: 1px solid black;
-		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	}
-	&:hover::before {
-		outline: 1px dotted $textDark;
-		outline-offset: -4px;
-	}
-}
-.btn-primary--icon-after {
-	&::after {
-		border: 1px solid black;
-		box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	}
-	&:hover::after {
-		outline: 1px dotted black;
-		outline-offset: -4px;
-	}
-}
-.btn-recording {
-	background: #ff6161;
-	border: 1px solid #110038;
-	box-shadow: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 #ffffff;
-	.btn-text-container {
-		color: $textWhite;
-	}
-	&:hover {
-		background: #ff6161;
-	}
-}
-.btn-tag {
-	background: #4180f6;
-	border: 1px solid #4c2f99;
-	box-shadow: inset -2px -2px 0 0 #284f99, inset 2px 2px 0 0 #ffffff;
-	color: $textWhite;
-	.btn-text-container {
-		border: 1px dotted #4180f6;
-	}
-	&:hover {
-		background: #3a72db;
-		.btn-text-container {
-			border: 1px dotted #110038;
-		}
-	}
-}
-.btn-secondary {
-	background: $colorSecondary;
-	border: 1px solid $textDark;
-	box-shadow: inset -1px -1px 0 0 #997d97, inset 1px 1px 0 0 #fff;
-	.btn-text-container {
-		border: 1px dotted $colorSecondaryHover;
-	}
-	&:hover {
-		background: $colorSecondaryHover;
-		.btn-text-container {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.btn-search-suggestion {
-	background: $colorSearch;
-	border: 1px solid #808080;
-	box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
-	span {
-		border: 1px dotted $colorSearch;
-	}
-	&:hover {
-		background: $colorSearchHover;
-		span {
-			border: 1px dotted $textDark;
-		}
-	}
-	&:active {
-		background: #dbdbdb;
-	}
-}
-.btn-link {
-	border: 1px dotted transparent;
-	&:hover {
-		border: 1px dotted $textDark;
-	}
-}
-.btn-full-width {
-	.btn-text-container {
-		border: none;
-	}
-	&:hover .btn-text-container {
-		outline: 1px dotted $textDark;
-		border: none;
-	}
-}
-.window-item {
-	background: #e6e6e6;
-	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.wi-header {
-		background: $gradient;
-		color: $textWhite;
-		font-weight: 700;
-	}
-	.img-container {
-		border: 1px dotted transparent;
-		.btn-primary.tag span {
-			border: 1px dotted transparent;
-		}
-		&:hover {
-			border: 1px dotted #110038;
-			.btn-primary.tag span {
-				border: 1px dotted #110038;
-			}
-		}
-	}
-}
-.trend-item {
-	background: #e6e6e6;
-	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.trend-header {
-		background: $gradient;
-		color: $textWhite;
-		font-weight: bold;
-	}
-	.img-element {
-		border: 1px solid #e6e6e6;
-		&:hover {
-			border: 1px dotted #110038;
-		}
-	}
-}
-.input-bar {
-	background: #fffafe;
-	border: 1px solid #e6bbe2;
-	box-shadow: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #80687d;
-	&::placeholder {
-		color: $textDark;
-	}
-}
-.input-bar-mono-lg {
-	background: #ffffff;
-	border: 1px solid #979797;
-	box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-	&::placeholder {
-		color: #b4b4b4;
-	}
-}
-.input-bar-mono-sm {
-	background: #ffffff;
-	border: 1px solid #979797;
-	box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-}
-.window-element {
-	background: #e6e6e6;
-	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.gradient-header {
-		background: $gradient;
-		color: $textWhite;
-		font-weight: 700;
-	}
-	.video-element {
-		@extend .loading-animation;
-		border: 1px solid #979797;
-		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-	}
-	.video-preview-img {
-		@extend .loading-animation;
-		border: 1px solid #979797;
-		box-shadow: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000000;
-	}
-}
-.loading-bar-container {
-	.loading-bar {
-		background: #b4b4b4;
-		box-shadow: inset -2px -2px 0 0 #fffcfc, inset 2px 2px 0 0 #000000;
-		.bar {
-			background: #f7c9f3;
-		}
-		.progress-block {
-			background-color: #f7c9f3;
-		}
-		.empty {
-			background-color: #999999;
-		}
-	}
-}
-
-// General element styles
-body {
-	background-color: $bgColor;
-}
-h1 {
-	color: $textWhite;
-}
-p,
-a {
-	color: $textDark;
-}
-button {
-	background-color: transparent;
-	cursor: pointer;
-	&:disabled {
-		cursor: default;
-		background: #e6e6e6;
-		outline: none;
-		.btn-text-container {
-			border: none;
-		}
-		&:hover {
-			background: #e6e6e6;
-			outline: none;
-			.btn-text-container {
-				border: none;
-			}
-			&::before,
-			&::after {
-				outline: none;
-				&:hover {
-					outline: none;
-				}
-			}
-		}
-	}
-}
-
-// Page Specific Sections
-.header {
-	background: $gradient;
-	box-shadow: 0 1px 0 0 #110038;
-}
-.brand-container {
-	background-image: url(../../assets/img/gifOF_logo.png);
-}
-.dropdown-list {
-	background: #e6e6e6;
-	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.dropdown-list-item {
-		background: #f0f0f0;
-		border: 1px solid #808080;
-		box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
-		&:hover {
-			background-color: #fff4fd;
-			border: 1px solid #cca6c9;
-		}
-	}
-}
-.search {
-	background: $colorSearchHover;
-	box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	.search-header {
-		background: $gradient;
-		color: $textWhite;
-		font-weight: 700;
-	}
-	form {
-		background: #e6e6e6;
-		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 0px 0 0 #ffffff;
+.search-box {
+	.search-form {
 		input:placeholder-shown ~ button[type="submit"] {
-			// background: #e6e6e6;
-			border: 1px solid #808080;
-			box-shadow: inset -1px -1px 0 0 #b4b4b4, inset 1px 1px 0 0 #ffffff;
 			.btn-text-container {
-				border: 1px solid #e6e6e6;
-				color: #b4b4b4;
 				&::before {
 					background: url(../../assets/icons/lupa_inactive.svg) no-repeat;
 				}
 			}
 		}
 	}
-	.search-suggestions {
-		background: $colorSearchHover;
-		box-shadow: inset -2px -2px 0 0 #b4b4b4, inset 2px 2px 0 0 #ffffff;
-	}
 }
 
-// Animations
-@keyframes loading-animation {
-	0% {
-		background-position: 0% 88%;
-	}
-	50% {
-		background-position: 100% 13%;
-	}
-	100% {
-		background-position: 0% 88%;
-	}
-}
+@import "./_colorsheet.scss";
