@@ -669,6 +669,7 @@ const createGifsSection = (() => {
 const myGifsSection = (() => {
 	// Local variables
 	let myGifs = {};
+	let gifToDelete = "";
 
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
@@ -682,6 +683,7 @@ const myGifsSection = (() => {
 	events.on("createGifEnded", render);
 	events.on("searchStarted", unmount);
 	events.on("gotoHome", unmount);
+	events.on("newPopupDeleteGifOk", deleteGif);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
@@ -709,14 +711,25 @@ const myGifsSection = (() => {
 	}
 	function parseDeleteButtons() {
 		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton
 				.closest(".trend-item")
 				.querySelector("img")
 				.getAttribute("data-src");
 			const localStorageGifID = localGifElementURL.split("/")[4];
+
 			removeGifButton.addEventListener("click", () => {
-				deleteGif(localStorageGifID);
+				// deleteGif(localStorageGifID);
+				gifToDelete = localStorageGifID;
+				const popupContent = {
+					header: "Eliminar guifo",
+					title: "Estás segurx?",
+					body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
+					hasOptions: true,
+					icon: "warning"
+				};
+				events.emit("newPopupDeleteGif", popupContent);
 			});
 		});
 	}
@@ -730,10 +743,11 @@ const myGifsSection = (() => {
 			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
 	}
-	function deleteGif(gifID) {
-		const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
-		deleteConfirmation && localStorage.removeItem(`gif-${gifID}`);
-
+	function deleteGif() {
+		// const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
+		// deleteConfirmation && localStorage.removeItem(`gif-${gifToDelete}`);
+		localStorage.removeItem(`gif-${gifToDelete}`);
+		gifToDelete = "";
 		events.emit("myGifsChanged");
 	}
 })();
@@ -750,29 +764,30 @@ const popupWindow = (() => {
 	const $popupClose = document.querySelector("#popup-close");
 
 	// Bind Events
-	events.on("newPopup", mount);
+	events.on("newPopupDeleteGif", newPopupMessage);
 	$popupPrimary.onclick = () => {
-		events.emit("popupPrimary");
+		events.emit("popupPrimary", true);
+		console.log("primary clicked");
 		unmount();
 	};
 	$popupSecondary.onclick = () => {
-		events.emit("popupSecondary");
+		events.emit("popupSecondary", false);
+		console.log("secondary clicked");
 		unmount();
 	};
-
 	$popupClose.onclick = () => {
 		events.emit("popupClose");
 		unmount();
 	};
 
-	mount();
-	newPopupMessage(
-		"Titulo del error",
-		"Me mandé una cagada guacho",
-		"Bueno la cosa es así, me mandé un moco, que se le va a hacer?",
-		true,
-		"error"
-	);
+	// mount();
+	// newPopupMessage({
+	// 	header: "Eliminar guifo",
+	// 	title: "Estás segurx?",
+	// 	body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
+	// 	hasOptions: true,
+	// 	icon: "warning"
+	// });
 
 	// Methods / Functions
 	function mount() {
@@ -787,11 +802,18 @@ const popupWindow = (() => {
 	function hideOption() {
 		hideElements($popupSecondary);
 	}
-	function newPopupMessage(header = "error", title = "error", body = "Unknown Error", options = false, icon = "error") {
+	function newPopupMessage({
+		header = "error",
+		title = "error",
+		body = "Unknown Error",
+		hasOptions = false,
+		icon = "error"
+	}) {
+		mount();
 		replaceTextContent($popupHeader, header);
 		replaceTextContent($popupTitle, title);
 		replaceTextContent($popupMessage, body);
-		options ? showOption() : hideOption();
+		hasOptions ? showOption() : hideOption();
 		popupIcon(icon);
 	}
 	function replaceTextContent(element, content) {
