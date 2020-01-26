@@ -18,6 +18,7 @@ Trabajo número 2 del curso de Desarrollo Web Full Stack de Acámica.
 - Timer basado en [ el comentario de maček en StackOverflow](https://stackoverflow.com/a/20319035/11596203)
 - Loading Bar basada en [tutorial de W3Schools](https://www.w3schools.com/howto/howto_js_progressbar.asp)
 - Testeo de respuestas de éxito/error con [mocky.io](https://www.mocky.io/)
+- [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
 
 El objetivo del trabajo es generar una página web incorporando los conocimientos adquiridos en la primera etapa que permita obtener datos de la API de giphy a través de un request a la misma.
 
@@ -39,5 +40,6 @@ Project #2 from the Full Stack Web Development career in Acámica.
 - Timer based on [maček's comment on StackOverflow](https://stackoverflow.com/a/20319035/11596203)
 - Loading Bar based ok [tutorial from W3Schools](https://www.w3schools.com/howto/howto_js_progressbar.asp)
 - API response testing using [mocky.io](https://www.mocky.io/)
+- [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
 
 The goal was to generate a website which would incorporate the knowledge acquired in the first stage of the course that could also communicate with giphy's web API, getting images dynamically through requests sent to it.
