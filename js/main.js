@@ -669,7 +669,6 @@ const createGifsSection = (() => {
 const myGifsSection = (() => {
 	// Local variables
 	let myGifs = {};
-	let gifToDelete = "";
 
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
@@ -684,6 +683,7 @@ const myGifsSection = (() => {
 	events.on("searchStarted", unmount);
 	events.on("gotoHome", unmount);
 	events.on("newPopupDeleteGifOk", deleteGif);
+	events.on("deleteGif", deleteGif);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
@@ -709,30 +709,6 @@ const myGifsSection = (() => {
 		});
 		return myGifs;
 	}
-	function parseDeleteButtons() {
-		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
-
-		$removeGifButtons.forEach(removeGifButton => {
-			const localGifElementURL = removeGifButton
-				.closest(".trend-item")
-				.querySelector("img")
-				.getAttribute("data-src");
-			const localStorageGifID = localGifElementURL.split("/")[4];
-
-			removeGifButton.addEventListener("click", () => {
-				// deleteGif(localStorageGifID);
-				gifToDelete = localStorageGifID;
-				const popupContent = {
-					header: "Eliminar guifo",
-					title: "Estás segurx?",
-					body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
-					hasOptions: true,
-					icon: "warning"
-				};
-				events.emit("newPopupDeleteGif", popupContent);
-			});
-		});
-	}
 	function loadMyGifs(myGifs) {
 		for (let myGifKey in myGifs) {
 			const parsedGifData = JSON.parse(myGifs[myGifKey]);
@@ -743,11 +719,37 @@ const myGifsSection = (() => {
 			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
 	}
-	function deleteGif() {
-		// const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
-		// deleteConfirmation && localStorage.removeItem(`gif-${gifToDelete}`);
+	function parseDeleteButtons() {
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+
+		// Gets gif ID through the (closest) image URL
+		$removeGifButtons.forEach(removeGifButton => {
+			const localGifElementURL = removeGifButton
+				.closest(".trend-item")
+				.querySelector("img")
+				.getAttribute("data-src");
+			const localStorageGifID = localGifElementURL.split("/")[4];
+
+			removeGifButton.addEventListener("click", () => {
+				generateDeleteConfirmation(localStorageGifID);
+			});
+		});
+	}
+	function generateDeleteConfirmation(localStorageGifID) {
+		const popupContent = {
+			header: "Eliminar guifo",
+			title: "Estás segurx?",
+			body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
+			hasOptions: true,
+			icon: "warning",
+			callbackPrimary: () => {
+				events.emit("deleteGif", localStorageGifID);
+			}
+		};
+		events.emit("newPopupDeleteGif", popupContent);
+	}
+	function deleteGif(gifToDelete) {
 		localStorage.removeItem(`gif-${gifToDelete}`);
-		gifToDelete = "";
 		events.emit("myGifsChanged");
 	}
 })();
@@ -765,29 +767,10 @@ const popupWindow = (() => {
 
 	// Bind Events
 	events.on("newPopupDeleteGif", newPopupMessage);
-	$popupPrimary.onclick = () => {
-		events.emit("popupPrimary", true);
-		console.log("primary clicked");
-		unmount();
-	};
-	$popupSecondary.onclick = () => {
-		events.emit("popupSecondary", false);
-		console.log("secondary clicked");
-		unmount();
-	};
 	$popupClose.onclick = () => {
 		events.emit("popupClose");
 		unmount();
 	};
-
-	// mount();
-	// newPopupMessage({
-	// 	header: "Eliminar guifo",
-	// 	title: "Estás segurx?",
-	// 	body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
-	// 	hasOptions: true,
-	// 	icon: "warning"
-	// });
 
 	// Methods / Functions
 	function mount() {
@@ -807,7 +790,9 @@ const popupWindow = (() => {
 		title = "error",
 		body = "Unknown Error",
 		hasOptions = false,
-		icon = "error"
+		icon = "error",
+		callbackPrimary = () => {},
+		callbackSecondary = () => {}
 	}) {
 		mount();
 		replaceTextContent($popupHeader, header);
@@ -815,6 +800,24 @@ const popupWindow = (() => {
 		replaceTextContent($popupMessage, body);
 		hasOptions ? showOption() : hideOption();
 		popupIcon(icon);
+		setPrimaryEvent(callbackPrimary);
+		setSecondaryEvent(callbackSecondary);
+	}
+	function setPrimaryEvent(callbackPrimary) {
+		$popupPrimary.onclick = () => {
+			events.emit("popupPrimary", false);
+			callbackPrimary();
+			console.log("primary clicked");
+			unmount();
+		};
+	}
+	function setSecondaryEvent(callbackSecondary) {
+		$popupSecondary.onclick = () => {
+			events.emit("popupSecondary", true);
+			callbackSecondary();
+			console.log("Secondary clicked");
+			unmount();
+		};
 	}
 	function replaceTextContent(element, content) {
 		element.innerHTML = content;
