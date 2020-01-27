@@ -62,6 +62,7 @@
 				<button href="#" class="nav-item btn-link" id="btn-my-gifs"><span class="underline">M</span>is Guifos</button>
 			</div>
 		</nav>
+
 		<main class="container">
 			<section class="search-container hidden" id="search-section">
 				<div class="search-box">
@@ -294,6 +295,35 @@
 				<div class="trend-grid" id="my-gifs-grid"></div>
 			</section>
 		</main>
+		<aside>
+			<dialog class="popup-window window-element hidden" id="popup-window">
+				<div class="gradient-header popup-header" id="popup-header">
+					<button class="remove-element close-window" id="popup-close"></button>
+					<span id="popup-header-text">Fatal Error!</span>
+				</div>
+				<div class="popup-content">
+					<div class="content-main">
+						<div class="popup-icon" id="popup-icon"></div>
+						<div class="text-content">
+							<h2 id="popup-title">gifOS has failed miserably!</h2>
+							<p id="popup-message">
+								Because js is the Lorem ipsum dolor sit, amet consectetur adipisicing elit. Et, culpa. Lorem ipsum dolor
+								sit amet, consectetur adipisicing elit. Perspiciatis culpa eaque est. Reiciendis quidem molestias
+								numquam eos adipisci esse debitis laboriosam quaerat non? Repellendus, officiis. woooooorst
+							</p>
+						</div>
+					</div>
+					<div class="popup-actions">
+						<button class="btn-secondary close-window hidden" id="popup-secondary">
+							<span class="btn-text-container">Cancelar</span>
+						</button>
+						<button class="btn-primary" id="popup-primary">
+							<span class="btn-text-container">Aceptar</span>
+						</button>
+					</div>
+				</div>
+			</dialog>
+		</aside>
 		<script src="./js/main.js"></script>
 		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 		<form action="" method="post"></form>

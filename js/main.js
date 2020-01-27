@@ -682,6 +682,8 @@ const myGifsSection = (() => {
 	events.on("createGifEnded", render);
 	events.on("searchStarted", unmount);
 	events.on("gotoHome", unmount);
+	events.on("newPopupDeleteGifOk", deleteGif);
+	events.on("deleteGif", deleteGif);
 
 	function mount() {
 		showElements($myGifsSection, $gifsGrid);
@@ -707,19 +709,6 @@ const myGifsSection = (() => {
 		});
 		return myGifs;
 	}
-	function parseDeleteButtons() {
-		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
-		$removeGifButtons.forEach(removeGifButton => {
-			const localGifElementURL = removeGifButton
-				.closest(".trend-item")
-				.querySelector("img")
-				.getAttribute("data-src");
-			const localStorageGifID = localGifElementURL.split("/")[4];
-			removeGifButton.addEventListener("click", () => {
-				deleteGif(localStorageGifID);
-			});
-		});
-	}
 	function loadMyGifs(myGifs) {
 		for (let myGifKey in myGifs) {
 			const parsedGifData = JSON.parse(myGifs[myGifKey]);
@@ -730,11 +719,122 @@ const myGifsSection = (() => {
 			$gifsGrid.append(newElement("myGif", parsedGifData, aspectRatio));
 		}
 	}
-	function deleteGif(gifID) {
-		const deleteConfirmation = confirm("Estás seguro de que querés eliminar éste guifo?");
-		deleteConfirmation && localStorage.removeItem(`gif-${gifID}`);
+	function parseDeleteButtons() {
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
 
+		// Gets gif ID through the (closest) image URL
+		$removeGifButtons.forEach(removeGifButton => {
+			const localGifElementURL = removeGifButton
+				.closest(".trend-item")
+				.querySelector("img")
+				.getAttribute("data-src");
+			const localStorageGifID = localGifElementURL.split("/")[4];
+
+			removeGifButton.addEventListener("click", () => {
+				generateDeleteConfirmation(localStorageGifID);
+			});
+		});
+	}
+	function generateDeleteConfirmation(localStorageGifID) {
+		const popupContent = {
+			header: "Eliminar guifo",
+			title: "Estás segurx?",
+			body: "Estás segurx de que querés eliminar éste guifo? \n Ésta acción no se puede deshacer.",
+			hasOptions: true,
+			icon: "warning",
+			callbackPrimary: () => {
+				events.emit("deleteGif", localStorageGifID);
+			}
+		};
+		events.emit("newPopupDeleteGif", popupContent);
+	}
+	function deleteGif(gifToDelete) {
+		localStorage.removeItem(`gif-${gifToDelete}`);
 		events.emit("myGifsChanged");
+	}
+})();
+const popupWindow = (() => {
+	// Local Variables
+	// DOM Cache
+	const $popupWindow = document.querySelector("#popup-window");
+	const $popupHeader = document.querySelector("#popup-header-text");
+	const $popupTitle = document.querySelector("#popup-title");
+	const $popupMessage = document.querySelector("#popup-message");
+	const $popupIcon = document.querySelector("#popup-icon");
+	const $popupPrimary = document.querySelector("#popup-primary");
+	const $popupSecondary = document.querySelector("#popup-secondary");
+	const $popupClose = document.querySelector("#popup-close");
+
+	// Bind Events
+	events.on("newPopupDeleteGif", newPopupMessage);
+	$popupClose.onclick = () => {
+		events.emit("popupClose");
+		unmount();
+	};
+
+	// Methods / Functions
+	function mount() {
+		showElements($popupWindow);
+	}
+	function unmount() {
+		hideElements($popupWindow);
+	}
+	function showOption() {
+		showElements($popupSecondary);
+	}
+	function hideOption() {
+		hideElements($popupSecondary);
+	}
+	function newPopupMessage({
+		header = "error",
+		title = "error",
+		body = "Unknown Error",
+		hasOptions = false,
+		icon = "error",
+		callbackPrimary = () => {},
+		callbackSecondary = () => {}
+	}) {
+		mount();
+		replaceTextContent($popupHeader, header);
+		replaceTextContent($popupTitle, title);
+		replaceTextContent($popupMessage, body);
+		hasOptions ? showOption() : hideOption();
+		popupIcon(icon);
+		setPrimaryEvent(callbackPrimary);
+		setSecondaryEvent(callbackSecondary);
+	}
+	function setPrimaryEvent(callbackPrimary) {
+		$popupPrimary.onclick = () => {
+			events.emit("popupPrimary", false);
+			callbackPrimary();
+			console.log("primary clicked");
+			unmount();
+		};
+	}
+	function setSecondaryEvent(callbackSecondary) {
+		$popupSecondary.onclick = () => {
+			events.emit("popupSecondary", true);
+			callbackSecondary();
+			console.log("Secondary clicked");
+			unmount();
+		};
+	}
+	function replaceTextContent(element, content) {
+		element.innerHTML = content;
+		return true;
+	}
+	function popupIcon(icon) {
+		$popupIcon.classList.remove("warning", "error");
+		switch (icon) {
+			case "error":
+				$popupIcon.classList.add("error");
+				break;
+			case "warning":
+				$popupIcon.classList.add("warning");
+				break;
+			default:
+				break;
+		}
 	}
 })();
 const giphyEndpoints = (keywords, limit, gifOffset) => {

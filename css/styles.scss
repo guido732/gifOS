@@ -397,6 +397,44 @@
 		}
 	}
 }
+.popup-window {
+	display: block;
+	position: fixed;
+	border: none;
+	margin: 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: 20rem;
+	max-width: 90%;
+	z-index: 1;
+	.popup-content {
+		padding: 1rem;
+	}
+	.content-main {
+		@include flexCenter(row, nowrap);
+		justify-content: flex-start;
+		.popup-icon {
+			margin-right: 1rem;
+			flex-shrink: 0;
+			width: 2rem;
+			height: 2rem;
+			display: block;
+			background: center no-repeat url(../assets/icons/window_img.png);
+		}
+		.error {
+			background: center no-repeat url(../assets/icons/msg_error.png);
+		}
+		.warning {
+			background: center no-repeat url(../assets/icons/msg_warning.png);
+		}
+	}
+	.popup-actions {
+		margin-top: 1rem;
+		@include flexCenter();
+		justify-content: flex-end;
+	}
+}
 
 // General element styles
 body {
