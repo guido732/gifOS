@@ -878,8 +878,8 @@ function newElement(type, element, ratio = "") {
 			<img 
 				class="lazy img-element loading-animation" 
 				src="" 
-				data-src="${element.images.preview_webp.url}"
-				data-srcset="${element.images.preview_webp.url}"
+				data-src="${element.images.original.url}"
+				data-srcset="${element.images.original.url}"
 				alt="${element.title}" /> 	
 				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
 			</div>
@@ -897,8 +897,8 @@ function newElement(type, element, ratio = "") {
 					<img 
 						class="lazy img-element loading-animation" 
 						src="" 
-						data-src="${element.images.preview_webp.url}"
-						data-srcset="${element.images.preview_webp.url}"
+						data-src="${element.images.original.url}"
+						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
 						/>
 					</a>
@@ -919,8 +919,8 @@ function newElement(type, element, ratio = "") {
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
 						src="" 
-						data-src="${element.images.downsized.url}"
-						data-srcset="${element.images.downsized.url}"
+						data-src="${element.images.original.url}"
+						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
 						class="lazy img-element loading-animation" 
 					/>
