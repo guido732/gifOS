@@ -705,7 +705,7 @@ const myGifsSection = (() => {
 	function getGifItemsFromLS() {
 		const myGifs = {};
 		Object.keys(localStorage).forEach(element => {
-			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
+			element.startsWith("gif-") ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
 		return myGifs;
 	}
