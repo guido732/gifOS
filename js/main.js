@@ -147,7 +147,7 @@ const searchSection = (() => {
 		}
 	}
 	async function handleSearchFunctionality(searchValue) {
-		$searchResultTitle.setAttribute("placeholder", `Resultados de búsqueda: ${searchValue}`);
+		$searchResultTitle.innerText = `Resultados de búsqueda: ${searchValue}`;
 		$searchBar.value = "";
 		$searchBar.focus();
 		$searchButton.disabled = true;

@@ -160,6 +160,7 @@
 .input-bar {
 	background: $colorTitleBar;
 	border: 1px solid $colorElementSecondaryHover;
+	color: $textDark;
 	box-shadow: $shadowTitleBar;
 	&::placeholder {
 		color: $textDark;
