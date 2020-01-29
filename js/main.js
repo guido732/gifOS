@@ -482,8 +482,14 @@ const createGifsSection = (() => {
 		try {
 			await initiateWebcam();
 		} catch (e) {
-			// TODO - styled modal popup
-			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+			const popupContent = {
+				header: "Ups!",
+				title: "Parece que algo malió sal!",
+				body: "No tenés una cámara habilitada en éste dispositivo",
+				hasOptions: false,
+				icon: "error"
+			};
+			events.emit("newPopupDeleteGif", popupContent);
 			$startRecording.disabled = true;
 		}
 	};
