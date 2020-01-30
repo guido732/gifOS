@@ -934,6 +934,21 @@ const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10
 		pages: pages
 	};
 };
+const itemsToPaginate = Array.from(Array(150).keys()).map(i => ({ id: i + 1, name: "Item " + (i + 1) }));
+const state = {
+	itemsToPaginate: itemsToPaginate,
+	pageOfItems: []
+};
+let fakePagination = paginator(state.itemsToPaginate.length);
+
+state.pageOfItems = [];
+console.log(state.pageOfItems);
+
+for (let i = fakePagination.startIndex; i <= fakePagination.endIndex; i++) {
+	state.pageOfItems.push(itemsToPaginate[i]);
+}
+console.log(state.pageOfItems);
+
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // On Load functions
