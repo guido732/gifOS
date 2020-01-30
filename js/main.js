@@ -647,10 +647,7 @@ const createGifsSection = (() => {
 			frameRate: 1,
 			quality: 10,
 			width: 360,
-			hidden: 240,
-			onGifPreview: function(gifURL) {
-				$outputPreview.src = gifURL;
-			}
+			hidden: 240
 		});
 		await videoRecorder.startRecording();
 		await gifRecorder.startRecording();
@@ -837,7 +834,6 @@ const popupWindow = (() => {
 		$popupPrimary.onclick = () => {
 			events.emit("popupPrimary", false);
 			callbackPrimary();
-			console.log("primary clicked");
 			unmount();
 		};
 	}
@@ -845,7 +841,6 @@ const popupWindow = (() => {
 		$popupSecondary.onclick = () => {
 			events.emit("popupSecondary", true);
 			callbackSecondary();
-			console.log("Secondary clicked");
 			unmount();
 		};
 	}
