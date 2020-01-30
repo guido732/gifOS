@@ -210,7 +210,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-const suggestionsSection = (() => {
+/* const suggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -861,7 +861,7 @@ const popupWindow = (() => {
 				break;
 		}
 	}
-})();
+})(); */
 const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
@@ -870,6 +870,70 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
 
+/* (async function() {
+	const fetchedData = await fetch(
+		"https://api.giphy.com/v1/gifs/search?q=radio&api_key=KvIjm5FP077DsfgGq2kLnXDTViwRJP7f&limit=500"
+	)
+		.then(response => response.json())
+		.then(data => data);
+	console.log(await fetchedData.pagination.offset);
+})(); */
+
+const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
+	// calculate total pages
+	let totalPages = Math.ceil(totalItems / pageSize);
+
+	// ensure current page isn't out of range
+	if (currentPage < 1) {
+		currentPage = 1;
+	} else if (currentPage > totalPages) {
+		currentPage = totalPages;
+	}
+
+	let startPage, endPage;
+	if (totalPages <= maxPages) {
+		// total pages less than max so show all pages
+		startPage = 1;
+		endPage = totalPages;
+	} else {
+		// total pages more than max so calculate start and end pages
+		let maxPagesBeforeCurrentPage = Math.floor(maxPages / 2);
+		let maxPagesAfterCurrentPage = Math.ceil(maxPages / 2) - 1;
+		if (currentPage <= maxPagesBeforeCurrentPage) {
+			// current page near the start
+			startPage = 1;
+			endPage = maxPages;
+		} else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
+			// current page near the end
+			startPage = totalPages - maxPages + 1;
+			endPage = totalPages;
+		} else {
+			// current page somewhere in the middle
+			startPage = currentPage - maxPagesBeforeCurrentPage;
+			endPage = currentPage + maxPagesAfterCurrentPage;
+		}
+	}
+
+	// calculate start and end item indexes
+	let startIndex = (currentPage - 1) * pageSize;
+	let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+
+	// create an array of pages to ng-repeat in the pager control
+	let pages = Array.from(Array(endPage + 1 - startPage).keys()).map(i => startPage + i);
+
+	// return object with all pager properties required by the view
+	return {
+		totalItems: totalItems,
+		currentPage: currentPage,
+		pageSize: pageSize,
+		totalPages: totalPages,
+		startPage: startPage,
+		endPage: endPage,
+		startIndex: startIndex,
+		endIndex: endIndex,
+		pages: pages
+	};
+};
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 // On Load functions
