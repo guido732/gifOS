@@ -1,0 +1,333 @@
+// Utility
+.underline {
+	border-bottom-color: $textDark;
+}
+.loading-animation {
+	background: $gradient;
+	background-size: 400% 400%;
+	animation: loading-animation 2s ease-in-out infinite;
+	color: transparent;
+}
+
+// Components
+.btn-primary {
+	color: $textBtn;
+	background: $colorPrimary;
+	border: 1px solid $textDark;
+	box-shadow: $shadowPrimary;
+	.btn-text-container {
+		border: 1px dotted $colorPrimaryHover;
+	}
+	&:hover {
+		background: $colorPrimaryHover;
+		.btn-text-container {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn-primary--icon-before {
+	&::before {
+		border: 1px solid black;
+		box-shadow: $shadowPrimary;
+	}
+	&:hover::before {
+		outline: 1px dotted $textDark;
+		outline-offset: -4px;
+	}
+	&:disabled::before {
+		box-shadow: $shadowItem;
+	}
+}
+.btn-primary--icon-after {
+	&::after {
+		border: 1px solid black;
+		box-shadow: $shadowPrimary;
+	}
+	&:hover::after {
+		outline: 1px dotted black;
+		outline-offset: -4px;
+	}
+	&:disabled::after {
+		box-shadow: $shadowItem;
+	}
+}
+.btn-recording {
+	background: $colorRecording;
+	border: 1px solid $textDark;
+	box-shadow: $shadowRecording;
+	.btn-text-container {
+		color: $textWhite;
+	}
+	&:hover {
+		background: $colorRecording;
+	}
+}
+.btn-tag {
+	background: $colorTag;
+	border: 1px solid $borderTag;
+	box-shadow: $shadowTag;
+	color: $textWhite;
+	.btn-text-container {
+		border: 1px dotted $colorTag;
+	}
+	&:hover {
+		background: $colorTagHover;
+		.btn-text-container {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn-secondary {
+	background: $colorSecondary;
+	color: $textBtn;
+	border: 1px solid $colorSecondaryBorder;
+	box-shadow: $shadowSecondary;
+	.btn-text-container {
+		border: 1px dotted $colorSecondaryHover;
+	}
+	&:hover {
+		background: $colorSecondaryHover;
+		.btn-text-container {
+			border: 1px dotted $textBtn;
+		}
+	}
+}
+.btn-search-suggestion {
+	background: $colorElement;
+	border: 1px solid $colorElementBorder;
+	box-shadow: $shadowItem;
+	span {
+		border: 1px dotted $colorElement;
+	}
+	&:hover {
+		background: $colorElementHover;
+		span {
+			border: 1px dotted $textDark;
+		}
+	}
+	&:active {
+		background: $colorElementHover;
+	}
+}
+.btn-link {
+	border: 1px dotted transparent;
+	color: $textBtn;
+	&:hover {
+		border: 1px dotted $textBtn;
+	}
+	&:active {
+		color: $textBtn;
+		opacity: 0.5;
+	}
+}
+.btn-full-width {
+	.btn-text-container {
+		border: none;
+	}
+	&:hover .btn-text-container {
+		outline: 1px dotted $textDark;
+		border: none;
+	}
+}
+.window-item {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.wi-header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.img-container {
+		border: 1px dotted transparent;
+		.btn-primary.tag span {
+			border: 1px dotted transparent;
+		}
+		&:hover {
+			border: 1px dotted $textDark;
+			.btn-primary.tag span {
+				border: 1px dotted $textDark;
+			}
+		}
+	}
+}
+.trend-item {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.trend-header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.img-element {
+		border: 1px solid $bgElement;
+		&:hover {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.input-bar {
+	background: $colorTitleBar;
+	border: 1px solid $colorElementSecondaryHover;
+	color: $textDark;
+	box-shadow: $shadowTitleBar;
+	&::placeholder {
+		color: $textDark;
+	}
+}
+.input-bar-mono-lg {
+	background: $textWhite;
+	border: 1px solid $colorInputBorder;
+	box-shadow: $shadowInputBar;
+	&::placeholder {
+		color: $textClear;
+	}
+}
+.input-bar-mono-sm {
+	background: $textWhite;
+	border: 1px solid $colorInputBorder;
+	box-shadow: $shadowInputBar;
+}
+.window-element {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.gradient-header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.video-element {
+		@extend .loading-animation;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+	}
+	.video-preview-img {
+		@extend .loading-animation;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+	}
+	.stage5 {
+		background: $textWhite;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+	}
+	.stage6 {
+		.img-container {
+			@extend .stage5;
+		}
+	}
+	.stage7 {
+		.img-container {
+			@extend .stage5;
+		}
+	}
+}
+.loading-bar-container {
+	.loading-bar {
+		background: $textClear;
+		box-shadow: $shadowLoadingBar;
+		.bar {
+			background: $colorPrimary;
+		}
+		.progress-block {
+			background-color: $colorPrimary;
+		}
+		.empty {
+			background-color: $colorInputBorder;
+		}
+	}
+}
+
+// General element styles
+body {
+	background-color: $colorSecondary;
+}
+h1 {
+	color: $textWhite;
+}
+p {
+	color: $textDark;
+}
+
+button {
+	background-color: transparent;
+	cursor: pointer;
+	&:disabled {
+		cursor: default;
+		background: $bgElement;
+		outline: none;
+		box-shadow: $shadowItem;
+		.btn-text-container {
+			border: none;
+		}
+		&:hover {
+			background: $bgElement;
+			outline: none;
+			.btn-text-container {
+				border: none;
+			}
+			&::before,
+			&::after {
+				outline: none;
+
+				&:hover {
+					outline: none;
+				}
+			}
+		}
+	}
+}
+
+// Page Specific Sections
+.header {
+	background: $gradient;
+	box-shadow: 0 1px 0 0 $textDark;
+}
+
+.dropdown-list {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.dropdown-list-item {
+		background: $colorElement;
+		border: 1px solid $colorElementBorder;
+		box-shadow: $shadowItem;
+		&:hover {
+			background-color: $colorThemeHover;
+			border: 1px solid $colorElementSecondaryHover;
+			color: $textBtn;
+		}
+	}
+}
+.search-box {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.search-header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.search-form {
+		background: $bgElement;
+		box-shadow: $shadowElement;
+		input:placeholder-shown ~ button[type="submit"] {
+			border: 1px solid $colorElementBorder;
+			box-shadow: $shadowItem;
+			.btn-text-container {
+				border: 1px solid $bgElement;
+				color: $textBtnDisabled;
+			}
+		}
+	}
+	.search-suggestions {
+		background: $bgElement;
+		box-shadow: $shadowElement;
+	}
+}
+
+// Animations
+@keyframes loading-animation {
+	0% {
+		background-position: 0% 88%;
+	}
+	50% {
+		background-position: 100% 13%;
+	}
+	100% {
+		background-position: 0% 88%;
+	}
+}

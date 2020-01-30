@@ -1,0 +1,81 @@
+$bgElement: #b4b4b4;
+
+$colorPrimary: #ee3efe;
+$colorPrimaryHover: #ce36db;
+
+$colorSecondary: #110038;
+$colorSecondaryHover: $colorSecondary;
+$colorSecondaryBorder: #b4b4b4;
+
+$colorElement: #cccccc;
+$colorElementHover: #cccccc;
+$colorElementBorder: #808080;
+$colorElementSecondaryHover: #2e32fb;
+$colorThemeHover: $colorElementSecondaryHover;
+
+$colorRecording: #ff6161;
+$colorTag: #2e32fb;
+$colorTagHover: #2629cc;
+$colorInputBorder: #979797;
+$colorTitleBar: #fffafe;
+
+$borderTag: #4c2f99;
+
+$textDark: #110038;
+$textClear: #b4b4b4;
+$textWhite: #fff;
+$textBtn: #fff;
+$textBtnDisabled: #8f8f8f;
+
+$gradient: linear-gradient(270deg, $colorPrimary 0%, $colorTag 100%);
+
+$shadowInputBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
+$shadowPrimary: inset -1px -1px 0 0 #a72cb3, inset 1px 1px 0 0 $textWhite;
+$shadowSecondary: inset -1px -1px 0 0 #5c5c5c, inset 1px 1px 0 0 #fff4fd;
+$shadowRecording: inset -1px -1px 0 0 #993a3a, inset 1px 1px 0 0 $textWhite;
+$shadowTag: inset -2px -2px 0 0 #2124b3, inset 2px 2px 0 0 $textWhite;
+$shadowElement: inset -2px -2px 0 0 #8f8f8f, inset 2px 2px 0 0 $textWhite;
+$shadowItem: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
+$shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #110038;
+$shadowLoadingBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
+
+.brand-container {
+	background-image: url(../../assets/img/gifOF_logo_dark.png);
+}
+.icon-dropdown {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/dropdown.svg");
+	}
+}
+.icon-search {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/lupa_light.svg");
+	}
+}
+.icon-camera {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/camera_light.svg");
+	}
+}
+.icon-recording {
+	&::before,
+	&::after {
+		background-image: url("../../assets/icons/recording.svg");
+	}
+}
+.search-box {
+	.search-form {
+		input:placeholder-shown ~ button[type="submit"] {
+			.btn-text-container {
+				&::before {
+					background: url(../../assets/icons/lupa-2.svg) no-repeat;
+				}
+			}
+		}
+	}
+}
+
+@import "./_colorsheet.scss";
