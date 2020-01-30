@@ -203,7 +203,7 @@ const searchSection = (() => {
 				: null;
 		});
 
-		document.querySelectorAll(".btn-tag").forEach(tag => {
+		document.querySelectorAll(".search-tag").forEach(tag => {
 			tag.onclick = () => {
 				handleSearchFunctionality(tag.innerText);
 			};
@@ -969,7 +969,7 @@ function newElement(type, element, ratio = "") {
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 	}
 }
