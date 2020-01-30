@@ -651,7 +651,6 @@ const createGifsSection = (() => {
 		});
 		await videoRecorder.startRecording();
 		await gifRecorder.startRecording();
-		// helps releasing camera on stopRecording
 		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
@@ -680,8 +679,9 @@ const createGifsSection = (() => {
 		console.log("***Upload started***");
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
-		const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
-		// const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
+		// const postUrl = "https://upload.giphy.com/v1/gifs?api_key=KvIjm5FP877DsfhGk2lLnXDTViwRJP7f"; // test fake api_key
+		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
 			body: formData,
