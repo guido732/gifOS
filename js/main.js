@@ -203,7 +203,7 @@ const searchSection = (() => {
 				: null;
 		});
 
-		document.querySelectorAll(".btn-tag").forEach(tag => {
+		document.querySelectorAll(".search-tag").forEach(tag => {
 			tag.onclick = () => {
 				handleSearchFunctionality(tag.innerText);
 			};
@@ -308,6 +308,7 @@ const createGifsSection = (() => {
 	let videoRecorder;
 	let gifRecorder;
 	let gifSrc;
+	let playing = false;
 
 	// Cache DOM
 	const $stage1 = document.querySelector("#stage1");
@@ -409,11 +410,14 @@ const createGifsSection = (() => {
 		let interval;
 
 		function start(totalTime = 100) {
-			stop();
+			progress === 0 && clearProgress();
+			pause();
 			interval = setInterval(frame, totalTime);
 			function frame() {
 				if (progress >= 100) {
+					events.emit("loadingBarCompleted");
 					clearInterval(interval);
+					progress = 0;
 				} else {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
@@ -422,19 +426,15 @@ const createGifsSection = (() => {
 				}
 			}
 		}
-		function stop() {
+		function pause() {
 			clearInterval(interval);
-			progress = 0;
-			subElems.forEach(elem => {
-				elem.classList.add("empty");
-			});
 		}
 		function loop(totalTime = 10) {
-			stop();
+			reset();
 			interval = setInterval(frame, totalTime);
 			function frame() {
 				if (progress >= 100) {
-					stop();
+					reset();
 					interval = setInterval(frame, totalTime);
 				} else {
 					progress++;
@@ -444,11 +444,25 @@ const createGifsSection = (() => {
 				}
 			}
 		}
+		function reset() {
+			clearInterval(interval);
+			progress = 0;
+			subElems.forEach(elem => {
+				elem.classList.add("empty");
+			});
+		}
+		function clearProgress() {
+			subElems.forEach(elem => {
+				elem.classList.add("empty");
+			});
+		}
 		// Public Functions
 		return {
 			start: start,
-			stop: stop,
-			loop: loop
+			pause: pause,
+			loop: loop,
+			reset: reset,
+			clearProgress: clearProgress
 		};
 	};
 	// Timer + Stopwatch inicialization
@@ -459,6 +473,7 @@ const createGifsSection = (() => {
 	events.on("createGif", mount);
 	events.on("gotoHome", unmount);
 	events.on("searchStarted", unmount);
+	events.on("loadingBarCompleted", () => (playing = false));
 
 	// Bind events
 	$createGifContinue.onclick = async () => {
@@ -467,8 +482,14 @@ const createGifsSection = (() => {
 		try {
 			await initiateWebcam();
 		} catch (e) {
-			// TODO - styled modal popup
-			alert(e.name + "\n Parece que no tenés una cámara habilitada en éste dispositivo");
+			const popupContent = {
+				header: "Ups!",
+				title: "Parece que algo malió sal!",
+				body: "No tenés una cámara habilitada en éste dispositivo",
+				hasOptions: false,
+				icon: "error"
+			};
+			events.emit("newPopupDeleteGif", popupContent);
 			$startRecording.disabled = true;
 		}
 	};
@@ -495,7 +516,7 @@ const createGifsSection = (() => {
 		await startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
-		myLoadingBar.stop();
+		myLoadingBar.pause();
 	};
 	$uploadRecording.forEach(uploadSubmission => {
 		uploadSubmission.onclick = async () => {
@@ -503,7 +524,7 @@ const createGifsSection = (() => {
 			hideElements($stage2, $stage7);
 			showElements($stage5);
 			uploadLoadingBar.loop();
-			myLoadingBar.stop();
+			myLoadingBar.pause();
 			try {
 				const newGif = await uploadCreatedGif();
 				if ((await newGif.meta.status) === 200) {
@@ -511,19 +532,19 @@ const createGifsSection = (() => {
 					saveGifToLocalStorage(await newGifId);
 					await hideElements($stage5);
 					await showElements($stage6);
-					await uploadLoadingBar.stop();
+					await uploadLoadingBar.reset();
 					await events.emit("myGifsChanged");
 				} else {
 					showElements($stage7);
 					hideElements($stage5);
-					uploadLoadingBar.stop();
+					uploadLoadingBar.reset();
 					$errorMsg.innerText = `${e.name}\n${e.message}`;
 				}
 			} catch (e) {
 				$errorImg.src = "";
 				showElements($stage7);
 				hideElements($stage5);
-				uploadLoadingBar.stop();
+				uploadLoadingBar.reset();
 				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
 				let errorData = await errorGif.json();
 				$errorImg.src = await errorData.data.image_url;
@@ -532,8 +553,7 @@ const createGifsSection = (() => {
 		};
 	});
 	$playPreview.onclick = () => {
-		myLoadingBar.start(totalTime / 100);
-		$inputPreview.play();
+		handlePlayBar(myLoadingBar);
 	};
 	$endProcess.forEach(element => {
 		element.addEventListener("click", () => {
@@ -556,7 +576,17 @@ const createGifsSection = (() => {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
 		showElements(document.querySelector(".nav-item-container"));
 	}
-
+	function handlePlayBar(loadingBar) {
+		if (playing) {
+			$inputPreview.pause();
+			loadingBar.pause();
+			playing = false;
+		} else {
+			loadingBar.start(totalTime / 100);
+			$inputPreview.play();
+			playing = true;
+		}
+	}
 	async function saveGifToLocalStorage(gif) {
 		const generatedGif = await fetch(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
 		const response = await generatedGif.json();
@@ -617,14 +647,10 @@ const createGifsSection = (() => {
 			frameRate: 1,
 			quality: 10,
 			width: 360,
-			hidden: 240,
-			onGifPreview: function(gifURL) {
-				$outputPreview.src = gifURL;
-			}
+			hidden: 240
 		});
 		await videoRecorder.startRecording();
 		await gifRecorder.startRecording();
-		// helps releasing camera on stopRecording
 		videoRecorder.stream = stream;
 	}
 	async function stopRecording() {
@@ -654,6 +680,7 @@ const createGifsSection = (() => {
 		const formData = new FormData();
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
+		// const postUrl = "https://upload.giphy.com/v1/gifs?api_key=KvIjm5FP877DsfhGk2lLnXDTViwRJP7f"; // test fake api_key
 		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 		const response = await fetch(postUrl, {
 			method: "POST",
@@ -705,7 +732,7 @@ const myGifsSection = (() => {
 	function getGifItemsFromLS() {
 		const myGifs = {};
 		Object.keys(localStorage).forEach(element => {
-			element.substring(0, 3) === "gif" ? (myGifs[element] = localStorage.getItem(element)) : null;
+			element.startsWith("gif-") ? (myGifs[element] = localStorage.getItem(element)) : null;
 		});
 		return myGifs;
 	}
@@ -807,7 +834,6 @@ const popupWindow = (() => {
 		$popupPrimary.onclick = () => {
 			events.emit("popupPrimary", false);
 			callbackPrimary();
-			console.log("primary clicked");
 			unmount();
 		};
 	}
@@ -815,7 +841,6 @@ const popupWindow = (() => {
 		$popupSecondary.onclick = () => {
 			events.emit("popupSecondary", true);
 			callbackSecondary();
-			console.log("Secondary clicked");
 			unmount();
 		};
 	}
@@ -939,7 +964,7 @@ function newElement(type, element, ratio = "") {
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 	}
 }
