@@ -96,6 +96,10 @@ const navBar = (() => {
 	}
 })();
 const searchSection = (() => {
+	// Local Variables
+	let offset = 0;
+	let lastUsedKeywords = "";
+	const amountOfTrendingGifs = 16;
 	// Cache DOM
 	const $searchBox = document.querySelector("#search-section");
 	const $searchBar = document.querySelector("#search-bar");
@@ -107,13 +111,14 @@ const searchSection = (() => {
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 
 	// Bind events
-	events.on("pageLoad", mount, () => $searchBar.focus());
-	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus());
+	events.on("pageLoad", mount, () => $searchBar.focus(), removeScrollListener);
+	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus(), removeScrollListener);
 	events.on("closeOpenedElements", hideSearchSuggestions);
 	events.on("searchBarInputChanged", searchBarInputChanged);
-	events.on("myGifs", unmount);
-	events.on("createGif", unmount);
-	events.on("searchStarted", hideSearchSuggestions);
+	events.on("myGifs", unmount, removeScrollListener);
+	events.on("createGif", unmount, removeScrollListener);
+	events.on("searchStarted", hideSearchSuggestions, addScrollListener);
+	events.on("loadMoreItems-search", fetchSearchResultGifs);
 
 	document.searchform.addEventListener("submit", e => {
 		// Gets search results from form submission
@@ -146,13 +151,19 @@ const searchSection = (() => {
 			hideSearchSuggestions();
 		}
 	}
+	function addScrollListener() {
+		events.emit("addScrollListener", { section: "search", keywords: lastUsedKeywords });
+	}
+	function removeScrollListener() {
+		events.emit("removeScrollListener", { section: "search" });
+	}
 	async function handleSearchFunctionality(searchValue) {
 		$searchResultTitle.innerText = `Resultados de búsqueda: ${searchValue}`;
 		$searchBar.value = "";
 		$searchBar.focus();
 		$searchButton.disabled = true;
 		$searchResulsContainer.innerHTML = "";
-		await fetchSearchResultGifs(16, searchValue);
+		await fetchSearchResultGifs(searchValue);
 		events.emit("searchStarted");
 		$searchSuggestions.innerHTML = "";
 		await showElements($searchResultsSection, $searchTags);
@@ -183,16 +194,29 @@ const searchSection = (() => {
 			});
 		}
 	}
-	async function fetchSearchResultGifs(limit, keywords) {
+	async function fetchSearchResultGifs(keywords) {
+		console.log("fetched search");
+		lastUsedKeywords = keywords;
+		const separator = newElement("separator");
+		$searchResultsSection.append(separator);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-search", fetchSearchResultGifs);
+
 		const processedKeywords = processSearchValues(keywords);
 		const searchResults = await fetchURL(
-			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
+
+		events.on("loadMoreItems-search", fetchSearchResultGifs);
 		events.emit("imagesToLazyLoad");
 		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
@@ -210,7 +234,7 @@ const searchSection = (() => {
 		});
 	}
 })();
-/* const suggestionsSection = (() => {
+const suggestionsSection = (() => {
 	// Local variables
 	const suggestionTopics = [
 		"baby+yoda",
@@ -263,7 +287,7 @@ const searchSection = (() => {
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * array.length);
 	}
-})(); */
+})();
 const trendingSection = (() => {
 	// Local variables
 	const amountOfTrendingGifs = 16;
@@ -282,6 +306,7 @@ const trendingSection = (() => {
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
+		events.emit("addScrollListener", { section: "trending" });
 	}
 	function unmount() {
 		hideElements($trendsSection, $trendingGifs);
@@ -290,10 +315,10 @@ const trendingSection = (() => {
 		fetchTrendingGifs();
 	}
 	function addScrollListener() {
-		events.emit("addScrollListener", "trending");
+		events.emit("addScrollListener", { section: "trending" });
 	}
 	function removeScrollListener() {
-		events.emit("removeScrollListener", "trending");
+		events.emit("removeScrollListener", { section: "trending" });
 	}
 	async function fetchTrendingGifs() {
 		console.log("fetched trending");
@@ -898,19 +923,22 @@ const infiniteScrolling = (() => {
 	events.on("removeScrollListener", removeScrollListener);
 
 	// Methods / functions
-	function scrollListener(section) {
+	function scrollListener({ section: section, keywords: keywords }) {
 		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
-			events.emit(`loadMoreItems-${section}`);
+			events.emit(`loadMoreItems-${section}`, keywords);
 		}
 	}
-	function addScrollListener(section) {
-		console.log("scroll Listener activated");
-		document.onscroll = () => {
-			scrollListener(section);
-		};
+	function addScrollListener({ section: section, keywords: keywords = "" }) {
+		// console.log(`scroll Listener activated for ${section} section`);
+		document.addEventListener("scroll", () => {
+			scrollListener({ section, keywords });
+		});
+		// document.onscroll = () => {
+		// 	scrollListener({ section, keywords });
+		// };
 	}
-	function removeScrollListener() {
-		console.log("scroll Listener deactivated");
+	function removeScrollListener({ section: section }) {
+		// console.log(`scroll Listener deactivated for ${section} section`);
 		document.onscroll = () => {};
 	}
 })();
