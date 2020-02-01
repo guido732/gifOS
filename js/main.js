@@ -195,7 +195,6 @@ const searchSection = (() => {
 		}
 	}
 	async function fetchSearchResultGifs(keywords) {
-		console.log("fetched search");
 		lastUsedKeywords = keywords;
 		const separator = newElement("separator");
 		$searchResultsSection.append(separator);
@@ -317,7 +316,6 @@ const trendingSection = (() => {
 		fetchTrendingGifs();
 	}
 	async function fetchTrendingGifs() {
-		console.log("fetched trending");
 		const separator = newElement("separator");
 		$trendsSection.append(separator);
 
@@ -926,18 +924,15 @@ const infiniteScrolling = (() => {
 		}
 	}
 	function addScrollListener({ section: section, keywords: keywords = "" }) {
+		// Adds timeout to move event triggering to bottom of queue and prevent removing the last event before adding the new one
 		setTimeout(() => {
 			sectionData = { section, keywords };
 			document.addEventListener("scroll", scrollListener);
-		}, 100);
-		console.log(`scroll Listener activated for ${sectionData.section} section`);
-		console.log(sectionData);
+		}, 0);
 	}
 	function removeScrollListener({ section: section, keywords: keywords = "" }) {
 		sectionData = { section, keywords };
 		document.removeEventListener("scroll", scrollListener);
-		console.log(`scroll Listener deactivated for ${sectionData.section} section`);
-		console.log(sectionData);
 	}
 })();
 
