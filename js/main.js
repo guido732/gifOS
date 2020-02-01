@@ -267,17 +267,18 @@ const searchSection = (() => {
 const trendingSection = (() => {
 	// Local variables
 	const amountOfTrendingGifs = 16;
+	let offset = 0;
 	// Cache DOM
 	const $trendsSection = document.querySelector("#trends-section");
 	const $trendingGifs = document.querySelector("#trend-grid");
-	const $body = document.querySelector("body");
 
 	// Bind events
-	events.on("pageLoad", render, mount, activateScrollListener);
-	events.on("gotoHome", mount, activateScrollListener);
-	events.on("myGifs", unmount, deactivateScrollListener);
-	events.on("createGif", unmount, deactivateScrollListener);
-	events.on("searchStarted", unmount, deactivateScrollListener);
+	events.on("pageLoad", render, mount, addScrollListener);
+	events.on("gotoHome", mount, addScrollListener);
+	events.on("myGifs", unmount, removeScrollListener);
+	events.on("createGif", unmount, removeScrollListener);
+	events.on("searchStarted", unmount, removeScrollListener);
+	events.on("loadMoreItems", fetchTrendingGifs);
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
@@ -286,31 +287,34 @@ const trendingSection = (() => {
 		hideElements($trendsSection, $trendingGifs);
 	}
 	function render() {
-		fetchTrendingGifs(amountOfTrendingGifs);
+		fetchTrendingGifs();
 	}
-	function scrollListener() {
-		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
-			events.emit("loadMoreItems", $trendingGifs);
-		}
+	function addScrollListener() {
+		events.emit("addScrollListener", { $trendingGifs, $trendsSection });
 	}
-	function activateScrollListener() {
-		console.log("scroll Listener trending activated");
-		document.addEventListener("scroll", scrollListener);
+	function removeScrollListener() {
+		// events.off ?
+		events.emit("removeScrollListener", { $trendingGifs, $trendsSection });
 	}
-	function deactivateScrollListener() {
-		console.log("scroll Listener trending deactivated");
-		document.removeEventListener("scroll", scrollListener);
-	}
-	async function fetchTrendingGifs(limit) {
-		const gifOffset = Math.floor(Math.random() * 50);
+	async function fetchTrendingGifs() {
+		const separator = newElement("separator");
+		$trendsSection.append(separator);
+		events.off("loadMoreItems", fetchTrendingGifs);
 		const gifsTrending = await fetchURL(
-			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+		console.log(offset);
+
 		await gifsTrending.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
+
+		await events.on("loadMoreItems", fetchTrendingGifs);
+		await $trendsSection.removeChild(separator);
 		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 		events.emit("imagesToLazyLoad");
 	}
@@ -883,30 +887,198 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
-const infiniteScrolling = (() => {
-	// Loacl Variables
-
-	// Cache DOM
+/* const infiniteScrolling = (() => {
+	// DOM Cache
+	const $body = document.querySelector("body");
 
 	// Events
-	events.on("loadMoreItems", loadMore);
+	events.on("addScrollListener", addScrollListener);
+	events.on("removeScrollListener", removeScrollListener);
 
-	function loadMore(gridElement) {
-		const placeholderItem = document.createElement("li");
-		placeholderItem.innerText = "LOADING...";
-		placeholderItem.style.height = "500px";
-		gridElement.appendChild(placeholderItem);
-		setTimeout(() => {
-			for (var i = 0; i < 10; i++) {
-				const item = document.createElement("li");
-				item.innerText = "Item ";
-				gridElement.appendChild(item);
-			}
-			gridElement.removeChild(placeholderItem);
-		}, 1500);
-		console.log("load more");
+	// Methods / functions
+	function scrollListener() {
+		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
+			events.emit("loadMoreItems");
+		}
 	}
-})();
+	function addScrollListener() {
+		console.log("scroll Listener activated");
+		document.onscroll = () => {
+			scrollListener();
+		};
+	}
+	function removeScrollListener() {
+		console.log("scroll Listener deactivated");
+		document.removeEventListener("scroll", () => {
+			scrollListener();
+		});
+	}
+})(); */
+
+// Local variables
+const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+// On Load functions
+events.emit("pageLoad");
+events.on("imagesToLazyLoad", lazyLoadImages);
+
+// Generic functions
+async function fetchURL(url, params = null) {
+	try {
+		const fetchData = await fetch(url, params);
+		const response = await fetchData.json();
+		return response;
+	} catch (error) {
+		if (error.name !== "AbortError") {
+			console.log("Error al obtener resultados");
+		}
+		return error;
+	}
+}
+function newElement(type, element = "", ratio = "") {
+	element.title === "" ? (element.title = "&emsp;") : null;
+	const $container = document.createElement("div");
+	switch (type) {
+		case "window":
+			$container.innerHTML = `<div class="window-item ${ratio}">
+			<div class="wi-header">
+					${element.title}
+				<button class="remove-element"></button>
+			</div>
+			<div class="img-container">
+			<img 
+				class="lazy img-element loading-animation" 
+				src="" 
+				data-src="${element.images.original.url}"
+				data-srcset="${element.images.original.url}"
+				alt="${element.title}" /> 	
+				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
+			</div>
+		</div>`;
+			return $container.firstChild;
+
+		case "trend":
+			let titleToArray = element.title.split(" ");
+			let titleArrayToTags = "";
+			titleToArray.forEach(word => {
+				titleArrayToTags += `#${word} `;
+			});
+			$container.innerHTML = `<div class="trend-item ${ratio}">
+				<a href="${element.bitly_url}" target="_blank">
+					<img 
+						class="lazy img-element loading-animation" 
+						src="" 
+						data-src="${element.images.original.url}"
+						data-srcset="${element.images.original.url}"
+						alt="${element.title}" 
+						/>
+					</a>
+					<div class="trend-header">
+						${titleArrayToTags}
+					</div>
+			</div>
+		</div>`;
+			return $container.firstChild;
+
+		case "myGif":
+			let titleToArray2 = element.title.split(" ");
+			let titleArrayToTags2 = "";
+			titleToArray2.forEach(word => {
+				titleArrayToTags2 += `#${word} `;
+			});
+			$container.innerHTML = `<div class="trend-item ${ratio}">
+				<a href="${element.bitly_url}" target="_blank">
+					<img 
+						src="" 
+						data-src="${element.images.original.url}"
+						data-srcset="${element.images.original.url}"
+						alt="${element.title}" 
+						class="lazy img-element loading-animation" 
+					/>
+				</a>
+				<div class="trend-header">						
+					<button class="remove-element"></button>
+					${titleArrayToTags2}
+				</div>
+			</div>
+		</div>`;
+			return $container.firstChild;
+		case "searchTitle":
+			$container.innerHTML = `<button class="search-element btn-search-suggestion">
+		<span>${element.title}</span>
+		</button>`;
+			return $container.firstChild;
+		case "tag":
+			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			return $container.firstChild;
+		case "separator":
+			$container.innerHTML = `<div class="separator-container"><img class="loading-gif" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
+			return $container.firstChild;
+	}
+}
+function hideElements(...elements) {
+	elements.forEach(element => {
+		element.classList.add("hidden");
+	});
+}
+function showElements(...elements) {
+	elements.forEach(element => {
+		element.classList.remove("hidden");
+	});
+}
+function processSearchValues(inputValues) {
+	return inputValues.split(" ").join("+");
+}
+function isNotEmpty(obj) {
+	for (let key in obj) {
+		if (obj.hasOwnProperty(key)) return true;
+	}
+	return false;
+}
+function fitDoubleSpanGifsGrid(gifGridID) {
+	// Fit grids so no gaps are visible by having only a pair number of item-double elements
+	const doubleSpanItems = document.querySelectorAll(`#${gifGridID} .item-double`);
+	if (doubleSpanItems.length % 2 !== 0 && doubleSpanItems.length > 1) {
+		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
+	}
+}
+function lazyLoadImages() {
+	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
+	if (
+		"IntersectionObserver" in window &&
+		"IntersectionObserverEntry" in window &&
+		"intersectionRatio" in window.IntersectionObserverEntry.prototype
+	) {
+		var lazyImageObserver = new IntersectionObserver(entries => {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					let lazyImage = entry.target;
+					lazyImage.src = lazyImage.dataset.src;
+					lazyImage.srcset = lazyImage.dataset.srcset;
+					lazyImage.classList.remove("lazy");
+					lazyImageObserver.unobserve(lazyImage);
+				}
+			});
+		});
+
+		lazyImages.forEach(lazyImage => {
+			lazyImageObserver.observe(lazyImage);
+		});
+	}
+}
+
+/* 
+	// Current list of events:
+	
+	pageLoad -> onLoad event to set initial states
+	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
+	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
+	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
+	searchStarted -> submits search - starts search functionality
+	myGifs -> starts myGifs section
+	createGif -> starts createGif section
+	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
+
+*/
 
 /* const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
 	// calculate total pages
@@ -977,166 +1149,3 @@ for (let i = fakePagination.startIndex; i <= fakePagination.endIndex; i++) {
 	state.pageOfItems.push(itemsToPaginate[i]);
 }
 console.log(state.pageOfItems); */
-
-// Local variables
-const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-// On Load functions
-events.emit("pageLoad");
-events.on("imagesToLazyLoad", lazyLoadImages);
-
-// Generic functions
-async function fetchURL(url, params = null) {
-	try {
-		const fetchData = await fetch(url, params);
-		const response = await fetchData.json();
-		return response;
-	} catch (error) {
-		if (error.name !== "AbortError") {
-			console.log("Error al obtener resultados");
-		}
-		return error;
-	}
-}
-function newElement(type, element, ratio = "") {
-	element.title === "" ? (element.title = "&emsp;") : null;
-	const $container = document.createElement("div");
-	switch (type) {
-		case "window":
-			$container.innerHTML = `<div class="window-item ${ratio}">
-			<div class="wi-header">
-					${element.title}
-				<button class="remove-element"></button>
-			</div>
-			<div class="img-container">
-			<img 
-				class="lazy img-element loading-animation" 
-				src="" 
-				data-src="${element.images.original.url}"
-				data-srcset="${element.images.original.url}"
-				alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
-			</div>
-		</div>`;
-			return $container.firstChild;
-
-		case "trend":
-			let titleToArray = element.title.split(" ");
-			let titleArrayToTags = "";
-			titleToArray.forEach(word => {
-				titleArrayToTags += `#${word} `;
-			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
-				<a href="${element.bitly_url}" target="_blank">
-					<img 
-						class="lazy img-element loading-animation" 
-						src="" 
-						data-src="${element.images.original.url}"
-						data-srcset="${element.images.original.url}"
-						alt="${element.title}" 
-						/>
-					</a>
-					<div class="trend-header">
-						${titleArrayToTags}
-					</div>
-			</div>
-		</div>`;
-			return $container.firstChild;
-
-		case "myGif":
-			let titleToArray2 = element.title.split(" ");
-			let titleArrayToTags2 = "";
-			titleToArray2.forEach(word => {
-				titleArrayToTags2 += `#${word} `;
-			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
-				<a href="${element.bitly_url}" target="_blank">
-					<img 
-						src="" 
-						data-src="${element.images.original.url}"
-						data-srcset="${element.images.original.url}"
-						alt="${element.title}" 
-						class="lazy img-element loading-animation" 
-					/>
-				</a>
-				<div class="trend-header">						
-					<button class="remove-element"></button>
-					${titleArrayToTags2}
-				</div>
-			</div>
-		</div>`;
-			return $container.firstChild;
-
-		case "searchTitle":
-			$container.innerHTML = `<button class="search-element btn-search-suggestion">
-		<span>${element.title}</span>
-		</button>`;
-			return $container.firstChild;
-		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
-			return $container.firstChild;
-	}
-}
-function hideElements(...elements) {
-	elements.forEach(element => {
-		element.classList.add("hidden");
-	});
-}
-function showElements(...elements) {
-	elements.forEach(element => {
-		element.classList.remove("hidden");
-	});
-}
-function processSearchValues(inputValues) {
-	return inputValues.split(" ").join("+");
-}
-function isNotEmpty(obj) {
-	for (let key in obj) {
-		if (obj.hasOwnProperty(key)) return true;
-	}
-	return false;
-}
-function fitDoubleSpanGifsGrid(gifGridID) {
-	// Fit grids so no gaps are visible by having only a pair number of item-double elements
-	const doubleSpanItems = document.querySelectorAll(`#${gifGridID} .item-double`);
-	if (doubleSpanItems.length % 2 !== 0 && doubleSpanItems.length > 1) {
-		doubleSpanItems[doubleSpanItems.length - 1].classList.remove("item-double");
-	}
-}
-function lazyLoadImages() {
-	let lazyImages = [].slice.call(document.querySelectorAll(".lazy"));
-	if (
-		"IntersectionObserver" in window &&
-		"IntersectionObserverEntry" in window &&
-		"intersectionRatio" in window.IntersectionObserverEntry.prototype
-	) {
-		var lazyImageObserver = new IntersectionObserver(entries => {
-			entries.forEach(function(entry) {
-				if (entry.isIntersecting) {
-					let lazyImage = entry.target;
-					lazyImage.src = lazyImage.dataset.src;
-					lazyImage.srcset = lazyImage.dataset.srcset;
-					lazyImage.classList.remove("lazy");
-					lazyImageObserver.unobserve(lazyImage);
-				}
-			});
-		});
-
-		lazyImages.forEach(lazyImage => {
-			lazyImageObserver.observe(lazyImage);
-		});
-	}
-}
-
-/* 
-	// Current list of events:
-	
-	pageLoad -> onLoad event to set initial states
-	gotoHome -> Default view, menu/searchbox/trending/suggestions visible, rest invisible
-	myGifsChanged -> list of mygifs has changed, myGifsGrid needs to re-render
-	createGifEnded -> triggered by any of the close buttons during gif creation, takes you to mygifs view and re-renders
-	searchStarted -> submits search - starts search functionality
-	myGifs -> starts myGifs section
-	createGif -> starts createGif section
-	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
-
-*/
