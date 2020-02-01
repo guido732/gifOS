@@ -216,7 +216,8 @@ const searchSection = (() => {
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
 
-		events.on("loadMoreItems-search", fetchSearchResultGifs);
+		await events.on("loadMoreItems-search", fetchSearchResultGifs);
+		await $searchResultsSection.removeChild(separator);
 		events.emit("imagesToLazyLoad");
 		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
@@ -297,11 +298,11 @@ const trendingSection = (() => {
 	const $trendingGifs = document.querySelector("#trend-grid");
 
 	// Bind events
-	events.on("pageLoad", render, mount, addScrollListener);
-	events.on("gotoHome", mount, addScrollListener);
-	events.on("myGifs", unmount, removeScrollListener);
-	events.on("createGif", unmount, removeScrollListener);
-	events.on("searchStarted", unmount, removeScrollListener);
+	events.on("pageLoad", render, mount);
+	events.on("gotoHome", mount);
+	events.on("myGifs", unmount);
+	events.on("createGif", unmount);
+	events.on("searchStarted", unmount);
 	events.on("loadMoreItems-trending", fetchTrendingGifs);
 
 	function mount() {
@@ -310,15 +311,10 @@ const trendingSection = (() => {
 	}
 	function unmount() {
 		hideElements($trendsSection, $trendingGifs);
+		events.emit("removeScrollListener", { section: "trending" });
 	}
 	function render() {
 		fetchTrendingGifs();
-	}
-	function addScrollListener() {
-		events.emit("addScrollListener", { section: "trending" });
-	}
-	function removeScrollListener() {
-		events.emit("removeScrollListener", { section: "trending" });
 	}
 	async function fetchTrendingGifs() {
 		console.log("fetched trending");
@@ -915,31 +911,33 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
 const infiniteScrolling = (() => {
+	// Local Variables
+	let sectionData = {};
 	// DOM Cache
 	const $body = document.querySelector("body");
-
 	// Events
 	events.on("addScrollListener", addScrollListener);
 	events.on("removeScrollListener", removeScrollListener);
 
 	// Methods / functions
-	function scrollListener({ section: section, keywords: keywords }) {
+	function scrollListener() {
 		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
-			events.emit(`loadMoreItems-${section}`, keywords);
+			events.emit(`loadMoreItems-${sectionData.section}`, sectionData.keywords);
 		}
 	}
 	function addScrollListener({ section: section, keywords: keywords = "" }) {
-		// console.log(`scroll Listener activated for ${section} section`);
-		document.addEventListener("scroll", () => {
-			scrollListener({ section, keywords });
-		});
-		// document.onscroll = () => {
-		// 	scrollListener({ section, keywords });
-		// };
+		setTimeout(() => {
+			sectionData = { section, keywords };
+			document.addEventListener("scroll", scrollListener);
+		}, 100);
+		console.log(`scroll Listener activated for ${sectionData.section} section`);
+		console.log(sectionData);
 	}
-	function removeScrollListener({ section: section }) {
-		// console.log(`scroll Listener deactivated for ${section} section`);
-		document.onscroll = () => {};
+	function removeScrollListener({ section: section, keywords: keywords = "" }) {
+		sectionData = { section, keywords };
+		document.removeEventListener("scroll", scrollListener);
+		console.log(`scroll Listener deactivated for ${sectionData.section} section`);
+		console.log(sectionData);
 	}
 })();
 
