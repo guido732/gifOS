@@ -263,20 +263,21 @@ const searchSection = (() => {
 	function getRandomElement(array) {
 		return Math.floor(Math.random() * array.length);
 	}
-})();
+})(); */
 const trendingSection = (() => {
 	// Local variables
 	const amountOfTrendingGifs = 16;
 	// Cache DOM
 	const $trendsSection = document.querySelector("#trends-section");
 	const $trendingGifs = document.querySelector("#trend-grid");
+	const $body = document.querySelector("body");
 
 	// Bind events
-	events.on("pageLoad", render, mount);
-	events.on("gotoHome", mount);
-	events.on("myGifs", unmount);
-	events.on("createGif", unmount);
-	events.on("searchStarted", unmount);
+	events.on("pageLoad", render, mount, activateScrollListener);
+	events.on("gotoHome", mount, activateScrollListener);
+	events.on("myGifs", unmount, deactivateScrollListener);
+	events.on("createGif", unmount, deactivateScrollListener);
+	events.on("searchStarted", unmount, deactivateScrollListener);
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
@@ -286,6 +287,19 @@ const trendingSection = (() => {
 	}
 	function render() {
 		fetchTrendingGifs(amountOfTrendingGifs);
+	}
+	function scrollListener() {
+		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
+			events.emit("loadMoreItems", $trendingGifs);
+		}
+	}
+	function activateScrollListener() {
+		console.log("scroll Listener trending activated");
+		document.addEventListener("scroll", scrollListener);
+	}
+	function deactivateScrollListener() {
+		console.log("scroll Listener trending deactivated");
+		document.removeEventListener("scroll", scrollListener);
 	}
 	async function fetchTrendingGifs(limit) {
 		const gifOffset = Math.floor(Math.random() * 50);
@@ -861,7 +875,7 @@ const popupWindow = (() => {
 				break;
 		}
 	}
-})(); */
+})();
 const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
 	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
@@ -869,17 +883,32 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
+const infiniteScrolling = (() => {
+	// Loacl Variables
 
-/* (async function() {
-	const fetchedData = await fetch(
-		"https://api.giphy.com/v1/gifs/search?q=radio&api_key=KvIjm5FP077DsfgGq2kLnXDTViwRJP7f&limit=500"
-	)
-		.then(response => response.json())
-		.then(data => data);
-	console.log(await fetchedData.pagination.offset);
-})(); */
+	// Cache DOM
 
-const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
+	// Events
+	events.on("loadMoreItems", loadMore);
+
+	function loadMore(gridElement) {
+		const placeholderItem = document.createElement("li");
+		placeholderItem.innerText = "LOADING...";
+		placeholderItem.style.height = "500px";
+		gridElement.appendChild(placeholderItem);
+		setTimeout(() => {
+			for (var i = 0; i < 10; i++) {
+				const item = document.createElement("li");
+				item.innerText = "Item ";
+				gridElement.appendChild(item);
+			}
+			gridElement.removeChild(placeholderItem);
+		}, 1500);
+		console.log("load more");
+	}
+})();
+
+/* const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
 	// calculate total pages
 	let totalPages = Math.ceil(totalItems / pageSize);
 
@@ -947,7 +976,7 @@ console.log(state.pageOfItems);
 for (let i = fakePagination.startIndex; i <= fakePagination.endIndex; i++) {
 	state.pageOfItems.push(itemsToPaginate[i]);
 }
-console.log(state.pageOfItems);
+console.log(state.pageOfItems); */
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
