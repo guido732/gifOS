@@ -278,7 +278,7 @@ const trendingSection = (() => {
 	events.on("myGifs", unmount, removeScrollListener);
 	events.on("createGif", unmount, removeScrollListener);
 	events.on("searchStarted", unmount, removeScrollListener);
-	events.on("loadMoreItems", fetchTrendingGifs);
+	events.on("loadMoreItems-trending", fetchTrendingGifs);
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
@@ -290,22 +290,24 @@ const trendingSection = (() => {
 		fetchTrendingGifs();
 	}
 	function addScrollListener() {
-		events.emit("addScrollListener", { $trendingGifs, $trendsSection });
+		events.emit("addScrollListener", "trending");
 	}
 	function removeScrollListener() {
-		// events.off ?
-		events.emit("removeScrollListener", { $trendingGifs, $trendsSection });
+		events.emit("removeScrollListener", "trending");
 	}
 	async function fetchTrendingGifs() {
+		console.log("fetched trending");
 		const separator = newElement("separator");
 		$trendsSection.append(separator);
-		events.off("loadMoreItems", fetchTrendingGifs);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-trending", fetchTrendingGifs);
+
 		const gifsTrending = await fetchURL(
 			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
 				offset}`
 		);
 		offset++;
-		console.log(offset);
 
 		await gifsTrending.data.forEach(gif => {
 			let aspectRatio = "";
@@ -313,7 +315,7 @@ const trendingSection = (() => {
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
 
-		await events.on("loadMoreItems", fetchTrendingGifs);
+		await events.on("loadMoreItems-trending", fetchTrendingGifs);
 		await $trendsSection.removeChild(separator);
 		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 		events.emit("imagesToLazyLoad");
@@ -887,7 +889,7 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
-/* const infiniteScrolling = (() => {
+const infiniteScrolling = (() => {
 	// DOM Cache
 	const $body = document.querySelector("body");
 
@@ -896,24 +898,22 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	events.on("removeScrollListener", removeScrollListener);
 
 	// Methods / functions
-	function scrollListener() {
+	function scrollListener(section) {
 		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
-			events.emit("loadMoreItems");
+			events.emit(`loadMoreItems-${section}`);
 		}
 	}
-	function addScrollListener() {
+	function addScrollListener(section) {
 		console.log("scroll Listener activated");
 		document.onscroll = () => {
-			scrollListener();
+			scrollListener(section);
 		};
 	}
 	function removeScrollListener() {
 		console.log("scroll Listener deactivated");
-		document.removeEventListener("scroll", () => {
-			scrollListener();
-		});
+		document.onscroll = () => {};
 	}
-})(); */
+})();
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
