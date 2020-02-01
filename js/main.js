@@ -96,6 +96,10 @@ const navBar = (() => {
 	}
 })();
 const searchSection = (() => {
+	// Local Variables
+	let offset = 0;
+	let lastUsedKeywords = "";
+	const amountOfTrendingGifs = 16;
 	// Cache DOM
 	const $searchBox = document.querySelector("#search-section");
 	const $searchBar = document.querySelector("#search-bar");
@@ -107,13 +111,14 @@ const searchSection = (() => {
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 
 	// Bind events
-	events.on("pageLoad", mount, () => $searchBar.focus());
-	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus());
+	events.on("pageLoad", mount, () => $searchBar.focus(), removeScrollListener);
+	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus(), removeScrollListener);
 	events.on("closeOpenedElements", hideSearchSuggestions);
 	events.on("searchBarInputChanged", searchBarInputChanged);
-	events.on("myGifs", unmount);
-	events.on("createGif", unmount);
-	events.on("searchStarted", hideSearchSuggestions);
+	events.on("myGifs", unmount, removeScrollListener);
+	events.on("createGif", unmount, removeScrollListener);
+	events.on("searchStarted", hideSearchSuggestions, addScrollListener);
+	events.on("loadMoreItems-search", fetchSearchResultGifs);
 
 	document.searchform.addEventListener("submit", e => {
 		// Gets search results from form submission
@@ -146,13 +151,19 @@ const searchSection = (() => {
 			hideSearchSuggestions();
 		}
 	}
+	function addScrollListener() {
+		events.emit("addScrollListener", { section: "search", keywords: lastUsedKeywords });
+	}
+	function removeScrollListener() {
+		events.emit("removeScrollListener", { section: "search" });
+	}
 	async function handleSearchFunctionality(searchValue) {
 		$searchResultTitle.innerText = `Resultados de búsqueda: ${searchValue}`;
 		$searchBar.value = "";
 		$searchBar.focus();
 		$searchButton.disabled = true;
 		$searchResulsContainer.innerHTML = "";
-		await fetchSearchResultGifs(16, searchValue);
+		await fetchSearchResultGifs(searchValue);
 		events.emit("searchStarted");
 		$searchSuggestions.innerHTML = "";
 		await showElements($searchResultsSection, $searchTags);
@@ -183,16 +194,29 @@ const searchSection = (() => {
 			});
 		}
 	}
-	async function fetchSearchResultGifs(limit, keywords) {
+	async function fetchSearchResultGifs(keywords) {
+		lastUsedKeywords = keywords;
+		const separator = newElement("separator");
+		$searchResultsSection.append(separator);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-search", fetchSearchResultGifs);
+
 		const processedKeywords = processSearchValues(keywords);
 		const searchResults = await fetchURL(
-			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
+
+		await events.on("loadMoreItems-search", fetchSearchResultGifs);
+		await $searchResultsSection.removeChild(separator);
 		events.emit("imagesToLazyLoad");
 		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
@@ -267,6 +291,7 @@ const suggestionsSection = (() => {
 const trendingSection = (() => {
 	// Local variables
 	const amountOfTrendingGifs = 16;
+	let offset = 0;
 	// Cache DOM
 	const $trendsSection = document.querySelector("#trends-section");
 	const $trendingGifs = document.querySelector("#trend-grid");
@@ -277,26 +302,40 @@ const trendingSection = (() => {
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
 	events.on("searchStarted", unmount);
+	events.on("loadMoreItems-trending", fetchTrendingGifs);
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
+		events.emit("addScrollListener", { section: "trending" });
 	}
 	function unmount() {
 		hideElements($trendsSection, $trendingGifs);
+		events.emit("removeScrollListener", { section: "trending" });
 	}
 	function render() {
-		fetchTrendingGifs(amountOfTrendingGifs);
+		fetchTrendingGifs();
 	}
-	async function fetchTrendingGifs(limit) {
-		const gifOffset = Math.floor(Math.random() * 50);
+	async function fetchTrendingGifs() {
+		const separator = newElement("separator");
+		$trendsSection.append(separator);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-trending", fetchTrendingGifs);
+
 		const gifsTrending = await fetchURL(
-			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+
 		await gifsTrending.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
+
+		await events.on("loadMoreItems-trending", fetchTrendingGifs);
+		await $trendsSection.removeChild(separator);
 		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 		events.emit("imagesToLazyLoad");
 	}
@@ -869,6 +908,33 @@ const giphyEndpoints = (keywords, limit, gifOffset) => {
 	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
 	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
 };
+const infiniteScrolling = (() => {
+	// Local Variables
+	let sectionData = {};
+	// DOM Cache
+	const $body = document.querySelector("body");
+	// Events
+	events.on("addScrollListener", addScrollListener);
+	events.on("removeScrollListener", removeScrollListener);
+
+	// Methods / functions
+	function scrollListener() {
+		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
+			events.emit(`loadMoreItems-${sectionData.section}`, sectionData.keywords);
+		}
+	}
+	function addScrollListener({ section: section, keywords: keywords = "" }) {
+		// Adds timeout to move event triggering to bottom of queue and prevent removing the last event before adding the new one
+		setTimeout(() => {
+			sectionData = { section, keywords };
+			document.addEventListener("scroll", scrollListener);
+		}, 0);
+	}
+	function removeScrollListener({ section: section, keywords: keywords = "" }) {
+		sectionData = { section, keywords };
+		document.removeEventListener("scroll", scrollListener);
+	}
+})();
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
@@ -889,7 +955,7 @@ async function fetchURL(url, params = null) {
 		return error;
 	}
 }
-function newElement(type, element, ratio = "") {
+function newElement(type, element = "", ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
 	const $container = document.createElement("div");
 	switch (type) {
@@ -957,7 +1023,6 @@ function newElement(type, element, ratio = "") {
 			</div>
 		</div>`;
 			return $container.firstChild;
-
 		case "searchTitle":
 			$container.innerHTML = `<button class="search-element btn-search-suggestion">
 		<span>${element.title}</span>
@@ -965,6 +1030,9 @@ function newElement(type, element, ratio = "") {
 			return $container.firstChild;
 		case "tag":
 			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			return $container.firstChild;
+		case "separator":
+			$container.innerHTML = `<div class="separator-container"><img class="loading-gif" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
 			return $container.firstChild;
 	}
 }
@@ -1032,3 +1100,73 @@ function lazyLoadImages() {
 	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
 
 */
+
+/* const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
+	// calculate total pages
+	let totalPages = Math.ceil(totalItems / pageSize);
+
+	// ensure current page isn't out of range
+	if (currentPage < 1) {
+		currentPage = 1;
+	} else if (currentPage > totalPages) {
+		currentPage = totalPages;
+	}
+
+	let startPage, endPage;
+	if (totalPages <= maxPages) {
+		// total pages less than max so show all pages
+		startPage = 1;
+		endPage = totalPages;
+	} else {
+		// total pages more than max so calculate start and end pages
+		let maxPagesBeforeCurrentPage = Math.floor(maxPages / 2);
+		let maxPagesAfterCurrentPage = Math.ceil(maxPages / 2) - 1;
+		if (currentPage <= maxPagesBeforeCurrentPage) {
+			// current page near the start
+			startPage = 1;
+			endPage = maxPages;
+		} else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
+			// current page near the end
+			startPage = totalPages - maxPages + 1;
+			endPage = totalPages;
+		} else {
+			// current page somewhere in the middle
+			startPage = currentPage - maxPagesBeforeCurrentPage;
+			endPage = currentPage + maxPagesAfterCurrentPage;
+		}
+	}
+
+	// calculate start and end item indexes
+	let startIndex = (currentPage - 1) * pageSize;
+	let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+
+	// create an array of pages to ng-repeat in the pager control
+	let pages = Array.from(Array(endPage + 1 - startPage).keys()).map(i => startPage + i);
+
+	// return object with all pager properties required by the view
+	return {
+		totalItems: totalItems,
+		currentPage: currentPage,
+		pageSize: pageSize,
+		totalPages: totalPages,
+		startPage: startPage,
+		endPage: endPage,
+		startIndex: startIndex,
+		endIndex: endIndex,
+		pages: pages
+	};
+};
+const itemsToPaginate = Array.from(Array(150).keys()).map(i => ({ id: i + 1, name: "Item " + (i + 1) }));
+const state = {
+	itemsToPaginate: itemsToPaginate,
+	pageOfItems: []
+};
+let fakePagination = paginator(state.itemsToPaginate.length);
+
+state.pageOfItems = [];
+console.log(state.pageOfItems);
+
+for (let i = fakePagination.startIndex; i <= fakePagination.endIndex; i++) {
+	state.pageOfItems.push(itemsToPaginate[i]);
+}
+console.log(state.pageOfItems); */

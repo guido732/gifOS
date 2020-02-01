@@ -628,5 +628,13 @@ section {
 		margin-right: 1.5rem;
 	}
 }
+.separator-container {
+	display: flex;
+	justify-content: center;
+	.loading-gif {
+		margin: 2rem 0;
+		max-width: 5rem;
+	}
+}
 
 // Animations
