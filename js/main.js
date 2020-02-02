@@ -589,8 +589,9 @@ const createGifsSection = (() => {
 				showElements($stage7);
 				hideElements($stage5);
 				uploadLoadingBar.reset();
-				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
-				let errorData = await errorGif.json();
+				const errorData = await fetchURL(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
+				// const errorGif = await fetch();
+				// let errorData = await errorGif.json();
 				$errorImg.src = await errorData.data.image_url;
 				$errorMsg.innerText = `${e.name}\n${e.message}`;
 			}
@@ -632,8 +633,7 @@ const createGifsSection = (() => {
 		}
 	}
 	async function saveGifToLocalStorage(gif) {
-		const generatedGif = await fetch(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
-		const response = await generatedGif.json();
+		const response = await fetchURL(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
 		const data = response.data;
 		const gifID = data.id;
 		const stringifiedData = JSON.stringify(data);
@@ -725,13 +725,12 @@ const createGifsSection = (() => {
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
 		// const postUrl = "https://upload.giphy.com/v1/gifs?api_key=KvIjm5FP877DsfhGk2lLnXDTViwRJP7f"; // test fake api_key
-		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		const response = await fetch(postUrl, {
+		const params = {
 			method: "POST",
 			body: formData,
 			json: true
-		});
-		const data = await response.json();
+		};
+		const data = await fetchURL(`https://upload.giphy.com/v1/gifs?api_key=${APIkey}`, params);
 		console.log(await data);
 		console.log("***Upload ended***");
 		return await data;
@@ -906,13 +905,6 @@ const popupWindow = (() => {
 		}
 	}
 })();
-const giphyEndpoints = (keywords, limit, gifOffset) => {
-	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
-	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
-	const trendingEndpoint = `https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`;
-	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
-	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-};
 const infiniteScrolling = (() => {
 	// Local Variables
 	let sectionData = {};
@@ -940,6 +932,13 @@ const infiniteScrolling = (() => {
 		document.removeEventListener("scroll", scrollListener);
 	}
 })();
+const giphyEndpoints = (keywords, limit, gifOffset) => {
+	const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
+	const searchEndpoint = `https://api.giphy.com/v1/gifs/search?q=${keywords}&api_key=${APIkey}&limit=${limit}`;
+	const trendingEndpoint = `https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`;
+	const randomEndpoint = `https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`;
+	const uploadEndpoint = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
+};
 
 // Local variables
 const APIkey = "KvIjm5FP077DsfgGq2kLnXDTViwRJP7f";
