@@ -535,7 +535,10 @@ const createGifsSection = (() => {
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording, $timerLoadingBar, $stage4);
-		showElements($stage3, $stopRecording);
+		showElements($stage3);
+		setTimeout(() => {
+			showElements($stopRecording);
+		}, 850);
 		startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
@@ -548,7 +551,9 @@ const createGifsSection = (() => {
 		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $inputPreview);
+		setTimeout(() => {
+			showElements($stopRecording, $inputPreview);
+		}, 850);
 		hideElements($stage4, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
