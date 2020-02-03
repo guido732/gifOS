@@ -47,19 +47,21 @@
 				<div class="brand-container"></div>
 			</button>
 			<div class="nav-item-container" id="nav-items">
-				<button class="nav-item btn-primary" id="btn-create-gif">
-					<span class="btn-text-container">Crear Guifos</span>
+				<button class="nav-item btn btn--primary" id="btn-create-gif">
+					<span class="btn__text-container">Crear Guifos</span>
 				</button>
 				<div class="nav-item dropdown-container-outer">
-					<button class=" btn-primary btn-primary--icon-after icon-dropdown" id="theme-selector">
-						<span class="btn-text-container">Elegir Tema</span>
+					<button class=" btn btn--primary btn--icon-after icon-dropdown" id="theme-selector">
+						<span class="btn__text-container">Elegir Tema</span>
 					</button>
 					<div class="dropdown-list hidden" id="dropdown-list">
 						<a href="#" class="dropdown-list-item color-theme-option">Sailor Day</a>
 						<a href="#" class="dropdown-list-item color-theme-option">Sailor Night</a>
 					</div>
 				</div>
-				<button href="#" class="nav-item btn-link" id="btn-my-gifs"><span class="underline">M</span>is Guifos</button>
+				<button href="#" class="nav-item btn btn--link" id="btn-my-gifs">
+					<span class="underline">M</span>is Guifos
+				</button>
 			</div>
 		</nav>
 		<main class="container">
@@ -79,8 +81,8 @@
 								placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
 								autocomplete="off"
 							/>
-							<button type="submit" id="search-button" disabled class="btn-primary submit">
-								<span class="btn-text-container icon-within icon-search">Buscar</span>
+							<button type="submit" id="search-button" disabled class="btn btn--primary submit">
+								<span class="btn__text-container btn__icon-within icon-search">Buscar</span>
 							</button>
 						</div>
 					</form>
@@ -128,11 +130,11 @@
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-secondary close-window" id="create-gif-cancel">
-								<span class="btn-text-container">Cancelar</span>
+							<button class="btn btn--secondary close-window" id="create-gif-cancel">
+								<span class="btn__text-container">Cancelar</span>
 							</button>
-							<button class="btn-primary" id="create-gif-continue">
-								<span class="btn-text-container">Comenzar</span>
+							<button class="btn btn--primary" id="create-gif-continue">
+								<span class="btn__text-container">Comenzar</span>
 							</button>
 						</div>
 					</div>
@@ -147,16 +149,16 @@
 					<div class="video-record-container content">
 						<video id="video-box" class="video-element"></video>
 						<div class="flex-end-container">
-							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
-								<span class="btn-text-container">Capturar</span>
+							<button class="btn btn--primary btn--icon-before icon-camera" id="start-recording">
+								<span class="btn__text-container">Capturar</span>
 							</button>
 						</div>
 						<div class="stage3-container hidden" id="stage3">
 							<div class="timer-container">
 								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
 								<div class="loading-bar-container hidden" id="timer-loading-bar">
-									<button class="btn-primary btn-only-icon" id="btn-play-gif">
-										<span class="btn-text-container">
+									<button class="btn btn--primary btn--only-icon" id="btn-play-gif">
+										<span class="btn__text-container">
 											&#9654;
 										</span>
 									</button>
@@ -181,17 +183,14 @@
 									</div>
 								</div>
 							</div>
-							<button
-								class="btn-primary btn-recording btn-primary--icon-before icon-recording hidden"
-								id="stop-recording"
-							>
-								<span class="btn-text-container">Listo</span>
+							<button class="btn btn--recording btn--icon-before icon-recording hidden" id="stop-recording">
+								<span class="btn__text-container">Listo</span>
 							</button>
 							<div class="hidden" id="stage4">
-								<button class="btn-secondary " id="redo-recording">
-									<span class="btn-text-container">Repetir Captura</span></button
-								><button class="btn-primary gif-upload" id="upload-gif">
-									<span class="btn-text-container">Subir Guifo</span>
+								<button class="btn btn--secondary " id="redo-recording">
+									<span class="btn__text-container">Repetir Captura</span></button
+								><button class="btn btn--primary gif-upload" id="upload-gif">
+									<span class="btn__text-container">Subir Guifo</span>
 								</button>
 							</div>
 						</div>
@@ -247,18 +246,18 @@
 							<div>
 								<div class="options-container">
 									<h2>Guifo creado con éxito</h2>
-									<button class="btn-secondary btn-full-width" id="copy-link">
-										<span class="btn-text-container">Copiar Enlace Guifo</span>
+									<button class="btn btn--secondary btn--full-width" id="copy-link">
+										<span class="btn__text-container">Copiar Enlace Guifo</span>
 									</button>
-									<button class="btn-secondary btn-full-width" id="download-gif">
-										<span class="btn-text-container">Descargar Guifo</span>
+									<button class="btn btn--secondary btn--full-width" id="download-gif">
+										<span class="btn__text-container">Descargar Guifo</span>
 									</button>
 								</div>
 							</div>
 						</div>
 						<div class="flex-end-container">
-							<button class="btn-primary close-window">
-								<span class="btn-text-container">Listo</span>
+							<button class="btn btn--primary close-window">
+								<span class="btn__text-container">Listo</span>
 							</button>
 						</div>
 					</div>
@@ -275,11 +274,11 @@
 						<h2>Tu Guifo no pudo ser creado</h2>
 						<p id="error-msg"></p>
 						<div class="">
-							<button class="btn-secondary gif-upload" id="retry-upload">
-								<span class="btn-text-container">Reintentar</span>
+							<button class="btn btn--secondary gif-upload" id="retry-upload">
+								<span class="btn__text-container">Reintentar</span>
 							</button>
-							<button class="btn-primary close-window">
-								<span class="btn-text-container">Listo</span>
+							<button class="btn btn--primary close-window">
+								<span class="btn__text-container">Listo</span>
 							</button>
 						</div>
 					</div>
@@ -309,11 +308,11 @@
 						</div>
 					</div>
 					<div class="popup-actions">
-						<button class="btn-secondary close-window hidden" id="popup-secondary">
-							<span class="btn-text-container">Cancelar</span>
+						<button class="btn btn--secondary close-window hidden" id="popup-secondary">
+							<span class="btn__text-container">Cancelar</span>
 						</button>
-						<button class="btn-primary" id="popup-primary">
-							<span class="btn-text-container">Aceptar</span>
+						<button class="btn btn--primary" id="popup-primary">
+							<span class="btn__text-container">Aceptar</span>
 						</button>
 					</div>
 				</div>

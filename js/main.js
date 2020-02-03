@@ -186,7 +186,7 @@ const searchSection = (() => {
 				  })
 				: hideElements($searchSuggestions);
 
-			const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+			const $searchSuggestionsButtons = document.querySelectorAll(".btn--search-suggestion");
 			$searchSuggestionsButtons.forEach(element => {
 				element.onclick = () => {
 					handleSearchFunctionality(element.innerText);
@@ -976,7 +976,7 @@ function newElement(type, element = "", ratio = "") {
 				data-src="${element.images.original.url}"
 				data-srcset="${element.images.original.url}"
 				alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
+				<a href="${element.bitly_url}" target="_blank" type="button" class="btn btn--tag"><span class="btn__text-container" >Ver más...</span></a>
 			</div>
 		</div>`;
 			return $container.firstChild;
@@ -1028,12 +1028,12 @@ function newElement(type, element = "", ratio = "") {
 		</div>`;
 			return $container.firstChild;
 		case "searchTitle":
-			$container.innerHTML = `<button class="search-element btn-search-suggestion">
-		<span>${element.title}</span>
+			$container.innerHTML = `<button class="search-element btn btn--search-suggestion">
+		<span class="btn__text-container">${element.title}</span>
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn btn--tag search-tag"><span class="btn__text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 		case "separator":
 			$container.innerHTML = `<div class="separator-container"><img class="loading-gif" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;

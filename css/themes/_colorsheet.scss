@@ -10,22 +10,9 @@
 }
 
 // Components
-.btn-primary {
-	color: $textBtn;
-	background: $colorPrimary;
-	border: 1px solid $textDark;
-	box-shadow: $shadowPrimary;
-	.btn-text-container {
-		border: 1px dotted $colorPrimaryHover;
-	}
-	&:hover {
-		background: $colorPrimaryHover;
-		.btn-text-container {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.btn-primary--icon-before {
+
+// BTN shape variants
+.btn--icon-before {
 	&::before {
 		border: 1px solid black;
 		box-shadow: $shadowPrimary;
@@ -38,7 +25,7 @@
 		box-shadow: $shadowItem;
 	}
 }
-.btn-primary--icon-after {
+.btn--icon-after {
 	&::after {
 		border: 1px solid black;
 		box-shadow: $shadowPrimary;
@@ -51,57 +38,16 @@
 		box-shadow: $shadowItem;
 	}
 }
-.btn-recording {
-	background: $colorRecording;
-	border: 1px solid $textDark;
-	box-shadow: $shadowRecording;
-	.btn-text-container {
-		color: $textWhite;
-	}
-	&:hover {
-		background: $colorRecording;
-	}
-}
-.btn-tag {
-	background: $colorTag;
-	border: 1px solid $borderTag;
-	box-shadow: $shadowTag;
-	color: $textWhite;
-	.btn-text-container {
-		border: 1px dotted $colorTag;
-	}
-	&:hover {
-		background: $colorTagHover;
-		.btn-text-container {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.btn-secondary {
-	background: $colorSecondary;
-	color: $textBtn;
-	border: 1px solid $colorSecondaryBorder;
-	box-shadow: $shadowSecondary;
-	.btn-text-container {
-		border: 1px dotted $colorSecondaryHover;
-	}
-	&:hover {
-		background: $colorSecondaryHover;
-		.btn-text-container {
-			border: 1px dotted $textBtn;
-		}
-	}
-}
-.btn-search-suggestion {
+.btn--search-suggestion {
 	background: $colorElement;
 	border: 1px solid $colorElementBorder;
 	box-shadow: $shadowItem;
-	span {
+	.btn__text-container {
 		border: 1px dotted $colorElement;
 	}
 	&:hover {
 		background: $colorElementHover;
-		span {
+		.btn__text-container {
 			border: 1px dotted $textDark;
 		}
 	}
@@ -109,7 +55,77 @@
 		background: $colorElementHover;
 	}
 }
-.btn-link {
+.btn--full-width {
+	.btn__text-container {
+		border: none;
+	}
+	&:hover .btn__text-container {
+		outline: 1px dotted $textDark;
+		border: none;
+	}
+}
+// BTN color variants
+.btn--primary {
+	color: $textBtn;
+	background: $colorPrimary;
+	border: 1px solid $textDark;
+	box-shadow: $shadowPrimary;
+	.btn__text-container {
+		border: 1px dotted $colorPrimaryHover;
+	}
+	&:hover {
+		background: $colorPrimaryHover;
+		.btn__text-container {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn--secondary {
+	background: $colorSecondary;
+	color: $textBtn;
+	border: 1px solid $colorSecondaryBorder;
+	box-shadow: $shadowSecondary;
+	.btn__text-container {
+		border: 1px dotted $colorSecondaryHover;
+	}
+	&:hover {
+		background: $colorSecondaryHover;
+		.btn__text-container {
+			border: 1px dotted $textBtn;
+		}
+	}
+}
+.btn--tag {
+	background: $colorTag;
+	border: 1px solid $borderTag;
+	box-shadow: $shadowTag;
+	color: $textWhite;
+	.btn__text-container {
+		border: 1px dotted $colorTag;
+	}
+	&:hover {
+		background: $colorTagHover;
+		.btn__text-container {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn--recording {
+	background: $colorRecording;
+	border: 1px solid $textDark;
+	box-shadow: $shadowRecording;
+	color: $textWhite;
+	.btn__text-container {
+		border: 1px dotted $colorRecording;
+	}
+	&:hover {
+		background: $colorRecording;
+		.btn__text-container {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+.btn--link {
 	border: 1px dotted transparent;
 	color: $textBtn;
 	&:hover {
@@ -120,15 +136,7 @@
 		opacity: 0.5;
 	}
 }
-.btn-full-width {
-	.btn-text-container {
-		border: none;
-	}
-	&:hover .btn-text-container {
-		outline: 1px dotted $textDark;
-		border: none;
-	}
-}
+
 .window-item {
 	background: $bgElement;
 	box-shadow: $shadowElement;
@@ -250,16 +258,16 @@ button {
 	cursor: pointer;
 	&:disabled {
 		cursor: default;
-		background: $bgElement;
+		background: $bgElement !important;
 		outline: none;
 		box-shadow: $shadowItem;
-		.btn-text-container {
+		.btn__text-container {
 			border: none;
 		}
 		&:hover {
 			background: $bgElement;
 			outline: none;
-			.btn-text-container {
+			.btn__text-container {
 				border: none;
 			}
 			&::before,
@@ -307,7 +315,7 @@ button {
 		input:placeholder-shown ~ button[type="submit"] {
 			border: 1px solid $colorElementBorder;
 			box-shadow: $shadowItem;
-			.btn-text-container {
+			.btn__text-container {
 				border: 1px solid $bgElement;
 				color: $textBtnDisabled;
 			}
