@@ -37,9 +37,35 @@ section {
 }
 
 // Objects
+
+// UNIFICAR GRIDS
+.gif-grid--small {
+	display: grid;
+	grid-template: 1fr / minmax(0, 1fr);
+	grid-auto-flow: row dense;
+	gap: 1rem;
+	@media screen and (min-width: 576px) {
+		grid-template: 1fr / repeat(2, minmax(0, 1fr));
+	}
+	@media screen and (min-width: 1120px) {
+		grid-template: 1fr / repeat(4, minmax(0, 1fr));
+	}
+}
+.gif-grid--large {
+	display: grid;
+	grid-template: 1fr / 1fr;
+	grid-auto-flow: row dense;
+	gap: 1rem;
+	@media screen and (min-width: 576px) {
+		grid-template: 1fr / repeat(2, 1fr);
+	}
+	@media screen and (min-width: 992px) {
+		grid-template: 1fr / repeat(4, 1fr);
+	}
+}
+
 /* 
 Window Items
-Grids
 Gif types
 
 */
@@ -565,46 +591,6 @@ Gif types
 					margin-bottom: 0;
 				}
 			}
-		}
-	}
-}
-.suggestions,
-.search-results {
-	.result-container {
-		display: grid;
-		grid-template: 1fr / minmax(0, 1fr);
-		grid-auto-flow: row dense;
-		gap: 1rem;
-	}
-	@media screen and (min-width: 576px) {
-		.result-container {
-			grid-template: 1fr / repeat(2, minmax(0, 1fr));
-		}
-	}
-	@media screen and (min-width: 1120px) {
-		.result-container {
-			grid-template: 1fr / repeat(4, minmax(0, 1fr));
-		}
-	}
-}
-.trend-grid {
-	display: grid;
-	grid-template: 1fr / 1fr;
-	grid-auto-flow: row dense;
-	gap: 1rem;
-	@media screen and (min-width: 576px) {
-		& {
-			grid-template: 1fr / repeat(2, 1fr);
-		}
-	}
-	@media screen and (min-width: 768px) {
-		& {
-			grid-template: 1fr / repeat(3, 1fr);
-		}
-	}
-	@media screen and (min-width: 992px) {
-		& {
-			grid-template: 1fr / repeat(4, 1fr);
 		}
 	}
 }
