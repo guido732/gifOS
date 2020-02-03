@@ -89,7 +89,7 @@ btn--tag container
 		}
 	}
 }
-// Shape Variants
+// btn Shape Variants
 .btn--icon-before {
 	@include flexCenter();
 	&::before {
@@ -144,7 +144,7 @@ btn--tag container
 		border: none;
 	}
 }
-// Color Variants
+// btn Color Variants
 .btn--tag {
 	padding: 3px;
 	margin-right: 0.5rem;
