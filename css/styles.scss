@@ -1,37 +1,48 @@
-@import "reset";
-@import "mixins";
-@import "extends";
-
 // TODO replace media queries for mixins
 // TODO replace flex declarations for include
 // TODO replace border styles for class with border/shadow/etec
 // TODO fixed width buttons
 // TODO cleanup duplicated window item class
 
-// Uitlity Classes
-.container {
-	max-width: 1600px;
-	padding: 0 2rem;
-	margin: auto;
-	@media screen and (min-width: 992px) {
-		padding: 0 4rem;
-	}
+// Setings
+// _colorsheet.scss -> used by color themes
+
+// Tools
+@import "mixins";
+
+// Generic
+@import "reset";
+@import "extends";
+
+// Elements
+body {
+	@extend %fontStack;
+	margin: 0 auto;
 }
-.underline {
-	border-bottom: 1px solid;
+h1 {
+	font-size: 0.75rem;
+	font-weight: normal;
+	padding: 0.25rem 0.5rem;
 }
-.strikethrough {
-	text-decoration: line-through;
+h2 {
+	font-size: 1rem;
+	font-weight: bold;
 }
-.item-double {
-	grid-column: span 1;
-	@include screen-size("sm") {
-		grid-column: span 2;
-	}
+h3 {
+	font-size: 0.75rem;
+	font-weight: normal;
 }
-.hidden {
-	display: none !important;
+section {
+	margin-bottom: 4rem;
 }
+
+// Objects
+/* 
+Window Items
+Grids
+Gif types
+
+*/
 
 // Components
 .btn-primary {
@@ -447,29 +458,6 @@
 		}
 	}
 }
-
-// General element styles
-body {
-	@extend %fontStack;
-	margin: 0 auto;
-}
-h1 {
-	font-size: 0.75rem;
-	font-weight: normal;
-	padding: 0.25rem 0.5rem;
-}
-h2 {
-	font-size: 1rem;
-	font-weight: bold;
-}
-h3 {
-	font-size: 0.75rem;
-	font-weight: normal;
-}
-section {
-	margin-bottom: 4rem;
-}
-
 // Page Specific Sections
 .header {
 	margin-top: 1px;
@@ -635,6 +623,35 @@ section {
 		margin: 2rem 0;
 		max-width: 5rem;
 	}
+}
+
+// Utilities
+.container {
+	max-width: 1600px;
+	padding: 0 2rem;
+	margin-left: auto;
+	margin-right: auto;
+	@media screen and (min-width: 576px) {
+		padding: 0 3rem;
+	}
+	@media screen and (min-width: 992px) {
+		padding: 0 4rem;
+	}
+}
+.underline {
+	border-bottom: 1px solid;
+}
+.strikethrough {
+	text-decoration: line-through;
+}
+.item-double {
+	grid-column: span 1;
+	@include screen-size("sm") {
+		grid-column: span 2;
+	}
+}
+.hidden {
+	display: none !important;
 }
 
 // Animations
