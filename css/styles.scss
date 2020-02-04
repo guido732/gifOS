@@ -40,30 +40,33 @@ section {
 }
 
 // Objects
-.gif-grid--small {
-	display: grid;
-	grid-template: 1fr / minmax(0, 1fr);
-	grid-auto-flow: row dense;
-	gap: 1rem;
-	@media screen and (min-width: 576px) {
-		grid-template: 1fr / repeat(2, minmax(0, 1fr));
+.gif-grid {
+	&--small {
+		display: grid;
+		grid-template: 1fr / minmax(0, 1fr);
+		grid-auto-flow: row dense;
+		gap: 1rem;
+		@media screen and (min-width: 576px) {
+			grid-template: 1fr / repeat(2, minmax(0, 1fr));
+		}
+		@media screen and (min-width: 1120px) {
+			grid-template: 1fr / repeat(4, minmax(0, 1fr));
+		}
 	}
-	@media screen and (min-width: 1120px) {
-		grid-template: 1fr / repeat(4, minmax(0, 1fr));
+	&--large {
+		display: grid;
+		grid-template: 1fr / 1fr;
+		grid-auto-flow: row dense;
+		gap: 1rem;
+		@media screen and (min-width: 576px) {
+			grid-template: 1fr / repeat(2, 1fr);
+		}
+		@media screen and (min-width: 992px) {
+			grid-template: 1fr / repeat(4, 1fr);
+		}
 	}
 }
-.gif-grid--large {
-	display: grid;
-	grid-template: 1fr / 1fr;
-	grid-auto-flow: row dense;
-	gap: 1rem;
-	@media screen and (min-width: 576px) {
-		grid-template: 1fr / repeat(2, 1fr);
-	}
-	@media screen and (min-width: 992px) {
-		grid-template: 1fr / repeat(4, 1fr);
-	}
-}
+
 /* 
 Window Items (sections)
 Gif types
@@ -74,12 +77,12 @@ btn--tag container grid
 .btn {
 	display: inline-block;
 	padding: 2px;
-	.btn__text-container {
+	&__text-container {
 		white-space: nowrap;
 		display: inline-block;
 		padding: 0.25rem 1.5rem;
 	}
-	.btn__icon-within {
+	&__icon-within {
 		@include flexCenter(row, nowrap);
 		&::before {
 			display: inline-block;
@@ -89,99 +92,99 @@ btn--tag container grid
 			margin-right: 0.5rem;
 		}
 	}
-}
-// btn Shape Variants
-.btn--icon-before {
-	@include flexCenter();
-	&::before {
-		content: "";
-		padding: 0 1.2rem;
-		align-self: stretch;
-		margin-top: -3px;
-		margin-bottom: -3px;
-		margin-left: -3px;
-		background-repeat: no-repeat;
-		background-position: center;
+	// btn Shape Variants
+	&--icon-before {
+		@include flexCenter();
+		&::before {
+			content: "";
+			padding: 0 1.2rem;
+			align-self: stretch;
+			margin-top: -3px;
+			margin-bottom: -3px;
+			margin-left: -3px;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
 	}
-}
-.btn--icon-after {
-	@include flexCenter();
-	&::after {
-		content: "";
-		padding: 0 1.2rem;
-		align-self: stretch;
-		margin-top: -3px;
-		margin-bottom: -3px;
-		margin-right: -3px;
-		background-repeat: no-repeat;
-		background-position: center;
+	&--icon-after {
+		@include flexCenter();
+		&::after {
+			content: "";
+			padding: 0 1.2rem;
+			align-self: stretch;
+			margin-top: -3px;
+			margin-bottom: -3px;
+			margin-right: -3px;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
 	}
-}
-.btn--only-icon {
-	.btn__text-container {
-		padding: 0.2rem;
-		font-size: 0.7rem;
+	&--only-icon {
+		.btn__text-container {
+			padding: 0.2rem;
+			font-size: 0.7rem;
+		}
 	}
-}
-.btn--search-suggestion {
-	text-align: left;
-	width: 100%;
-	display: inline-block;
-	padding: 2px;
-	.btn__text-container {
+	&--search-suggestion {
+		text-align: left;
+		width: 100%;
 		display: inline-block;
-		padding: 0.375rem 1rem;
+		padding: 2px;
+		.btn__text-container {
+			display: inline-block;
+			padding: 0.375rem 1rem;
+			width: 100%;
+		}
+	}
+	&--full-width {
 		width: 100%;
+		.btn__text-container {
+			padding: 0.4rem 0;
+		}
+		&:hover .btn__text-container {
+			width: 100%;
+			outline-offset: -1px;
+			border: none;
+		}
 	}
-}
-.btn--full-width {
-	width: 100%;
-	.btn__text-container {
-		padding: 0.4rem 0;
+	// btn Color Variants
+	&--tag {
+		padding: 3px;
+		margin-right: 0.5rem;
+		margin-bottom: 0.5rem;
+		font-size: 0.875rem;
+		.btn__text-container {
+			padding: 0.25rem;
+		}
 	}
-	&:hover .btn__text-container {
-		width: 100%;
-		outline-offset: -1px;
-		border: none;
+	&--secondary {
+		@extend .btn;
 	}
-}
-// btn Color Variants
-.btn--tag {
-	padding: 3px;
-	margin-right: 0.5rem;
-	margin-bottom: 0.5rem;
-	font-size: 0.875rem;
-	.btn__text-container {
-		padding: 0.25rem;
+	&--link {
+		padding: 0.35rem 0.5rem 0.35rem 0;
 	}
-}
-.btn--secondary {
-	@extend .btn;
-}
-.btn--link {
-	padding: 0.35rem 0.5rem 0.35rem 0;
 }
 .input-bar {
 	width: 100%;
 	padding: 0.5rem;
 	font-size: 0.875rem;
 	margin-bottom: 1rem;
-}
-.input-bar--lg {
-	min-width: 0;
-	width: 100%;
-	padding: 0.8rem 1rem;
-	margin-right: 0.5rem;
-	margin-bottom: 0.75rem;
-}
-.input-bar--sm {
-	width: 7rem;
-	padding: 0.5rem 0.8rem 0.5rem 1rem;
-	margin: 0;
+	&--lg {
+		min-width: 0;
+		width: 100%;
+		padding: 0.8rem 1rem;
+		margin-right: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+	&--sm {
+		width: 7rem;
+		padding: 0.5rem 0.8rem 0.5rem 1rem;
+		margin: 0;
+	}
 }
 .gif-options {
 	padding: 2px;
-	.gif-options__header {
+	&__header {
 		padding: 0.375rem;
 		padding-right: 2rem;
 		margin-bottom: 0.125rem;
@@ -191,7 +194,7 @@ btn--tag container grid
 		font-size: 0.875rem;
 		font-weight: 700;
 		text-overflow: ellipsis;
-		.gif-options__header__close-btn {
+		&__close-btn {
 			background: url(../assets/icons/close.svg);
 			width: 1rem;
 			height: 0.875rem;
@@ -201,17 +204,17 @@ btn--tag container grid
 			z-index: 1;
 		}
 	}
-	.gif-options__content {
+	&__content {
 		overflow: hidden;
 		position: relative;
 		height: 350px;
-		.gif-options__content__img {
+		&__img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
 			object-position: center;
 		}
-		.gif-options__content__action {
+		&__action {
 			position: absolute;
 			bottom: 1rem;
 			left: 0.5rem;
@@ -224,7 +227,7 @@ btn--tag container grid
 	overflow: hidden;
 	padding: 0.125rem;
 	position: relative;
-	.gif-simple__header {
+	&__header {
 		display: none;
 		padding: 0.375rem;
 		margin: 0.1875rem;
@@ -238,7 +241,7 @@ btn--tag container grid
 		text-overflow: ellipsis;
 		font-size: 0.875rem;
 		font-weight: bold;
-		.gif-simple__header__close-btn {
+		&__close-btn {
 			background: url(../assets/icons/close.svg);
 			width: 1rem;
 			height: 0.875rem;
@@ -248,13 +251,13 @@ btn--tag container grid
 			z-index: 1;
 		}
 	}
-	.gif-simple__content__img {
+	&__content__img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		object-position: center;
 	}
-	&:hover .gif-simple__header {
+	&:hover &__header {
 		display: block;
 	}
 }
@@ -262,7 +265,7 @@ btn--tag container grid
 .window-element {
 	padding: 2px;
 	margin: 4.75rem auto 9.5rem auto;
-	.window-element__header {
+	&__header {
 		padding: 0.375rem;
 		padding-right: 2rem;
 		margin-bottom: 0.125rem;

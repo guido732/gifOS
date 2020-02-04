@@ -12,128 +12,130 @@
 // Components
 
 // BTN shape variants
-.btn--icon-before {
-	&::before {
-		border: 1px solid black;
-		box-shadow: $shadowPrimary;
-	}
-	&:hover::before {
-		outline: 1px dotted $textDark;
-		outline-offset: -4px;
-	}
-	&:disabled::before {
-		box-shadow: $shadowItem;
-	}
-}
-.btn--icon-after {
-	&::after {
-		border: 1px solid black;
-		box-shadow: $shadowPrimary;
-	}
-	&:hover::after {
-		outline: 1px dotted black;
-		outline-offset: -4px;
-	}
-	&:disabled::after {
-		box-shadow: $shadowItem;
-	}
-}
-.btn--search-suggestion {
-	background: $colorElement;
-	border: 1px solid $colorElementBorder;
-	box-shadow: $shadowItem;
-	.btn__text-container {
-		border: 1px dotted $colorElement;
-	}
-	&:hover {
-		background: $colorElementHover;
-		.btn__text-container {
-			border: 1px dotted $textDark;
+.btn {
+	&--icon-before {
+		&::before {
+			border: 1px solid black;
+			box-shadow: $shadowPrimary;
+		}
+		&:hover::before {
+			outline: 1px dotted $textDark;
+			outline-offset: -4px;
+		}
+		&:disabled::before {
+			box-shadow: $shadowItem;
 		}
 	}
-	&:active {
-		background: $colorElementHover;
-	}
-}
-.btn--full-width {
-	.btn__text-container {
-		border: none;
-	}
-	&:hover .btn__text-container {
-		outline: 1px dotted $textDark;
-		border: none;
-	}
-}
-// BTN color variants
-.btn--primary {
-	color: $textBtn;
-	background: $colorPrimary;
-	border: 1px solid $textDark;
-	box-shadow: $shadowPrimary;
-	.btn__text-container {
-		border: 1px dotted $colorPrimaryHover;
-	}
-	&:hover {
-		background: $colorPrimaryHover;
-		.btn__text-container {
-			border: 1px dotted $textDark;
+	&--icon-after {
+		&::after {
+			border: 1px solid black;
+			box-shadow: $shadowPrimary;
+		}
+		&:hover::after {
+			outline: 1px dotted black;
+			outline-offset: -4px;
+		}
+		&:disabled::after {
+			box-shadow: $shadowItem;
 		}
 	}
-}
-.btn--secondary {
-	background: $colorSecondary;
-	color: $textBtn;
-	border: 1px solid $colorSecondaryBorder;
-	box-shadow: $shadowSecondary;
-	.btn__text-container {
-		border: 1px dotted $colorSecondaryHover;
-	}
-	&:hover {
-		background: $colorSecondaryHover;
+	&--search-suggestion {
+		background: $colorElement;
+		border: 1px solid $colorElementBorder;
+		box-shadow: $shadowItem;
 		.btn__text-container {
+			border: 1px dotted $colorElement;
+		}
+		&:hover {
+			background: $colorElementHover;
+			.btn__text-container {
+				border: 1px dotted $textDark;
+			}
+		}
+		&:active {
+			background: $colorElementHover;
+		}
+	}
+	&--full-width {
+		.btn__text-container {
+			border: none;
+		}
+		&:hover .btn__text-container {
+			outline: 1px dotted $textDark;
+			border: none;
+		}
+	}
+	// BTN color variants
+	&--primary {
+		color: $textBtn;
+		background: $colorPrimary;
+		border: 1px solid $textDark;
+		box-shadow: $shadowPrimary;
+		.btn__text-container {
+			border: 1px dotted $colorPrimaryHover;
+		}
+		&:hover {
+			background: $colorPrimaryHover;
+			.btn__text-container {
+				border: 1px dotted $textDark;
+			}
+		}
+	}
+	&--secondary {
+		background: $colorSecondary;
+		color: $textBtn;
+		border: 1px solid $colorSecondaryBorder;
+		box-shadow: $shadowSecondary;
+		.btn__text-container {
+			border: 1px dotted $colorSecondaryHover;
+		}
+		&:hover {
+			background: $colorSecondaryHover;
+			.btn__text-container {
+				border: 1px dotted $textBtn;
+			}
+		}
+	}
+	&--tag {
+		background: $colorTag;
+		border: 1px solid $borderTag;
+		box-shadow: $shadowTag;
+		color: $textWhite;
+		.btn__text-container {
+			border: 1px dotted $colorTag;
+		}
+		&:hover {
+			background: $colorTagHover;
+			.btn__text-container {
+				border: 1px dotted $textDark;
+			}
+		}
+	}
+	&--recording {
+		background: $colorRecording;
+		border: 1px solid $textDark;
+		box-shadow: $shadowRecording;
+		color: $textWhite;
+		.btn__text-container {
+			border: 1px dotted $colorRecording;
+		}
+		&:hover {
+			background: $colorRecording;
+			.btn__text-container {
+				border: 1px dotted $textDark;
+			}
+		}
+	}
+	&--link {
+		border: 1px dotted transparent;
+		color: $textBtn;
+		&:hover {
 			border: 1px dotted $textBtn;
 		}
-	}
-}
-.btn--tag {
-	background: $colorTag;
-	border: 1px solid $borderTag;
-	box-shadow: $shadowTag;
-	color: $textWhite;
-	.btn__text-container {
-		border: 1px dotted $colorTag;
-	}
-	&:hover {
-		background: $colorTagHover;
-		.btn__text-container {
-			border: 1px dotted $textDark;
+		&:active {
+			color: $textBtn;
+			opacity: 0.5;
 		}
-	}
-}
-.btn--recording {
-	background: $colorRecording;
-	border: 1px solid $textDark;
-	box-shadow: $shadowRecording;
-	color: $textWhite;
-	.btn__text-container {
-		border: 1px dotted $colorRecording;
-	}
-	&:hover {
-		background: $colorRecording;
-		.btn__text-container {
-			border: 1px dotted $textDark;
-		}
-	}
-}
-.btn--link {
-	border: 1px dotted transparent;
-	color: $textBtn;
-	&:hover {
-		border: 1px dotted $textBtn;
-	}
-	&:active {
-		color: $textBtn;
-		opacity: 0.5;
 	}
 }
 .input-bar {
@@ -144,30 +146,30 @@
 	&::placeholder {
 		color: $textDark;
 	}
-}
-.input-bar--lg {
-	background: $textWhite;
-	border: 1px solid $colorInputBorder;
-	box-shadow: $shadowInputBar;
-	&::placeholder {
-		color: $textClear;
+	&--lg {
+		background: $textWhite;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+		&::placeholder {
+			color: $textClear;
+		}
 	}
-}
-.input-bar--sm {
-	background: $textWhite;
-	border: 1px solid $colorInputBorder;
-	box-shadow: $shadowInputBar;
+	&--sm {
+		background: $textWhite;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+	}
 }
 .gif-options {
 	background: $bgElement;
 	box-shadow: $shadowElement;
-	.gif-options__header {
+	&__header {
 		background: $gradient;
 		color: $textWhite;
 	}
-	.gif-options__content {
+	&__content {
 		border: 1px dotted transparent;
-		.gif-options__content__action .gif-options__content__action__inner {
+		&__action &__action__inner {
 			border: 1px dotted transparent;
 		}
 		&:hover {
@@ -183,11 +185,11 @@
 .gif-simple {
 	background: $bgElement;
 	box-shadow: $shadowElement;
-	.gif-simple__header {
+	&__header {
 		background: $gradient;
 		color: $textWhite;
 	}
-	.gif-simple__content__img {
+	&__content__img {
 		border: 1px solid $bgElement;
 		&:hover {
 			border: 1px dotted $textDark;
@@ -198,7 +200,7 @@
 .window-element {
 	background: $bgElement;
 	box-shadow: $shadowElement;
-	.window-element__header {
+	&__header {
 		background: $gradient;
 		color: $textWhite;
 	}
