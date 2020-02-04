@@ -136,41 +136,6 @@
 		opacity: 0.5;
 	}
 }
-
-.window-item {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	.wi-header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	.img-container {
-		border: 1px dotted transparent;
-		.btn-primary.tag span {
-			border: 1px dotted transparent;
-		}
-		&:hover {
-			border: 1px dotted $textDark;
-			.btn-primary.tag span {
-				border: 1px dotted $textDark;
-			}
-		}
-	}
-}
-.trend-item {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	.trend-header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	.img-element {
-		border: 1px solid $bgElement;
-		&:hover {
-			border: 1px dotted $textDark;
-		}
-	}
-}
 .input-bar {
 	background: $colorTitleBar;
 	border: 1px solid $colorElementSecondaryHover;
@@ -180,7 +145,7 @@
 		color: $textDark;
 	}
 }
-.input-bar-mono-lg {
+.input-bar--lg {
 	background: $textWhite;
 	border: 1px solid $colorInputBorder;
 	box-shadow: $shadowInputBar;
@@ -188,15 +153,52 @@
 		color: $textClear;
 	}
 }
-.input-bar-mono-sm {
+.input-bar--sm {
 	background: $textWhite;
 	border: 1px solid $colorInputBorder;
 	box-shadow: $shadowInputBar;
 }
+.gif-options {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.gif-options__header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.gif-options__content {
+		border: 1px dotted transparent;
+		.gif-options__content__action .gif-options__content__action__inner {
+			border: 1px dotted transparent;
+		}
+		&:hover {
+			border: 1px dotted $textDark;
+			.gif-options__content__action {
+				.gif-options__content__action__inner {
+					border: 1px dotted $textDark;
+				}
+			}
+		}
+	}
+}
+.gif-simple {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	.gif-simple__header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	.gif-simple__content__img {
+		border: 1px solid $bgElement;
+		&:hover {
+			border: 1px dotted $textDark;
+		}
+	}
+}
+
 .window-element {
 	background: $bgElement;
 	box-shadow: $shadowElement;
-	.gradient-header {
+	.window-element__header {
 		background: $gradient;
 		color: $textWhite;
 	}

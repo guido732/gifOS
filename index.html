@@ -74,7 +74,7 @@
 						<div class="search-bar-container">
 							<input
 								type="search"
-								class="input-bar input-bar-mono-lg"
+								class="input-bar input-bar--lg"
 								id="search-bar"
 								placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
 								autocomplete="off"
@@ -102,7 +102,7 @@
 			</section>
 			<section class="create-gif-section hidden" id="create-gif-section">
 				<div class="window-element window-size-md" id="stage1">
-					<div class="gradient-header">
+					<div class="window-element__header">
 						Crear Guifos
 					</div>
 					<div class="content">
@@ -136,7 +136,7 @@
 					</div>
 				</div>
 				<div class="window-element window-size-lg hidden" id="stage2">
-					<div class="gradient-header">
+					<div class="window-element__header">
 						<span id="create-gif-section-header">
 							Un Chequeo Antes de Empezar
 						</span>
@@ -151,7 +151,7 @@
 						</div>
 						<div class="stage3-container hidden" id="stage3">
 							<div class="timer-container">
-								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
+								<div id="timer" class="input-bar input-bar--sm timer"></div>
 								<div class="loading-bar-container hidden" id="timer-loading-bar">
 									<button class="btn btn--primary btn--only-icon" id="btn-play-gif">
 										<span class="btn__text-container">
@@ -193,7 +193,7 @@
 					</div>
 				</div>
 				<div class="window-element window-size-lg hidden" id="stage5">
-					<div class="gradient-header">
+					<div class="window-element__header">
 						Subiendo Guifo
 						<button class="remove-element close-window"></button>
 					</div>
@@ -230,7 +230,7 @@
 					</div>
 				</div>
 				<div class="window-element window-size-md hidden" id="stage6">
-					<div class="gradient-header">
+					<div class="window-element__header">
 						Guifo Subido con Éxito
 						<button class="remove-element close-window"></button>
 					</div>
@@ -259,7 +259,7 @@
 					</div>
 				</div>
 				<div class="window-element window-size-md hidden" id="stage7">
-					<div class="gradient-header">
+					<div class="window-element__header">
 						Algo Salió Mal
 						<button class="remove-element close-window"></button>
 					</div>
@@ -287,7 +287,7 @@
 		</main>
 		<aside class="popup-container hidden" id="popup-window">
 			<dialog class="popup-window window-element">
-				<div class="gradient-header popup-header" id="popup-header">
+				<div class="window-element__header popup-header" id="popup-header">
 					<button class="remove-element close-window" id="popup-close"></button>
 					<span id="popup-header-text">Fatal Error!</span>
 				</div>

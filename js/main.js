@@ -280,7 +280,7 @@ const suggestionsSection = (() => {
 			`https://api.giphy.com/v1/gifs/search?q=${suggestionTopics[suggestion]}&api_key=${APIkey}&limit=${limit}`
 		);
 		gifsSuggestions.data.forEach(gif => {
-			$suggestedGifs.append(newElement("window", gif));
+			$suggestedGifs.append(newElement("gif-options", gif));
 		});
 		events.emit("imagesToLazyLoad");
 	}
@@ -743,7 +743,7 @@ const myGifsSection = (() => {
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
-	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 	// Bind events
 	events.on("myGifs", mount);
@@ -790,12 +790,12 @@ const myGifsSection = (() => {
 		}
 	}
 	function parseDeleteButtons() {
-		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 		// Gets gif ID through the (closest) image URL
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton
-				.closest(".trend-item")
+				.closest(".gif-simple")
 				.querySelector("img")
 				.getAttribute("data-src");
 			const localStorageGifID = localGifElementURL.split("/")[4];
@@ -963,20 +963,20 @@ function newElement(type, element = "", ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
 	const $container = document.createElement("div");
 	switch (type) {
-		case "window":
-			$container.innerHTML = `<div class="window-item ${ratio}">
-			<div class="wi-header">
+		case "gif-options":
+			$container.innerHTML = `<div class="gif-options ${ratio}">
+			<div class="gif-options__header">
 					${element.title}
-				<button class="remove-element"></button>
+				<button class="gif-options__header__close-btn"></button>
 			</div>
-			<div class="img-container">
-			<img 
-				class="lazy img-element loading-animation" 
-				src="" 
-				data-src="${element.images.original.url}"
-				data-srcset="${element.images.original.url}"
-				alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn btn--tag"><span class="btn__text-container" >Ver más...</span></a>
+			<div class="gif-options__content">
+				<img 
+					class="lazy gif-options__content__img loading-animation" 
+					src="" 
+					data-src="${element.images.original.url}"
+					data-srcset="${element.images.original.url}"
+					alt="${element.title}" /> 	
+					<a href="${element.bitly_url}" target="_blank" type="button" class="btn btn--tag gif-options__content__action"><span class="btn__text-container gif-options__content__action__inner" >Ver más...</span></a>
 			</div>
 		</div>`;
 			return $container.firstChild;
@@ -987,17 +987,17 @@ function newElement(type, element = "", ratio = "") {
 			titleToArray.forEach(word => {
 				titleArrayToTags += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
 						/>
 					</a>
-					<div class="trend-header">
+					<div class="gif-simple__header">
 						${titleArrayToTags}
 					</div>
 			</div>
@@ -1010,18 +1010,18 @@ function newElement(type, element = "", ratio = "") {
 			titleToArray2.forEach(word => {
 				titleArrayToTags2 += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 					/>
 				</a>
-				<div class="trend-header">						
-					<button class="remove-element"></button>
+				<div class="gif-simple__header">						
+					<button class="gif-simple__header__close-btn"></button>
 					${titleArrayToTags2}
 				</div>
 			</div>
