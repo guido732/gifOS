@@ -32,7 +32,7 @@ const navBar = (() => {
 	const colorThemes = ["sailor_day", "sailor_night"];
 
 	// Cache DOM
-	const $navItems = document.querySelector("#nav-items");
+	const $navItems = document.querySelector("#navbar-items");
 	const $homeButton = document.querySelector("#home-button");
 
 	const $themeSelector = document.querySelector("#theme-selector");
@@ -376,8 +376,10 @@ const createGifsSection = (() => {
 	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
-	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
-	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
+	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .loading-bar__container__progress-block");
+	const $uploadProgressBlocks = document.querySelectorAll(
+		"#upload-loading-bar .loading-bar__container__progress-block"
+	);
 
 	// Stopwatch + Loadingbar generator functions
 	const Stopwatch = (elem, options) => {
@@ -461,7 +463,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -479,7 +481,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -487,12 +489,12 @@ const createGifsSection = (() => {
 			clearInterval(interval);
 			progress = 0;
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		function clearProgress() {
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		// Public Functions
@@ -619,7 +621,7 @@ const createGifsSection = (() => {
 	}
 	function unmount() {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
-		showElements(document.querySelector(".nav-item-container"));
+		showElements(document.querySelector(".navbar__options"));
 	}
 	function handlePlayBar(loadingBar) {
 		if (playing) {

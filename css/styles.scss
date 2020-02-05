@@ -7,17 +7,17 @@
 // Botones de cerrar/eliminar separar y unificar clases correspondientes
 // en elementos gif y ventanas
 
-// Setings
+/* Setings */
 // _colorsheet.scss -> used by color themes
 
-// Tools
+/* Tools */
 @import "mixins";
 
-// Generic
+/* Generic */
 @import "reset";
 @import "extends";
 
-// Elements
+/* Elements */
 body {
 	@extend %fontStack;
 	margin: 0 auto;
@@ -39,7 +39,7 @@ section {
 	margin-bottom: 4rem;
 }
 
-// Objects
+/* Objects */
 .gif-grid {
 	&--small {
 		display: grid;
@@ -66,14 +66,25 @@ section {
 		}
 	}
 }
+.dropdown {
+	position: relative;
+	&__list {
+		display: block;
+		position: absolute;
+		width: 100%;
+		z-index: 1;
+		&__item {
+			display: block;
+			margin: 0.625rem;
+			padding: 0.5rem 0 0.5rem 1rem;
+		}
+	}
+}
+// Window Items (sections)
+// Gif types
+// btn--tag container grid
 
-/* 
-Window Items (sections)
-Gif types
-btn--tag container grid
-*/
-
-// Components
+/* Components */
 .btn {
 	display: inline-block;
 	padding: 2px;
@@ -182,86 +193,88 @@ btn--tag container grid
 		margin: 0;
 	}
 }
-.gif-options {
-	padding: 2px;
-	&__header {
-		padding: 0.375rem;
-		padding-right: 2rem;
-		margin-bottom: 0.125rem;
-		position: relative;
-		overflow: hidden;
-		white-space: nowrap;
-		font-size: 0.875rem;
-		font-weight: 700;
-		text-overflow: ellipsis;
-		&__close-btn {
-			background: url(../assets/icons/close.svg);
-			width: 1rem;
-			height: 0.875rem;
-			position: absolute;
-			right: 0.5rem;
-			top: 0.5rem;
-			z-index: 1;
+.gif {
+	&-options {
+		padding: 2px;
+		&__header {
+			padding: 0.375rem;
+			padding-right: 2rem;
+			margin-bottom: 0.125rem;
+			position: relative;
+			overflow: hidden;
+			white-space: nowrap;
+			font-size: 0.875rem;
+			font-weight: 700;
+			text-overflow: ellipsis;
+			&__close-btn {
+				background: url(../assets/icons/close.svg);
+				width: 1rem;
+				height: 0.875rem;
+				position: absolute;
+				right: 0.5rem;
+				top: 0.5rem;
+				z-index: 1;
+			}
+		}
+		&__content {
+			overflow: hidden;
+			position: relative;
+			height: 350px;
+			&__img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: center;
+			}
+			&__action {
+				position: absolute;
+				bottom: 1rem;
+				left: 0.5rem;
+			}
 		}
 	}
-	&__content {
-		overflow: hidden;
-		position: relative;
+	&-simple {
+		width: 100%;
 		height: 350px;
-		&__img {
+		overflow: hidden;
+		padding: 0.125rem;
+		position: relative;
+		&__header {
+			display: none;
+			padding: 0.375rem;
+			margin: 0.1875rem;
+			margin-bottom: 0.125rem;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 0.875rem;
+			font-weight: bold;
+			&__close-btn {
+				background: url(../assets/icons/close.svg);
+				width: 1rem;
+				height: 0.875rem;
+				position: absolute;
+				right: 0.5rem;
+				top: 0.5rem;
+				z-index: 1;
+			}
+		}
+		&__content__img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
 			object-position: center;
 		}
-		&__action {
-			position: absolute;
-			bottom: 1rem;
-			left: 0.5rem;
+		&:hover &__header {
+			display: block;
 		}
 	}
 }
-.gif-simple {
-	width: 100%;
-	height: 350px;
-	overflow: hidden;
-	padding: 0.125rem;
-	position: relative;
-	&__header {
-		display: none;
-		padding: 0.375rem;
-		margin: 0.1875rem;
-		margin-bottom: 0.125rem;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		font-size: 0.875rem;
-		font-weight: bold;
-		&__close-btn {
-			background: url(../assets/icons/close.svg);
-			width: 1rem;
-			height: 0.875rem;
-			position: absolute;
-			right: 0.5rem;
-			top: 0.5rem;
-			z-index: 1;
-		}
-	}
-	&__content__img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
-	}
-	&:hover &__header {
-		display: block;
-	}
-}
-
+// Redo Window Element!!!!!!!
 .window-element {
 	padding: 2px;
 	margin: 4.75rem auto 9.5rem auto;
@@ -278,7 +291,7 @@ btn--tag container grid
 		position: relative;
 		// close-window -> btn__close-window
 		// remove-element -> window-element__header__close-btn
-		.remove-element {
+		&__close-btn {
 			background: url(../assets/icons/close.svg);
 			width: 1rem;
 			height: 0.875rem;
@@ -288,147 +301,152 @@ btn--tag container grid
 			z-index: 1;
 		}
 	}
-	.content-split {
-		display: flex;
-		flex-direction: row;
-		img {
-			margin-right: 1rem;
-			min-width: 2rem;
-			height: max-content;
-		}
-		.text-content {
-			margin-bottom: 1.75rem;
-			p {
-				margin: 0.5rem 0;
-				font-size: 0.875rem;
+	&__content {
+		&__options {
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: flex-end;
+			width: 100%;
+			&--stage3 {
+				display: flex;
+				flex-flow: row wrap;
+				justify-content: space-between;
+				align-items: center;
 			}
-			ol {
-				font-size: 0.875rem;
-				counter-reset: list;
-				li {
-					list-style-position: inside;
-					margin-bottom: 0.5rem;
-				}
-				& > li:before {
-					content: counter(list, decimal) ") ";
-					font-weight: bold;
-					counter-increment: list;
-				}
+			&__timer-container {
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+			}
+			&__timer {
+				margin-right: 1.5rem;
+			}
+			.btn--secondary {
+				margin-right: 1rem;
 			}
 		}
-	}
-	.flex-end-container {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: flex-end;
-		width: 100%;
-	}
-	.stage3-container {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-	}
-	.btn--secondary {
-		margin-right: 1rem;
-	}
-	.video-element {
-		width: 100%;
-		height: auto;
-		margin-bottom: 1.25rem;
-	}
-
-	.stage5 {
-		@include flexCenter(column, nowrap);
-		padding: 8.75rem 0;
-		img {
-			margin-bottom: 0.5rem;
+		&__video-element {
+			width: 100%;
+			height: auto;
+			margin-bottom: 1.25rem;
 		}
-		h2 {
-			margin-bottom: 2.5rem;
+		&--split {
+			display: flex;
+			flex-direction: row;
+			&__img {
+				margin-right: 1rem;
+				min-width: 2rem;
+				height: max-content;
+			}
+			&__text {
+				margin-bottom: 1.75rem;
+				p {
+					margin: 0.5rem 0;
+					font-size: 0.875rem;
+				}
+				ol {
+					font-size: 0.875rem;
+					counter-reset: list;
+					li {
+						list-style-position: inside;
+						margin-bottom: 0.5rem;
+					}
+					& > li:before {
+						content: counter(list, decimal) ") ";
+						font-weight: bold;
+						counter-increment: list;
+					}
+				}
+			}
 		}
-		.loading-bar-container {
-			margin-bottom: 0.5rem;
-			width: 20rem;
+		&--stage5 {
+			@include flexCenter(column, nowrap);
+			padding: 8.75rem 0;
+			&__img {
+				margin-bottom: 0.5rem;
+			}
+			&__title {
+				margin-bottom: 2rem;
+			}
 			.loading-bar {
-				width: 100%;
+				margin-bottom: 1rem;
+				width: 20rem;
+				&__container {
+					width: 100%;
+				}
 			}
 		}
-	}
-	.stage6 {
-		.content-split {
-			align-items: center;
-			margin-bottom: 3.75rem;
+		&--stage6 {
+			&--split {
+				align-items: center;
+				margin-bottom: 3.75rem;
+			}
+			.options-container {
+				padding-left: 1.5rem;
+				h2 {
+					margin-bottom: 1rem;
+				}
+				button {
+					margin-bottom: 0.875rem;
+				}
+			}
+			.img-container {
+				width: 24rem;
+				margin-bottom: 1.25rem;
+				flex: 0 0 auto;
+				.video-preview-img {
+					width: 100%;
+				}
+			}
 		}
-		.options-container {
-			padding-left: 1.5rem;
+		&--stage7 {
+			@include flexCenter(column, nowrap);
+			text-align: center;
+			.img-container {
+				width: 100%;
+				max-width: 20rem;
+				margin-bottom: 1.25rem;
+				flex: 0 0 auto;
+				img {
+					width: 100%;
+				}
+			}
 			h2 {
 				margin-bottom: 1rem;
 			}
-			button {
-				margin-bottom: 0.875rem;
+			p {
+				margin-bottom: 2rem;
 			}
-		}
-		.img-container {
-			width: 24rem;
-			margin-bottom: 1.25rem;
-			flex: 0 0 auto;
-			.video-preview-img {
-				width: 100%;
-				// height: auto;
+			.btn--secondary {
+				margin-right: 1rem;
 			}
 		}
 	}
-	.stage7 {
-		@include flexCenter(column, nowrap);
-		text-align: center;
-		h2 {
-			margin-bottom: 1rem;
+	&--md {
+		max-width: 700px;
+		.window-element__content {
+			margin: 2rem;
 		}
-		p {
-			margin-bottom: 2rem;
-		}
-		.img-container {
-			width: 100%;
-			max-width: 20rem;
-			margin-bottom: 1.25rem;
-			flex: 0 0 auto;
-			img {
-				width: 100%;
-			}
+	}
+	&--lg {
+		max-width: 860px;
+		.window-element__content {
+			margin: 0.875rem;
 		}
 	}
 }
-
-.window-size-md {
-	max-width: 700px;
-	.content {
-		margin: 2rem;
-	}
-}
-.window-size-lg {
-	max-width: 860px;
-	.content {
-		margin: 0.875rem;
-	}
-}
-.loading-bar-container {
+.loading-bar {
 	@include flexCenter(row, nowrap);
-	button {
+	&__option {
 		margin-right: 0.375rem;
 	}
-	.loading-bar {
+	&__container {
 		display: flex;
 		width: 15rem;
 		height: 1.75rem;
 		padding: 2px;
 		overflow: hidden;
-		.bar {
-			width: 1%;
-			height: 100%;
-		}
-		.progress-block {
+		&__progress-block {
 			display: block;
 			height: 100%;
 			flex: 1 1 auto;
@@ -489,31 +507,34 @@ btn--tag container grid
 		}
 	}
 }
-// Page Specific Sections
+
+/* Page Specific Sections */
 .header {
 	margin-top: 1px;
-
-	h1 {
+	&__title {
 		max-width: 1920px;
 		margin: auto;
 	}
 }
+//  gif-creation section with stages
 .navbar {
 	margin-top: 2.25rem;
 	margin-bottom: 2rem;
 	@include flexCenter(column);
 	justify-content: space-between;
-	.brand-container {
-		margin-bottom: 1rem;
-		width: 6.25rem;
-		height: 4rem;
-		background-size: auto;
-		background-position: center;
-		background-repeat: no-repeat;
+	&__brand-container {
+		&__brand {
+			margin-bottom: 1rem;
+			width: 6.25rem;
+			height: 4rem;
+			background-size: auto;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
 	}
-	.nav-item-container {
+	&__options {
 		@include flexCenter(column, wrap);
-		.nav-item {
+		&__item {
 			margin-left: 1rem;
 			margin-bottom: 1rem;
 			&:last-child {
@@ -521,57 +542,44 @@ btn--tag container grid
 			}
 		}
 	}
-	.dropdown-container-outer {
-		position: relative;
-		.dropdown-list {
-			display: block;
-			position: absolute;
-			width: 100%;
-			z-index: 1;
-			.dropdown-list-item {
-				display: block;
-				margin: 0.625rem;
-				padding: 0.5rem 0 0.5rem 1rem;
-			}
-		}
-	}
 	@media screen and (min-width: 576px) {
-		.nav-item-container {
+		&__options {
 			flex-flow: row nowrap;
-			.nav-item {
+			&__item {
 				margin-bottom: 0;
 			}
 		}
 	}
 	@media screen and (min-width: 768px) {
 		flex-direction: row;
-		.brand-container {
+		&__brand-container__brand {
 			margin-bottom: 0;
 		}
 	}
 }
-.search-container {
-	.search-box {
+.search {
+	&__box {
 		position: relative;
 		padding-top: 2px;
-		.search-header {
-			padding: 0.375rem;
-			margin: 0 2px;
-			font-size: 0.875rem;
-			font-weight: 700;
-		}
-		.search-bar-container {
-			@include flexCenter(column, nowrap);
-			justify-content: space-between;
-			align-items: center;
-			padding: 0.75rem 1rem;
-
-			button[type="submit"] {
-				flex-grow: 1;
-				max-width: fit-content;
+		&__form {
+			&__header {
+				padding: 0.375rem;
+				margin: 0 2px;
+				font-size: 0.875rem;
+				font-weight: 700;
+			}
+			&__bar-container {
+				@include flexCenter(column, nowrap);
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.75rem 1rem;
+				button[type="submit"] {
+					flex-grow: 1;
+					max-width: fit-content;
+				}
 			}
 		}
-		.search-suggestions {
+		&__suggestions {
 			padding: 1rem;
 			display: block;
 			position: absolute;
@@ -585,28 +593,23 @@ btn--tag container grid
 			}
 		}
 	}
-	.search-tags {
+	&__tags {
 		margin-top: 0.75rem;
 	}
 	@media screen and (min-width: 768px) {
-		.search-box {
-			.search-bar-container {
-				flex-direction: row;
-				input {
-					margin-bottom: 0;
+		&__box {
+			&__form {
+				&__bar-container {
+					flex-direction: row;
+					input {
+						margin-bottom: 0;
+					}
 				}
 			}
 		}
 	}
 }
-.timer-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	.timer {
-		margin-right: 1.5rem;
-	}
-}
+
 .separator-container {
 	display: flex;
 	justify-content: center;
@@ -616,7 +619,7 @@ btn--tag container grid
 	}
 }
 
-// Utilities
+/* Utilities */
 .container {
 	max-width: 1600px;
 	padding: 0 2rem;
@@ -645,4 +648,4 @@ btn--tag container grid
 	display: none !important;
 }
 
-// Animations
+/* Animations */

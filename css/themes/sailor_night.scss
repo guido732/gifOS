@@ -39,7 +39,7 @@ $shadowItem: inset -1px -1px 0 0 $textClear, inset 1px 1px 0 0 $textWhite;
 $shadowTitleBar: inset -2px -2px 0 0 #e6dce4, inset 2px 2px 0 0 #110038;
 $shadowLoadingBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
 
-.brand-container {
+.navbar__brand-container__brand {
 	background-image: url(../../assets/img/gifOF_logo_dark.png);
 }
 .icon-dropdown {
@@ -66,12 +66,14 @@ $shadowLoadingBar: inset -2px -2px 0 0 #e6e6e6, inset 2px 2px 0 0 #000;
 		background-image: url("../../assets/icons/recording.svg");
 	}
 }
-.search-box {
-	.search-form {
-		input:placeholder-shown ~ button[type="submit"] {
-			.btn-text-container {
-				&::before {
-					background: url(../../assets/icons/lupa-2.svg) no-repeat;
+.search {
+	&__box {
+		&__form {
+			input:placeholder-shown ~ button[type="submit"] {
+				.btn__text-container {
+					&::before {
+						background: url(../../assets/icons/lupa-2.svg) no-repeat;
+					}
 				}
 			}
 		}

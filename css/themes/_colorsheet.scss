@@ -1,17 +1,61 @@
-// Utility
-.underline {
-	border-bottom-color: $textDark;
+/* General element styles */
+body {
+	background-color: $colorSecondary;
 }
-.loading-animation {
-	background: $gradient;
-	background-size: 400% 400%;
-	animation: loading-animation 2s ease-in-out infinite;
-	color: transparent;
+h1 {
+	color: $textWhite;
+}
+p {
+	color: $textDark;
+}
+button {
+	background-color: transparent;
+	cursor: pointer;
+	&:disabled {
+		cursor: default;
+		background: $bgElement !important;
+		outline: none;
+		box-shadow: $shadowItem;
+		.btn__text-container {
+			border: none;
+		}
+		&:hover {
+			background: $bgElement;
+			outline: none;
+			.btn__text-container {
+				border: none;
+			}
+			&::before,
+			&::after {
+				outline: none;
+
+				&:hover {
+					outline: none;
+				}
+			}
+		}
+	}
 }
 
-// Components
+/* Objects */
+.dropdown {
+	&__list {
+		background: $bgElement;
+		box-shadow: $shadowElement;
+		&__item {
+			background: $colorElement;
+			border: 1px solid $colorElementBorder;
+			box-shadow: $shadowItem;
+			&:hover {
+				background-color: $colorThemeHover;
+				border: 1px solid $colorElementSecondaryHover;
+				color: $textBtn;
+			}
+		}
+	}
+}
 
-// BTN shape variants
+/* Components */
 .btn {
 	&--icon-before {
 		&::before {
@@ -160,43 +204,44 @@
 		box-shadow: $shadowInputBar;
 	}
 }
-.gif-options {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	&__header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	&__content {
-		border: 1px dotted transparent;
-		&__action &__action__inner {
-			border: 1px dotted transparent;
+.gif {
+	&-options {
+		background: $bgElement;
+		box-shadow: $shadowElement;
+		&__header {
+			background: $gradient;
+			color: $textWhite;
 		}
-		&:hover {
-			border: 1px dotted $textDark;
-			.gif-options__content__action {
-				.gif-options__content__action__inner {
-					border: 1px dotted $textDark;
+		&__content {
+			border: 1px dotted transparent;
+			&__action &__action__inner {
+				border: 1px dotted transparent;
+			}
+			&:hover {
+				border: 1px dotted $textDark;
+				.gif-options__content__action {
+					.gif-options__content__action__inner {
+						border: 1px dotted $textDark;
+					}
 				}
 			}
 		}
 	}
-}
-.gif-simple {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	&__header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	&__content__img {
-		border: 1px solid $bgElement;
-		&:hover {
-			border: 1px dotted $textDark;
+	&-simple {
+		background: $bgElement;
+		box-shadow: $shadowElement;
+		&__header {
+			background: $gradient;
+			color: $textWhite;
+		}
+		&__content__img {
+			border: 1px solid $bgElement;
+			&:hover {
+				border: 1px dotted $textDark;
+			}
 		}
 	}
 }
-
 .window-element {
 	background: $bgElement;
 	box-shadow: $shadowElement;
@@ -204,134 +249,95 @@
 		background: $gradient;
 		color: $textWhite;
 	}
-	.video-element {
-		@extend .loading-animation;
-		border: 1px solid $colorInputBorder;
-		box-shadow: $shadowInputBar;
-	}
-	.video-preview-img {
-		@extend .loading-animation;
-		border: 1px solid $colorInputBorder;
-		box-shadow: $shadowInputBar;
-	}
-	.stage5 {
-		background: $textWhite;
-		border: 1px solid $colorInputBorder;
-		box-shadow: $shadowInputBar;
-	}
-	.stage6 {
-		.img-container {
-			@extend .stage5;
+	&__content {
+		&__video-element {
+			@extend .loading-animation;
+			border: 1px solid $colorInputBorder;
+			box-shadow: $shadowInputBar;
 		}
-	}
-	.stage7 {
-		.img-container {
-			@extend .stage5;
+		&--stage5 {
+			background: $textWhite;
+			border: 1px solid $colorInputBorder;
+			box-shadow: $shadowInputBar;
 		}
-	}
-}
-.loading-bar-container {
-	.loading-bar {
-		background: $textClear;
-		box-shadow: $shadowLoadingBar;
-		.bar {
-			background: $colorPrimary;
-		}
-		.progress-block {
-			background-color: $colorPrimary;
-		}
-		.empty {
-			background-color: $colorInputBorder;
-		}
-	}
-}
-
-// General element styles
-body {
-	background-color: $colorSecondary;
-}
-h1 {
-	color: $textWhite;
-}
-p {
-	color: $textDark;
-}
-
-button {
-	background-color: transparent;
-	cursor: pointer;
-	&:disabled {
-		cursor: default;
-		background: $bgElement !important;
-		outline: none;
-		box-shadow: $shadowItem;
-		.btn__text-container {
-			border: none;
-		}
-		&:hover {
-			background: $bgElement;
-			outline: none;
-			.btn__text-container {
-				border: none;
-			}
-			&::before,
-			&::after {
-				outline: none;
-
-				&:hover {
-					outline: none;
+		&--stage6 {
+			.img-container {
+				background: $textWhite;
+				border: 1px solid $colorInputBorder;
+				box-shadow: $shadowInputBar;
+				.video-preview-img {
+					@extend .loading-animation;
+					border: 1px solid $colorInputBorder;
+					box-shadow: $shadowInputBar;
 				}
 			}
 		}
+		&--stage7 {
+			.img-container {
+				background: $textWhite;
+				border: 1px solid $colorInputBorder;
+				box-shadow: $shadowInputBar;
+			}
+		}
+	}
+}
+.loading-bar {
+	&__container {
+		background: $textClear;
+		box-shadow: $shadowLoadingBar;
+		&__progress-block {
+			background-color: $colorPrimary;
+			&--empty {
+				background-color: $colorInputBorder;
+			}
+		}
 	}
 }
 
-// Page Specific Sections
+/* Page Specific Sections */
 .header {
 	background: $gradient;
 	box-shadow: 0 1px 0 0 $textDark;
 }
-
-.dropdown-list {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	.dropdown-list-item {
-		background: $colorElement;
-		border: 1px solid $colorElementBorder;
-		box-shadow: $shadowItem;
-		&:hover {
-			background-color: $colorThemeHover;
-			border: 1px solid $colorElementSecondaryHover;
-			color: $textBtn;
-		}
-	}
-}
-.search-box {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	.search-header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	.search-form {
+.search {
+	&__box {
 		background: $bgElement;
 		box-shadow: $shadowElement;
-		input:placeholder-shown ~ button[type="submit"] {
-			border: 1px solid $colorElementBorder;
-			box-shadow: $shadowItem;
-			.btn__text-container {
-				border: 1px solid $bgElement;
-				color: $textBtnDisabled;
+		&__form {
+			background: $bgElement;
+			box-shadow: $shadowElement;
+			&__header {
+				background: $gradient;
+				color: $textWhite;
+			}
+			input:placeholder-shown ~ button[type="submit"] {
+				border: 1px solid $colorElementBorder;
+				box-shadow: $shadowItem;
+				.btn__text-container {
+					border: 1px solid $bgElement;
+					color: $textBtnDisabled;
+				}
 			}
 		}
-	}
-	.search-suggestions {
-		background: $bgElement;
-		box-shadow: $shadowElement;
+		&__suggestions {
+			background: $bgElement;
+			box-shadow: $shadowElement;
+		}
 	}
 }
 
-// Animations
+/* Utility */
+.underline {
+	border-bottom-color: $textDark;
+}
+.loading-animation {
+	background: $gradient;
+	background-size: 400% 400%;
+	animation: loading-animation 2s ease-in-out infinite;
+	color: transparent;
+}
+
+/* Animations */
 @keyframes loading-animation {
 	0% {
 		background-position: 0% 88%;
