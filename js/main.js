@@ -34,6 +34,7 @@ const navBar = (() => {
 	// Cache DOM
 	const $navItems = document.querySelector("#navbar-items");
 	const $homeButton = document.querySelector("#home-button");
+	const $returnArrow = document.querySelector("#return-arrow");
 
 	const $themeSelector = document.querySelector("#theme-selector");
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -1038,7 +1039,7 @@ function newElement(type, element = "", ratio = "") {
 			$container.innerHTML = `<button type="button" class="btn btn--tag search-tag"><span class="btn__text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 		case "separator":
-			$container.innerHTML = `<div class="separator-container"><img class="loading-gif" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
+			$container.innerHTML = `<div class="separator"><img class="separator__loading-img" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
 			return $container.firstChild;
 	}
 }

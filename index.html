@@ -45,6 +45,12 @@
 		<nav class="navbar container">
 			<button class="navbar__brand-container close-window" id="home-button">
 				<div class="navbar__brand-container__brand"></div>
+				<img
+					class="navbar__brand-container__return-arrow hidden"
+					src="./assets/icons/arrow.svg"
+					alt="go back"
+					id="return-arrow"
+				/>
 			</button>
 			<div class="navbar__options" id="navbar-items">
 				<button class="navbar__options__item btn btn--primary" id="btn-create-gif">
@@ -143,13 +149,13 @@
 						<button class="window-element__header__close-btn close-window"></button>
 					</div>
 					<div class="window-element__content">
-						<video id="video-box" class="window-element__content__video-element"></video>
+						<video class="window-element__content__video-element" id="video-box"></video>
 						<div class="window-element__content__options">
 							<button class="btn btn--primary btn--icon-before icon-camera" id="start-recording">
 								<span class="btn__text-container">Capturar</span>
 							</button>
 						</div>
-						<div class="window-element__content__options window-element__content__options--stage3 hidden" id="stage3">
+						<div class="window-element__content__options gif-creation--stage3 hidden" id="stage3">
 							<div class="window-element__content__options__timer-container">
 								<div id="timer" class="input-bar input-bar--sm window-element__content__options__timer"></div>
 								<div class="loading-bar hidden" id="timer-loading-bar">
@@ -217,7 +223,7 @@
 								<span class="btn__text-container">Listo</span>
 							</button>
 							<div class="hidden" id="stage4">
-								<button class="btn btn--secondary " id="redo-recording">
+								<button class="btn btn--secondary" id="redo-recording">
 									<span class="btn__text-container">Repetir Captura</span></button
 								><button class="btn btn--primary gif-upload" id="upload-gif">
 									<span class="btn__text-container">Subir Guifo</span>
@@ -226,14 +232,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-element--lg " id="stage5">
+				<div class="window-element window-element--lg hidden" id="stage5">
 					<div class="window-element__header">
 						Subiendo Guifo
 						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="window-element__content window-element__content--stage5" id="stage5">
-						<img class="window-element__content--stage5__img" src="./assets/img/globe_img.png" alt="Globe" />
-						<h2 class="window-element__content--stage5__title">Estamos subiendo tu guifo...</h2>
+					<div class="window-element__content gif-creation--stage5" id="stage5">
+						<img class="gif-creation--stage5__img" src="./assets/img/globe_img.png" alt="Globe" />
+						<h2 class="gif-creation--stage5__title">Estamos subiendo tu guifo...</h2>
 						<div class="loading-bar">
 							<div class="loading-bar__container" id="upload-loading-bar">
 								<span
@@ -307,18 +313,18 @@
 						<h3>Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos</h3>
 					</div>
 				</div>
-				<div class="window-element window-element--md " id="stage6">
+				<div class="window-element window-element--md hidden" id="stage6">
 					<div class="window-element__header">
 						Guifo Subido con Éxito
 						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="window-element__content window-element__content--stage6" id="stage6">
-						<div class="window-element__content--split window-element__content--stage6--split">
+					<div class="window-element__content gif-creation--stage6" id="stage6">
+						<div class="window-element__content--split gif-creation--stage6--split">
 							<div class="img-container">
 								<img src="" alt="" id="gif-preview" class="video-preview-img" />
 							</div>
 							<div>
-								<div class="options-container">
+								<div class="gif-creation--stage6__options-container">
 									<h2>Guifo creado con éxito</h2>
 									<button class="btn btn--secondary btn--full-width" id="copy-link">
 										<span class="btn__text-container">Copiar Enlace Guifo</span>
@@ -336,12 +342,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-element--md " id="stage7">
+				<div class="window-element window-element--md hidden" id="stage7">
 					<div class="window-element__header">
 						Algo Salió Mal
 						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="window-element__content window-element__content--stage7">
+					<div class="window-element__content gif-creation--stage7">
 						<div class="img-container">
 							<img src="./assets/img/oops.jpg" alt="Error, algo salió mal" id="error-img" />
 						</div>
@@ -392,9 +398,6 @@
 				</div>
 			</dialog>
 		</aside>
-		<div id="test">
-			<ul id="test-list"></ul>
-		</div>
 		<script src="./js/main.js"></script>
 		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 	</body>

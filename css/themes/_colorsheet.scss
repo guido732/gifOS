@@ -54,6 +54,21 @@ button {
 		}
 	}
 }
+.window-element {
+	background: $bgElement;
+	box-shadow: $shadowElement;
+	&__header {
+		background: $gradient;
+		color: $textWhite;
+	}
+	&__content {
+		&__video-element {
+			@extend .loading-animation;
+			border: 1px solid $colorInputBorder;
+			box-shadow: $shadowInputBar;
+		}
+	}
+}
 
 /* Components */
 .btn {
@@ -242,45 +257,6 @@ button {
 		}
 	}
 }
-.window-element {
-	background: $bgElement;
-	box-shadow: $shadowElement;
-	&__header {
-		background: $gradient;
-		color: $textWhite;
-	}
-	&__content {
-		&__video-element {
-			@extend .loading-animation;
-			border: 1px solid $colorInputBorder;
-			box-shadow: $shadowInputBar;
-		}
-		&--stage5 {
-			background: $textWhite;
-			border: 1px solid $colorInputBorder;
-			box-shadow: $shadowInputBar;
-		}
-		&--stage6 {
-			.img-container {
-				background: $textWhite;
-				border: 1px solid $colorInputBorder;
-				box-shadow: $shadowInputBar;
-				.video-preview-img {
-					@extend .loading-animation;
-					border: 1px solid $colorInputBorder;
-					box-shadow: $shadowInputBar;
-				}
-			}
-		}
-		&--stage7 {
-			.img-container {
-				background: $textWhite;
-				border: 1px solid $colorInputBorder;
-				box-shadow: $shadowInputBar;
-			}
-		}
-	}
-}
 .loading-bar {
 	&__container {
 		background: $textClear;
@@ -322,6 +298,32 @@ button {
 		&__suggestions {
 			background: $bgElement;
 			box-shadow: $shadowElement;
+		}
+	}
+}
+.gif-creation {
+	&--stage5 {
+		background: $textWhite;
+		border: 1px solid $colorInputBorder;
+		box-shadow: $shadowInputBar;
+	}
+	&--stage6 {
+		.img-container {
+			background: $textWhite;
+			border: 1px solid $colorInputBorder;
+			box-shadow: $shadowInputBar;
+			.video-preview-img {
+				@extend .loading-animation;
+				border: 1px solid $colorInputBorder;
+				box-shadow: $shadowInputBar;
+			}
+		}
+	}
+	&--stage7 {
+		.img-container {
+			background: $textWhite;
+			border: 1px solid $colorInputBorder;
+			box-shadow: $shadowInputBar;
 		}
 	}
 }
