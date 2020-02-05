@@ -111,14 +111,6 @@ section {
 			flex-flow: row wrap;
 			justify-content: flex-end;
 			width: 100%;
-			&__timer-container {
-				display: flex;
-				justify-content: flex-start;
-				align-items: center;
-			}
-			&__timer {
-				margin-right: 1.5rem;
-			}
 			.btn--secondary {
 				margin-right: 1rem;
 			}
@@ -171,7 +163,7 @@ section {
 		}
 	}
 }
-
+// window-element__content__options
 /* Components */
 .btn {
 	display: inline-block;
@@ -384,54 +376,51 @@ section {
 		}
 	}
 }
-.popup-container {
+.popup {
 	width: 100vw;
 	height: 100vh;
 	@include flexCenter(column, nowrap);
 	position: fixed;
 	top: 0;
 	left: 0;
-	// margin: auto;
-	&.hidden {
-		z-index: -5;
-	}
-	.popup-window {
+	&__window {
+		z-index: 5;
 		display: block;
 		position: relative;
-		border: none;
-		margin: 0;
-		// top: 50%;
-		// left: 50%;
-		// transform: translate(-50%, -50%);
 		min-width: 20rem;
 		max-width: 90%;
-		z-index: 5;
-		.popup-content {
+		margin: 0;
+		border: none;
+		&__content {
 			padding: 1rem;
-		}
-		.content-main {
-			@include flexCenter(row, nowrap);
-			justify-content: flex-start;
-			.popup-icon {
-				margin-right: 1rem;
-				flex-shrink: 0;
-				width: 2rem;
-				height: 2rem;
-				display: block;
-				background: center no-repeat url(../assets/icons/window_img.png);
+			&__main {
+				margin-bottom: 1rem;
+				@include flexCenter(row, nowrap);
+				justify-content: flex-start;
+				&__popup-icon {
+					margin-right: 1rem;
+					flex-shrink: 0;
+					width: 2rem;
+					height: 2rem;
+					display: block;
+					background: center no-repeat url(../assets/icons/window_img.png);
+				}
+				.error {
+					background: center no-repeat url(../assets/icons/msg_error.png);
+				}
+				.warning {
+					background: center no-repeat url(../assets/icons/msg_warning.png);
+				}
 			}
-			.error {
-				background: center no-repeat url(../assets/icons/msg_error.png);
-			}
-			.warning {
-				background: center no-repeat url(../assets/icons/msg_warning.png);
+			&__options {
+				margin-top: 1rem;
+				@include flexCenter();
+				justify-content: flex-end;
 			}
 		}
-		.popup-actions {
-			margin-top: 1rem;
-			@include flexCenter();
-			justify-content: flex-end;
-		}
+	}
+	&.hidden {
+		z-index: -5;
 	}
 }
 
@@ -450,8 +439,8 @@ section {
 	justify-content: space-between;
 	&__brand-container {
 		position: relative;
+		margin-bottom: 1rem;
 		&__brand {
-			margin-bottom: 1rem;
 			width: 6.25rem;
 			height: 4rem;
 			background-size: auto;
@@ -460,9 +449,9 @@ section {
 		}
 		&__return-arrow {
 			position: absolute;
-			left: -2.5rem;
+			left: -1.5rem;
 			top: 50%;
-			transform: translateY(-50%);
+			transform: translate(-50%, -50%);
 		}
 	}
 	&__options {
@@ -556,6 +545,14 @@ section {
 		flex-flow: row wrap;
 		justify-content: space-between;
 		align-items: center;
+		&__timer-container {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+		}
+		&__timer {
+			margin-right: 1.5rem;
+		}
 	}
 	&--stage5 {
 		@include flexCenter(column, nowrap);

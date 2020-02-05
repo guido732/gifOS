@@ -156,8 +156,8 @@
 							</button>
 						</div>
 						<div class="window-element__content__options gif-creation--stage3 hidden" id="stage3">
-							<div class="window-element__content__options__timer-container">
-								<div id="timer" class="input-bar input-bar--sm window-element__content__options__timer"></div>
+							<div class="gif-creation--stage3__timer-container">
+								<div class="input-bar input-bar--sm gif-creation--stage3__timer" id="timer"></div>
 								<div class="loading-bar hidden" id="timer-loading-bar">
 									<button class="loading-bar__option btn btn--primary btn--only-icon" id="btn-play-gif">
 										<span class="btn__text-container">
@@ -369,15 +369,15 @@
 				<div class="gif-grid--large" id="my-gifs-grid"></div>
 			</section>
 		</main>
-		<aside class="popup-container hidden" id="popup-window">
-			<dialog class="popup-window window-element">
-				<div class="window-element__header popup-header" id="popup-header">
+		<aside class="popup hidden" id="popup-window">
+			<dialog class="popup__window window-element ">
+				<div class="popup__header window-element__header" id="popup-header">
 					<button class="window-element__header__close-btn close-window" id="popup-close"></button>
 					<span id="popup-header-text">Fatal Error!</span>
 				</div>
-				<div class="popup-content">
-					<div class="content-main">
-						<div class="popup-icon" id="popup-icon"></div>
+				<div class="popup__window__content window-element__content">
+					<div class="popup__window__content__main ">
+						<div class="popup__window__content__main__popup-icon" id="popup-icon"></div>
 						<div class="text-content">
 							<h2 id="popup-title">gifOS has failed miserably!</h2>
 							<p id="popup-message">
@@ -387,7 +387,7 @@
 							</p>
 						</div>
 					</div>
-					<div class="popup-actions">
+					<div class="popup-popup__window__content__options window-element__content__options">
 						<button class="btn btn--secondary close-window hidden" id="popup-secondary">
 							<span class="btn__text-container">Cancelar</span>
 						</button>
