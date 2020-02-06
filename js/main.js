@@ -32,8 +32,9 @@ const navBar = (() => {
 	const colorThemes = ["sailor_day", "sailor_night"];
 
 	// Cache DOM
-	const $navItems = document.querySelector("#nav-items");
+	const $navItems = document.querySelector("#navbar-items");
 	const $homeButton = document.querySelector("#home-button");
+	const $returnArrow = document.querySelector("#return-arrow");
 
 	const $themeSelector = document.querySelector("#theme-selector");
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -46,6 +47,8 @@ const navBar = (() => {
 
 	// Bind events
 	events.on("pageLoad", loadColorTheme);
+	events.on("gotoHome", () => hideElements($returnArrow));
+	events.on("createGifEnded", () => hideElements($returnArrow));
 	$homeButton.addEventListener("click", () => {
 		// Takes user to default window view
 		events.emit("gotoHome");
@@ -89,6 +92,7 @@ const navBar = (() => {
 	}
 	function showCreateGifSection() {
 		events.emit("createGif");
+		showElements($returnArrow);
 		hideElements($navItems);
 	}
 	function mount() {
@@ -186,7 +190,7 @@ const searchSection = (() => {
 				  })
 				: hideElements($searchSuggestions);
 
-			const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+			const $searchSuggestionsButtons = document.querySelectorAll(".btn--search-suggestion");
 			$searchSuggestionsButtons.forEach(element => {
 				element.onclick = () => {
 					handleSearchFunctionality(element.innerText);
@@ -280,7 +284,7 @@ const suggestionsSection = (() => {
 			`https://api.giphy.com/v1/gifs/search?q=${suggestionTopics[suggestion]}&api_key=${APIkey}&limit=${limit}`
 		);
 		gifsSuggestions.data.forEach(gif => {
-			$suggestedGifs.append(newElement("window", gif));
+			$suggestedGifs.append(newElement("gif-options", gif));
 		});
 		events.emit("imagesToLazyLoad");
 	}
@@ -376,8 +380,10 @@ const createGifsSection = (() => {
 	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
-	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
-	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
+	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .loading-bar__container__progress-block");
+	const $uploadProgressBlocks = document.querySelectorAll(
+		"#upload-loading-bar .loading-bar__container__progress-block"
+	);
 
 	// Stopwatch + Loadingbar generator functions
 	const Stopwatch = (elem, options) => {
@@ -461,7 +467,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -479,7 +485,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -487,12 +493,12 @@ const createGifsSection = (() => {
 			clearInterval(interval);
 			progress = 0;
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		function clearProgress() {
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		// Public Functions
@@ -619,7 +625,7 @@ const createGifsSection = (() => {
 	}
 	function unmount() {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
-		showElements(document.querySelector(".nav-item-container"));
+		showElements(document.querySelector(".navbar__options"));
 	}
 	function handlePlayBar(loadingBar) {
 		if (playing) {
@@ -743,7 +749,7 @@ const myGifsSection = (() => {
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
-	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 	// Bind events
 	events.on("myGifs", mount);
@@ -790,12 +796,12 @@ const myGifsSection = (() => {
 		}
 	}
 	function parseDeleteButtons() {
-		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 		// Gets gif ID through the (closest) image URL
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton
-				.closest(".trend-item")
+				.closest(".gif-simple")
 				.querySelector("img")
 				.getAttribute("data-src");
 			const localStorageGifID = localGifElementURL.split("/")[4];
@@ -963,20 +969,20 @@ function newElement(type, element = "", ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
 	const $container = document.createElement("div");
 	switch (type) {
-		case "window":
-			$container.innerHTML = `<div class="window-item ${ratio}">
-			<div class="wi-header">
+		case "gif-options":
+			$container.innerHTML = `<div class="gif-options ${ratio}">
+			<div class="gif-options__header">
 					${element.title}
-				<button class="remove-element"></button>
+				<button class="gif-options__header__close-btn"></button>
 			</div>
-			<div class="img-container">
-			<img 
-				class="lazy img-element loading-animation" 
-				src="" 
-				data-src="${element.images.original.url}"
-				data-srcset="${element.images.original.url}"
-				alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
+			<div class="gif-options__content">
+				<img 
+					class="lazy gif-options__content__img loading-animation" 
+					src="" 
+					data-src="${element.images.original.url}"
+					data-srcset="${element.images.original.url}"
+					alt="${element.title}" /> 	
+					<a href="${element.bitly_url}" target="_blank" type="button" class="btn btn--tag gif-options__content__action"><span class="btn__text-container gif-options__content__action__inner" >Ver más...</span></a>
 			</div>
 		</div>`;
 			return $container.firstChild;
@@ -987,17 +993,17 @@ function newElement(type, element = "", ratio = "") {
 			titleToArray.forEach(word => {
 				titleArrayToTags += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
 						/>
 					</a>
-					<div class="trend-header">
+					<div class="gif-simple__header">
 						${titleArrayToTags}
 					</div>
 			</div>
@@ -1010,33 +1016,33 @@ function newElement(type, element = "", ratio = "") {
 			titleToArray2.forEach(word => {
 				titleArrayToTags2 += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 					/>
 				</a>
-				<div class="trend-header">						
-					<button class="remove-element"></button>
+				<div class="gif-simple__header">						
+					<button class="gif-simple__header__close-btn"></button>
 					${titleArrayToTags2}
 				</div>
 			</div>
 		</div>`;
 			return $container.firstChild;
 		case "searchTitle":
-			$container.innerHTML = `<button class="search-element btn-search-suggestion">
-		<span>${element.title}</span>
+			$container.innerHTML = `<button class="search-element btn btn--search-suggestion">
+		<span class="btn__text-container">${element.title}</span>
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn btn--tag search-tag"><span class="btn__text-container">${element.title}</span></button>`;
 			return $container.firstChild;
 		case "separator":
-			$container.innerHTML = `<div class="separator-container"><img class="loading-gif" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
+			$container.innerHTML = `<div class="separator"><img class="separator__loading-img" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
 			return $container.firstChild;
 	}
 }
@@ -1104,73 +1110,3 @@ function lazyLoadImages() {
 	closeOpenedElements -> event launched when clicking on body of page or pressing scape funciton to close suggestions and modals
 
 */
-
-/* const paginator = (totalItems = 0, currentPage = 1, pageSize = 30, maxPages = 10) => {
-	// calculate total pages
-	let totalPages = Math.ceil(totalItems / pageSize);
-
-	// ensure current page isn't out of range
-	if (currentPage < 1) {
-		currentPage = 1;
-	} else if (currentPage > totalPages) {
-		currentPage = totalPages;
-	}
-
-	let startPage, endPage;
-	if (totalPages <= maxPages) {
-		// total pages less than max so show all pages
-		startPage = 1;
-		endPage = totalPages;
-	} else {
-		// total pages more than max so calculate start and end pages
-		let maxPagesBeforeCurrentPage = Math.floor(maxPages / 2);
-		let maxPagesAfterCurrentPage = Math.ceil(maxPages / 2) - 1;
-		if (currentPage <= maxPagesBeforeCurrentPage) {
-			// current page near the start
-			startPage = 1;
-			endPage = maxPages;
-		} else if (currentPage + maxPagesAfterCurrentPage >= totalPages) {
-			// current page near the end
-			startPage = totalPages - maxPages + 1;
-			endPage = totalPages;
-		} else {
-			// current page somewhere in the middle
-			startPage = currentPage - maxPagesBeforeCurrentPage;
-			endPage = currentPage + maxPagesAfterCurrentPage;
-		}
-	}
-
-	// calculate start and end item indexes
-	let startIndex = (currentPage - 1) * pageSize;
-	let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
-
-	// create an array of pages to ng-repeat in the pager control
-	let pages = Array.from(Array(endPage + 1 - startPage).keys()).map(i => startPage + i);
-
-	// return object with all pager properties required by the view
-	return {
-		totalItems: totalItems,
-		currentPage: currentPage,
-		pageSize: pageSize,
-		totalPages: totalPages,
-		startPage: startPage,
-		endPage: endPage,
-		startIndex: startIndex,
-		endIndex: endIndex,
-		pages: pages
-	};
-};
-const itemsToPaginate = Array.from(Array(150).keys()).map(i => ({ id: i + 1, name: "Item " + (i + 1) }));
-const state = {
-	itemsToPaginate: itemsToPaginate,
-	pageOfItems: []
-};
-let fakePagination = paginator(state.itemsToPaginate.length);
-
-state.pageOfItems = [];
-console.log(state.pageOfItems);
-
-for (let i = fakePagination.startIndex; i <= fakePagination.endIndex; i++) {
-	state.pageOfItems.push(itemsToPaginate[i]);
-}
-console.log(state.pageOfItems); */

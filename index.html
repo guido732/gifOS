@@ -6,7 +6,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>gifOS - Gifs Gifs Gifs!</title>
 
-		<!-- TODO Favicon -->
+		<!-- Favicon -->
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="./assets/img/favicon/apple-touch-icon-57x57.png" />
 		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="./assets/img/favicon/apple-touch-icon-114x114.png" />
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="./assets/img/favicon/apple-touch-icon-72x72.png" />
@@ -38,79 +38,83 @@
 	</head>
 	<body>
 		<header class="header">
-			<h1>
+			<h1 class="header__title">
 				¡Bienvenidos/as a Guifos.com! ——————Donde los gifs están.////// Número de visitas: 12.765.803
 			</h1>
 		</header>
-		<nav class="container navbar">
-			<button id="home-button" class="close-window">
-				<div class="brand-container"></div>
+		<nav class="navbar container">
+			<button class="navbar__brand-container close-window" id="home-button">
+				<div class="navbar__brand-container__brand"></div>
+				<img
+					class="navbar__brand-container__return-arrow hidden"
+					src="./assets/icons/arrow.svg"
+					alt="go back"
+					id="return-arrow"
+				/>
 			</button>
-			<div class="nav-item-container" id="nav-items">
-				<button class="nav-item btn-primary" id="btn-create-gif">
-					<span class="btn-text-container">Crear Guifos</span>
+			<div class="navbar__options" id="navbar-items">
+				<button class="navbar__options__item btn btn--primary" id="btn-create-gif">
+					<span class="btn__text-container">Crear Guifos</span>
 				</button>
-				<div class="nav-item dropdown-container-outer">
-					<button class=" btn-primary btn-primary--icon-after icon-dropdown" id="theme-selector">
-						<span class="btn-text-container">Elegir Tema</span>
+				<div class="navbar__options__item dropdown">
+					<button class=" btn btn--primary btn--icon-after icon-dropdown" id="theme-selector">
+						<span class="btn__text-container">Elegir Tema</span>
 					</button>
-					<div class="dropdown-list hidden" id="dropdown-list">
-						<a href="#" class="dropdown-list-item color-theme-option">Sailor Day</a>
-						<a href="#" class="dropdown-list-item color-theme-option">Sailor Night</a>
+					<div class="dropdown__list hidden" id="dropdown-list">
+						<a href="#" class="dropdown__list__item color-theme-option">Sailor Day</a>
+						<a href="#" class="dropdown__list__item color-theme-option">Sailor Night</a>
 					</div>
 				</div>
-				<button href="#" class="nav-item btn-link" id="btn-my-gifs"><span class="underline">M</span>is Guifos</button>
+				<button href="#" class="navbar__options__item btn btn--link" id="btn-my-gifs">
+					<span class="underline">M</span>is Guifos
+				</button>
 			</div>
 		</nav>
 		<main class="container">
-			<section class="search-container hidden" id="search-section">
-				<div class="search-box">
-					<form name="searchform" class="search-form">
-						<div class="search-header">
-							<!-- ! review - header bottom border color -->
+			<section class="search hidden" id="search-section">
+				<div class="search__box">
+					<form class="search__box__form" name="searchform">
+						<div class="search__box__form__header">
 							Buscar
 						</div>
-						<div class="search-bar-container">
-							<!-- TODO boton de Limpiar búsqueda -->
+						<div class="search__box__form__bar-container">
 							<input
+								class="input-bar input-bar--lg"
 								type="search"
-								class="input-bar input-bar-mono-lg"
 								id="search-bar"
 								placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
 								autocomplete="off"
 							/>
-							<button type="submit" id="search-button" disabled class="btn-primary submit">
-								<span class="btn-text-container icon-within icon-search">Buscar</span>
+							<button type="submit" id="search-button" disabled class="btn btn--primary submit">
+								<span class="btn__text-container btn__icon-within icon-search">Buscar</span>
 							</button>
 						</div>
 					</form>
-					<div class="search-suggestions hidden" id="search-suggestions">
-						<!-- ! review - width of elements -->
-					</div>
+					<div class="search__box__suggestions hidden" id="search-suggestions"></div>
 				</div>
-				<div class="search-tags hidden" id="search-tags"></div>
+				<div class="search__tags hidden" id="search-tags"></div>
 			</section>
 			<section class="search-results hidden" id="search-results-section">
 				<div class="input-bar" id="search-results-input">Resultados de búsqueda:</div>
-				<div class="result-container" id="search-result-container"></div>
+				<div class="gif-grid--large" id="search-result-container"></div>
 			</section>
 			<section class="suggestions hidden" id="suggestions-section">
 				<div class="input-bar">Hoy te sugerimos:</div>
-				<div class="result-container" id="suggested-container"></div>
+				<div class="gif-grid--small" id="suggested-container"></div>
 			</section>
 			<section class="trends hidden" id="trends-section">
 				<div class="input-bar">Tendencias:</div>
-				<div class="trend-grid" id="trend-grid"></div>
+				<div class="gif-grid--large" id="trend-grid"></div>
 			</section>
 			<section class="create-gif-section hidden" id="create-gif-section">
-				<div class="window-element window-size-md" id="stage1">
-					<div class="gradient-header">
+				<div class="window-element window-element--md" id="stage1">
+					<div class="window-element__header">
 						Crear Guifos
 					</div>
-					<div class="content">
-						<div class="content-split">
-							<img src="./assets/icons/window_img.png" alt="Window" />
-							<div class="text-content">
+					<div class="window-element__content">
+						<div class="window-element__content--split">
+							<img class="window-element__content--split__img" src="./assets/icons/window_img.png" alt="Window" />
+							<div class="window-element__content--split__text">
 								<h2>Aquí podrás crear tus propios guifos</h2>
 								<p>
 									Crear tu <strong><em>guifo</em></strong> es muy fácil, graba cualquier imagen con tu cámara y obtén
@@ -127,159 +131,234 @@
 								</p>
 							</div>
 						</div>
-						<div class="flex-end-container">
-							<button class="btn-secondary close-window" id="create-gif-cancel">
-								<span class="btn-text-container">Cancelar</span>
+						<div class="window-element__content__options">
+							<button class="btn btn--secondary close-window" id="create-gif-cancel">
+								<span class="btn__text-container">Cancelar</span>
 							</button>
-							<button class="btn-primary" id="create-gif-continue">
-								<span class="btn-text-container">Comenzar</span>
+							<button class="btn btn--primary" id="create-gif-continue">
+								<span class="btn__text-container">Comenzar</span>
 							</button>
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-lg hidden" id="stage2">
-					<div class="gradient-header">
+				<div class="window-element window-element--lg hidden" id="stage2">
+					<div class="window-element__header">
 						<span id="create-gif-section-header">
 							Un Chequeo Antes de Empezar
 						</span>
-						<button class="remove-element close-window"></button>
+						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="video-record-container content">
-						<video id="video-box" class="video-element"></video>
-						<div class="flex-end-container">
-							<button class="btn-primary btn-primary--icon-before icon-camera" id="start-recording">
-								<span class="btn-text-container">Capturar</span>
+					<div class="window-element__content">
+						<video class="window-element__content__video-element" id="video-box"></video>
+						<div class="window-element__content__options">
+							<button class="btn btn--primary btn--icon-before icon-camera" id="start-recording">
+								<span class="btn__text-container">Capturar</span>
 							</button>
 						</div>
-						<div class="stage3-container hidden" id="stage3">
-							<div class="timer-container">
-								<div id="timer" class="input-bar input-bar-mono-sm timer"></div>
-								<div class="loading-bar-container hidden" id="timer-loading-bar">
-									<button class="btn-primary btn-only-icon" id="btn-play-gif">
-										<span class="btn-text-container">
+						<div class="window-element__content__options gif-creation--stage3 hidden" id="stage3">
+							<div class="gif-creation--stage3__timer-container">
+								<div class="input-bar input-bar--sm gif-creation--stage3__timer" id="timer"></div>
+								<div class="loading-bar hidden" id="timer-loading-bar">
+									<button class="loading-bar__option btn btn--primary btn--only-icon" id="btn-play-gif">
+										<span class="btn__text-container">
 											&#9654;
 										</span>
 									</button>
-									<div class="loading-bar" id="loading-bar">
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
-										<span class="progress-block empty"></span>
+									<div class="loading-bar__container" id="loading-bar">
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
+										<span
+											class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+										></span>
 									</div>
 								</div>
 							</div>
-							<button
-								class="btn-primary btn-recording btn-primary--icon-before icon-recording hidden"
-								id="stop-recording"
-							>
-								<span class="btn-text-container">Listo</span>
+							<button class="btn btn--recording btn--icon-before icon-recording hidden" id="stop-recording">
+								<span class="btn__text-container">Listo</span>
 							</button>
 							<div class="hidden" id="stage4">
-								<button class="btn-secondary " id="redo-recording">
-									<span class="btn-text-container">Repetir Captura</span></button
-								><button class="btn-primary gif-upload" id="upload-gif">
-									<span class="btn-text-container">Subir Guifo</span>
+								<button class="btn btn--secondary" id="redo-recording">
+									<span class="btn__text-container">Repetir Captura</span></button
+								><button class="btn btn--primary gif-upload" id="upload-gif">
+									<span class="btn__text-container">Subir Guifo</span>
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-lg hidden" id="stage5">
-					<div class="gradient-header">
+				<div class="window-element window-element--lg hidden" id="stage5">
+					<div class="window-element__header">
 						Subiendo Guifo
-						<button class="remove-element close-window"></button>
+						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="content stage5" id="stage5">
-						<img src="./assets/img/globe_img.png" alt="Globe" />
-						<h2>Estamos subiendo tu guifo...</h2>
-						<div class="loading-bar-container">
-							<div class="loading-bar" id="upload-loading-bar">
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
-								<span class="progress-block empty"></span>
+					<div class="window-element__content gif-creation--stage5" id="stage5">
+						<img class="gif-creation--stage5__img" src="./assets/img/globe_img.png" alt="Globe" />
+						<h2 class="gif-creation--stage5__title">Estamos subiendo tu guifo...</h2>
+						<div class="loading-bar">
+							<div class="loading-bar__container" id="upload-loading-bar">
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
+								<span
+									class="loading-bar__container__progress-block loading-bar__container__progress-block--empty"
+								></span>
 							</div>
 						</div>
 						<h3>Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos</h3>
 					</div>
 				</div>
-				<div class="window-element window-size-md hidden" id="stage6">
-					<div class="gradient-header">
+				<div class="window-element window-element--md hidden" id="stage6">
+					<div class="window-element__header">
 						Guifo Subido con Éxito
-						<button class="remove-element close-window"></button>
+						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="content stage6" id="stage6">
-						<div class="content-split">
+					<div class="window-element__content gif-creation--stage6" id="stage6">
+						<div class="window-element__content--split gif-creation--stage6--split">
 							<div class="img-container">
 								<img src="" alt="" id="gif-preview" class="video-preview-img" />
 							</div>
 							<div>
-								<div class="options-container">
+								<div class="gif-creation--stage6__options-container">
 									<h2>Guifo creado con éxito</h2>
-									<button class="btn-secondary btn-full-width" id="copy-link">
-										<span class="btn-text-container">Copiar Enlace Guifo</span>
+									<button class="btn btn--secondary btn--full-width" id="copy-link">
+										<span class="btn__text-container">Copiar Enlace Guifo</span>
 									</button>
-									<button class="btn-secondary btn-full-width" id="download-gif">
-										<span class="btn-text-container">Descargar Guifo</span>
+									<button class="btn btn--secondary btn--full-width" id="download-gif">
+										<span class="btn__text-container">Descargar Guifo</span>
 									</button>
 								</div>
 							</div>
 						</div>
-						<div class="flex-end-container">
-							<button class="btn-primary close-window">
-								<span class="btn-text-container">Listo</span>
+						<div class="window-element__content__options">
+							<button class="btn btn--primary close-window">
+								<span class="btn__text-container">Listo</span>
 							</button>
 						</div>
 					</div>
 				</div>
-				<div class="window-element window-size-md hidden" id="stage7">
-					<div class="gradient-header">
+				<div class="window-element window-element--md hidden" id="stage7">
+					<div class="window-element__header">
 						Algo Salió Mal
-						<button class="remove-element close-window"></button>
+						<button class="window-element__header__close-btn close-window"></button>
 					</div>
-					<div class="content stage7" id="stage7">
+					<div class="window-element__content gif-creation--stage7">
 						<div class="img-container">
 							<img src="./assets/img/oops.jpg" alt="Error, algo salió mal" id="error-img" />
 						</div>
 						<h2>Tu Guifo no pudo ser creado</h2>
 						<p id="error-msg"></p>
 						<div class="">
-							<button class="btn-secondary gif-upload" id="retry-upload">
-								<span class="btn-text-container">Reintentar</span>
+							<button class="btn btn--secondary gif-upload" id="retry-upload">
+								<span class="btn__text-container">Reintentar</span>
 							</button>
-							<button class="btn-primary close-window">
-								<span class="btn-text-container">Listo</span>
+							<button class="btn btn--primary close-window">
+								<span class="btn__text-container">Listo</span>
 							</button>
 						</div>
 					</div>
@@ -287,18 +366,18 @@
 			</section>
 			<section class="my-gifs hidden" id="my-gifs-section">
 				<div class="input-bar">Mis guifos:</div>
-				<div class="trend-grid" id="my-gifs-grid"></div>
+				<div class="gif-grid--large" id="my-gifs-grid"></div>
 			</section>
 		</main>
-		<aside class="popup-container hidden" id="popup-window">
-			<dialog class="popup-window window-element">
-				<div class="gradient-header popup-header" id="popup-header">
-					<button class="remove-element close-window" id="popup-close"></button>
+		<aside class="popup hidden" id="popup-window">
+			<dialog class="popup__window window-element ">
+				<div class="popup__header window-element__header" id="popup-header">
+					<button class="window-element__header__close-btn close-window" id="popup-close"></button>
 					<span id="popup-header-text">Fatal Error!</span>
 				</div>
-				<div class="popup-content">
-					<div class="content-main">
-						<div class="popup-icon" id="popup-icon"></div>
+				<div class="popup__window__content window-element__content">
+					<div class="popup__window__content__main ">
+						<div class="popup__window__content__main__popup-icon" id="popup-icon"></div>
 						<div class="text-content">
 							<h2 id="popup-title">gifOS has failed miserably!</h2>
 							<p id="popup-message">
@@ -308,20 +387,17 @@
 							</p>
 						</div>
 					</div>
-					<div class="popup-actions">
-						<button class="btn-secondary close-window hidden" id="popup-secondary">
-							<span class="btn-text-container">Cancelar</span>
+					<div class="popup-popup__window__content__options window-element__content__options">
+						<button class="btn btn--secondary close-window hidden" id="popup-secondary">
+							<span class="btn__text-container">Cancelar</span>
 						</button>
-						<button class="btn-primary" id="popup-primary">
-							<span class="btn-text-container">Aceptar</span>
+						<button class="btn btn--primary" id="popup-primary">
+							<span class="btn__text-container">Aceptar</span>
 						</button>
 					</div>
 				</div>
 			</dialog>
 		</aside>
-		<div id="test">
-			<ul id="test-list"></ul>
-		</div>
 		<script src="./js/main.js"></script>
 		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 	</body>
