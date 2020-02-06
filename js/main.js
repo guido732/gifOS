@@ -653,6 +653,14 @@ const createGifsSection = (() => {
 		document.body.appendChild(tempElement);
 		tempElement.select();
 		document.execCommand("copy");
+		const popupContent = {
+			header: "Éxito!",
+			title: "Enlace copiado al portapapeles!",
+			body: `Se ha copiado el enlace ${tempElement.value} al portapapeles`,
+			hasOptions: false,
+			icon: "success"
+		};
+		events.emit("newPopupDeleteGif", popupContent);
 		console.log("Copied data to clipboard!");
 		document.body.removeChild(tempElement);
 	}
@@ -906,6 +914,8 @@ const popupWindow = (() => {
 			case "warning":
 				$popupIcon.classList.add("warning");
 				break;
+			case "success":
+				$popupIcon.classList.add("success");
 			default:
 				break;
 		}
