@@ -2,10 +2,6 @@
 // TODO replace flex declarations for include
 // TODO replace border styles for class with border/shadow/etec
 // TODO fixed width buttons
-// TODO cleanup duplicated window item class
-// REDO disabled button classes toggle
-// Botones de cerrar/eliminar separar y unificar clases correspondientes
-// en elementos gif y ventanas
 
 /* Setings */
 // _colorsheet.scss -> used by color themes
@@ -107,8 +103,7 @@ section {
 	}
 	&__content {
 		&__options {
-			display: flex;
-			flex-flow: row wrap;
+			@include flexCenter(row wrap);
 			justify-content: flex-end;
 			width: 100%;
 			.btn--secondary {
@@ -532,8 +527,7 @@ section {
 	}
 }
 .separator {
-	display: flex;
-	justify-content: center;
+	@include flexCenter(column nowrap);
 	&__loading-img {
 		margin: 6rem 0;
 		max-width: 5rem;
@@ -541,14 +535,11 @@ section {
 }
 .gif-creation {
 	&--stage3 {
-		display: flex;
-		flex-flow: row wrap;
+		@include flexCenter(row wrap);
 		justify-content: space-between;
-		align-items: center;
 		&__timer-container {
-			display: flex;
+			@include flexCenter(row wrap);
 			justify-content: flex-start;
-			align-items: center;
 		}
 		&__timer {
 			margin-right: 1.5rem;
