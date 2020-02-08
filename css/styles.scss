@@ -217,9 +217,11 @@ section {
 		display: inline-block;
 		padding: 2px;
 		.btn__text-container {
-			display: inline-block;
+			display: block;
 			padding: 0.375rem 1rem;
 			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 	&--full-width {
