@@ -36,7 +36,6 @@ section {
 }
 
 /* Objects */
-// btn--tag container grid
 .gif-grid {
 	&--small {
 		display: grid;
@@ -79,7 +78,7 @@ section {
 }
 .window-element {
 	padding: 2px;
-	margin: 4.75rem auto 9.5rem auto;
+	margin: 2rem auto 4rem auto;
 	&__header {
 		padding: 0.375rem;
 		padding-right: 2rem;
@@ -103,7 +102,7 @@ section {
 	}
 	&__content {
 		&__options {
-			@include flexCenter(row wrap);
+			@include flexCenter();
 			justify-content: flex-end;
 			width: 100%;
 			.btn--secondary {
@@ -148,7 +147,7 @@ section {
 	&--md {
 		max-width: 700px;
 		.window-element__content {
-			margin: 2rem;
+			margin: 1rem;
 		}
 	}
 	&--lg {
@@ -157,8 +156,15 @@ section {
 			margin: 0.875rem;
 		}
 	}
+	@media screen and(min-width: 576px) {
+		margin: 4.75rem auto 9.5rem auto;
+		&--md {
+			.window-element__content {
+				margin: 2rem;
+			}
+		}
+	}
 }
-// window-element__content__options
 /* Components */
 .btn {
 	display: inline-block;
@@ -217,9 +223,11 @@ section {
 		display: inline-block;
 		padding: 2px;
 		.btn__text-container {
-			display: inline-block;
+			display: block;
 			padding: 0.375rem 1rem;
 			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 	&--full-width {
@@ -239,8 +247,13 @@ section {
 		margin-right: 0.5rem;
 		margin-bottom: 0.5rem;
 		font-size: 0.875rem;
+		max-width: 100%;
 		.btn__text-container {
 			padding: 0.25rem;
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 	&--secondary {
@@ -315,7 +328,7 @@ section {
 		padding: 0.125rem;
 		position: relative;
 		&__header {
-			display: none;
+			display: block;
 			padding: 0.375rem;
 			margin: 0.1875rem;
 			margin-bottom: 0.125rem;
@@ -346,6 +359,13 @@ section {
 		}
 		&:hover &__header {
 			display: block;
+		}
+	}
+	@media screen and (min-width: 768px) {
+		&-simple {
+			&__header {
+				display: none;
+			}
 		}
 	}
 }
@@ -390,15 +410,21 @@ section {
 			padding: 1rem;
 			&__main {
 				margin-bottom: 1rem;
-				@include flexCenter(row, nowrap);
-				justify-content: flex-start;
+				@include flexCenter(column, wrap);
+				justify-content: center;
 				&__popup-icon {
-					margin-right: 1rem;
+					margin-bottom: 1rem;
 					flex-shrink: 0;
 					width: 2rem;
 					height: 2rem;
 					display: block;
 					background: center no-repeat url(../assets/icons/window_img.png);
+				}
+				&__text-content {
+					text-align: center;
+					&__header {
+						margin-bottom: 0.5rem;
+					}
 				}
 				.error {
 					background: center no-repeat url(../assets/icons/msg_error.png);
@@ -419,6 +445,23 @@ section {
 	}
 	&.hidden {
 		z-index: -5;
+	}
+	@media screen and (min-width: 576px) {
+		&__window {
+			&__content {
+				&__main {
+					@include flexCenter(row, nowrap);
+					justify-content: flex-start;
+					&__popup-icon {
+						margin-right: 1rem;
+						margin-bottom: 0;
+					}
+					&__text-content {
+						text-align: left;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -515,6 +558,7 @@ section {
 	}
 	&__tags {
 		margin-top: 0.75rem;
+		overflow-x: hidden;
 	}
 	@media screen and (min-width: 768px) {
 		&__box {
@@ -530,7 +574,7 @@ section {
 	}
 }
 .separator {
-	@include flexCenter(column nowrap);
+	@include flexCenter(column, nowrap);
 	&__loading-img {
 		margin: 6rem 0;
 		max-width: 5rem;
@@ -538,14 +582,28 @@ section {
 }
 .gif-creation {
 	&--stage3 {
-		@include flexCenter(row wrap);
-		justify-content: space-between;
+		@include flexCenter(column, wrap);
+		align-items: center;
+		justify-content: center;
 		&__timer-container {
-			@include flexCenter(row wrap);
+			@include flexCenter(column, wrap);
 			justify-content: flex-start;
+			width: 100%;
 		}
 		&__timer {
-			margin-right: 1.5rem;
+			margin-right: 0;
+			margin-bottom: 1rem;
+		}
+		.loading-bar {
+			margin-bottom: 1rem;
+		}
+	}
+	&--stage4 {
+		@include flexCenter(column, wrap);
+		width: 100%;
+		.btn {
+			margin-bottom: 1rem;
+			margin-right: 0;
 		}
 	}
 	&--stage5 {
@@ -559,7 +617,7 @@ section {
 		}
 		.loading-bar {
 			margin-bottom: 1rem;
-			width: 20rem;
+			width: 15rem;
 			&__container {
 				width: 100%;
 			}
@@ -567,9 +625,10 @@ section {
 	}
 	&--stage6 {
 		&--split {
-			margin-bottom: 3.75rem;
+			@include flexCenter(row, wrap);
+			margin-bottom: 2rem;
 			.img-container {
-				width: 24rem;
+				width: 100%;
 				margin-bottom: 1.25rem;
 				flex: 0 0 auto;
 				.video-preview-img {
@@ -578,7 +637,7 @@ section {
 			}
 		}
 		&__options-container {
-			padding-left: 1.5rem;
+			// padding-left: 0rem;
 			h2 {
 				margin-bottom: 1rem;
 			}
@@ -609,12 +668,70 @@ section {
 			margin-right: 1rem;
 		}
 	}
+	@media screen and(min-width: 576px) {
+		&--stage3 {
+			@include flexCenter();
+			align-items: flex-start;
+			justify-content: space-between;
+			&__timer-container {
+				@include flexCenter();
+				width: auto;
+				margin-bottom: 1rem;
+			}
+			&__timer {
+				margin-bottom: 0;
+				margin-right: 1rem;
+			}
+			.loading-bar {
+				margin-bottom: 0;
+			}
+		}
+		&--stage4 {
+			display: block;
+			width: auto;
+			.btn {
+				margin-bottom: 0;
+				&:first-child {
+					margin-right: 1.5rem;
+				}
+			}
+		}
+		&--stage5 {
+			.loading-bar {
+				width: 20rem;
+			}
+		}
+	}
+	@media screen and(min-width: 768px) {
+		&--stage6 {
+			&--split {
+				@include flexCenter(row, nowrap);
+				align-items: flex-start;
+				margin-bottom: 3.75rem;
+				.img-container {
+					width: 24rem;
+				}
+			}
+			&__options-container {
+				padding-left: 1.5rem;
+			}
+		}
+	}
+	@media screen and(min-width: 992px) {
+		&--stage3 {
+			align-items: center;
+
+			&__timer-container {
+				margin-bottom: 0;
+			}
+		}
+	}
 }
 
 /* Utilities */
 .container {
 	max-width: 1600px;
-	padding: 0 2rem;
+	padding: 0 1rem;
 	margin-left: auto;
 	margin-right: auto;
 	@media screen and (min-width: 576px) {
