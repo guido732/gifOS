@@ -398,15 +398,21 @@ section {
 			padding: 1rem;
 			&__main {
 				margin-bottom: 1rem;
-				@include flexCenter();
-				justify-content: flex-start;
+				@include flexCenter(column, wrap);
+				justify-content: center;
 				&__popup-icon {
-					margin-right: 1rem;
+					margin-bottom: 1rem;
 					flex-shrink: 0;
 					width: 2rem;
 					height: 2rem;
 					display: block;
 					background: center no-repeat url(../assets/icons/window_img.png);
+				}
+				&__text-content {
+					text-align: center;
+					&__header {
+						margin-bottom: 0.5rem;
+					}
 				}
 				.error {
 					background: center no-repeat url(../assets/icons/msg_error.png);
@@ -427,6 +433,23 @@ section {
 	}
 	&.hidden {
 		z-index: -5;
+	}
+	@media screen and (min-width: 576px) {
+		&__window {
+			&__content {
+				&__main {
+					@include flexCenter(row, nowrap);
+					justify-content: flex-start;
+					&__popup-icon {
+						margin-right: 1rem;
+						margin-bottom: 0;
+					}
+					&__text-content {
+						text-align: left;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -581,7 +604,7 @@ section {
 		}
 		.loading-bar {
 			margin-bottom: 1rem;
-			width: 20rem;
+			width: 15rem;
 			&__container {
 				width: 100%;
 			}
@@ -589,9 +612,10 @@ section {
 	}
 	&--stage6 {
 		&--split {
-			margin-bottom: 3.75rem;
+			@include flexCenter(row, wrap);
+			margin-bottom: 2rem;
 			.img-container {
-				width: 24rem;
+				width: 100%;
 				margin-bottom: 1.25rem;
 				flex: 0 0 auto;
 				.video-preview-img {
@@ -600,7 +624,7 @@ section {
 			}
 		}
 		&__options-container {
-			padding-left: 1.5rem;
+			// padding-left: 0rem;
 			h2 {
 				margin-bottom: 1rem;
 			}
@@ -657,6 +681,26 @@ section {
 				&:first-child {
 					margin-right: 1.5rem;
 				}
+			}
+		}
+		&--stage5 {
+			.loading-bar {
+				width: 20rem;
+			}
+		}
+	}
+	@media screen and(min-width: 768px) {
+		&--stage6 {
+			&--split {
+				@include flexCenter(row, nowrap);
+				align-items: flex-start;
+				margin-bottom: 3.75rem;
+				.img-container {
+					width: 24rem;
+				}
+			}
+			&__options-container {
+				padding-left: 1.5rem;
 			}
 		}
 	}
