@@ -328,7 +328,7 @@ section {
 		padding: 0.125rem;
 		position: relative;
 		&__header {
-			display: none;
+			display: block;
 			padding: 0.375rem;
 			margin: 0.1875rem;
 			margin-bottom: 0.125rem;
@@ -359,6 +359,13 @@ section {
 		}
 		&:hover &__header {
 			display: block;
+		}
+	}
+	@media screen and (min-width: 768px) {
+		&-simple {
+			&__header {
+				display: none;
+			}
 		}
 	}
 }
