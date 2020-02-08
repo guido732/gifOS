@@ -32,8 +32,9 @@ const navBar = (() => {
 	const colorThemes = ["sailor_day", "sailor_night"];
 
 	// Cache DOM
-	const $navItems = document.querySelector("#nav-items");
+	const $navItems = document.querySelector("#navbar-items");
 	const $homeButton = document.querySelector("#home-button");
+	const $returnArrow = document.querySelector("#return-arrow");
 
 	const $themeSelector = document.querySelector("#theme-selector");
 	const $dropdownList = document.querySelector("#dropdown-list");
@@ -46,6 +47,8 @@ const navBar = (() => {
 
 	// Bind events
 	events.on("pageLoad", loadColorTheme);
+	events.on("gotoHome", () => hideElements($returnArrow));
+	events.on("createGifEnded", () => hideElements($returnArrow));
 	$homeButton.addEventListener("click", () => {
 		// Takes user to default window view
 		events.emit("gotoHome");
@@ -89,6 +92,7 @@ const navBar = (() => {
 	}
 	function showCreateGifSection() {
 		events.emit("createGif");
+		showElements($returnArrow);
 		hideElements($navItems);
 	}
 	function mount() {
@@ -96,6 +100,10 @@ const navBar = (() => {
 	}
 })();
 const searchSection = (() => {
+	// Local Variables
+	let offset = 0;
+	let lastUsedKeywords = "";
+	const amountOfTrendingGifs = 16;
 	// Cache DOM
 	const $searchBox = document.querySelector("#search-section");
 	const $searchBar = document.querySelector("#search-bar");
@@ -107,13 +115,14 @@ const searchSection = (() => {
 	const $searchResulsContainer = document.querySelector("#search-result-container");
 
 	// Bind events
-	events.on("pageLoad", mount, () => $searchBar.focus());
-	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus());
+	events.on("pageLoad", mount, () => $searchBar.focus(), removeScrollListener);
+	events.on("gotoHome", mount, hideSearchResults, () => $searchBar.focus(), removeScrollListener);
 	events.on("closeOpenedElements", hideSearchSuggestions);
 	events.on("searchBarInputChanged", searchBarInputChanged);
-	events.on("myGifs", unmount);
-	events.on("createGif", unmount);
-	events.on("searchStarted", hideSearchSuggestions);
+	events.on("myGifs", unmount, removeScrollListener);
+	events.on("createGif", unmount, removeScrollListener);
+	events.on("searchStarted", hideSearchSuggestions, addScrollListener);
+	events.on("loadMoreItems-search", fetchSearchResultGifs);
 
 	document.searchform.addEventListener("submit", e => {
 		// Gets search results from form submission
@@ -146,13 +155,19 @@ const searchSection = (() => {
 			hideSearchSuggestions();
 		}
 	}
+	function addScrollListener() {
+		events.emit("addScrollListener", { section: "search", keywords: lastUsedKeywords });
+	}
+	function removeScrollListener() {
+		events.emit("removeScrollListener", { section: "search" });
+	}
 	async function handleSearchFunctionality(searchValue) {
 		$searchResultTitle.innerText = `Resultados de búsqueda: ${searchValue}`;
 		$searchBar.value = "";
 		$searchBar.focus();
 		$searchButton.disabled = true;
 		$searchResulsContainer.innerHTML = "";
-		await fetchSearchResultGifs(16, searchValue);
+		await fetchSearchResultGifs(searchValue);
 		events.emit("searchStarted");
 		$searchSuggestions.innerHTML = "";
 		await showElements($searchResultsSection, $searchTags);
@@ -175,7 +190,7 @@ const searchSection = (() => {
 				  })
 				: hideElements($searchSuggestions);
 
-			const $searchSuggestionsButtons = document.querySelectorAll(".btn-search-suggestion");
+			const $searchSuggestionsButtons = document.querySelectorAll(".btn--search-suggestion");
 			$searchSuggestionsButtons.forEach(element => {
 				element.onclick = () => {
 					handleSearchFunctionality(element.innerText);
@@ -183,16 +198,29 @@ const searchSection = (() => {
 			});
 		}
 	}
-	async function fetchSearchResultGifs(limit, keywords) {
+	async function fetchSearchResultGifs(keywords) {
+		lastUsedKeywords = keywords;
+		const separator = newElement("separator");
+		$searchResultsSection.append(separator);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-search", fetchSearchResultGifs);
+
 		const processedKeywords = processSearchValues(keywords);
 		const searchResults = await fetchURL(
-			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${limit}`
+			`https://api.giphy.com/v1/gifs/search?q=${processedKeywords}&api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+
 		await searchResults.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$searchResulsContainer.append(newElement("trend", gif, aspectRatio));
 		});
+
+		await events.on("loadMoreItems-search", fetchSearchResultGifs);
+		await $searchResultsSection.removeChild(separator);
 		events.emit("imagesToLazyLoad");
 		fitDoubleSpanGifsGrid($searchResulsContainer.attributes.id.value);
 
@@ -256,7 +284,7 @@ const suggestionsSection = (() => {
 			`https://api.giphy.com/v1/gifs/search?q=${suggestionTopics[suggestion]}&api_key=${APIkey}&limit=${limit}`
 		);
 		gifsSuggestions.data.forEach(gif => {
-			$suggestedGifs.append(newElement("window", gif));
+			$suggestedGifs.append(newElement("gif-options", gif));
 		});
 		events.emit("imagesToLazyLoad");
 	}
@@ -267,6 +295,7 @@ const suggestionsSection = (() => {
 const trendingSection = (() => {
 	// Local variables
 	const amountOfTrendingGifs = 16;
+	let offset = 0;
 	// Cache DOM
 	const $trendsSection = document.querySelector("#trends-section");
 	const $trendingGifs = document.querySelector("#trend-grid");
@@ -277,26 +306,40 @@ const trendingSection = (() => {
 	events.on("myGifs", unmount);
 	events.on("createGif", unmount);
 	events.on("searchStarted", unmount);
+	events.on("loadMoreItems-trending", fetchTrendingGifs);
 
 	function mount() {
 		showElements($trendsSection, $trendingGifs);
+		events.emit("addScrollListener", { section: "trending" });
 	}
 	function unmount() {
 		hideElements($trendsSection, $trendingGifs);
+		events.emit("removeScrollListener", { section: "trending" });
 	}
 	function render() {
-		fetchTrendingGifs(amountOfTrendingGifs);
+		fetchTrendingGifs();
 	}
-	async function fetchTrendingGifs(limit) {
-		const gifOffset = Math.floor(Math.random() * 50);
+	async function fetchTrendingGifs() {
+		const separator = newElement("separator");
+		$trendsSection.append(separator);
+
+		// Turn off event subscription until all fetching returns so it doesn't multi-trigger
+		events.off("loadMoreItems-trending", fetchTrendingGifs);
+
 		const gifsTrending = await fetchURL(
-			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${limit}&offset=${gifOffset}`
+			`https://api.giphy.com/v1/gifs/trending?api_key=${APIkey}&limit=${amountOfTrendingGifs}&offset=${amountOfTrendingGifs *
+				offset}`
 		);
+		offset++;
+
 		await gifsTrending.data.forEach(gif => {
 			let aspectRatio = "";
 			gif.images["480w_still"].width / gif.images["480w_still"].height >= 1.5 ? (aspectRatio = "item-double") : null;
 			$trendingGifs.append(newElement("trend", gif, aspectRatio));
 		});
+
+		await events.on("loadMoreItems-trending", fetchTrendingGifs);
+		await $trendsSection.removeChild(separator);
 		fitDoubleSpanGifsGrid($trendingGifs.attributes.id.value);
 		events.emit("imagesToLazyLoad");
 	}
@@ -337,8 +380,10 @@ const createGifsSection = (() => {
 	// Loading Bar elements
 	const $timerLoadingBar = document.querySelector("#timer-loading-bar");
 	const $playPreview = document.querySelector("#btn-play-gif");
-	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .progress-block");
-	const $uploadProgressBlocks = document.querySelectorAll("#upload-loading-bar .progress-block");
+	const $previewProgressBlocks = document.querySelectorAll("#loading-bar .loading-bar__container__progress-block");
+	const $uploadProgressBlocks = document.querySelectorAll(
+		"#upload-loading-bar .loading-bar__container__progress-block"
+	);
 
 	// Stopwatch + Loadingbar generator functions
 	const Stopwatch = (elem, options) => {
@@ -422,7 +467,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -440,7 +485,7 @@ const createGifsSection = (() => {
 					progress++;
 					let progCounter = Math.floor(progress / (100 / subElems.length));
 					progCounter > subElems.length - 1 ? (progCounter = subElems.length - 1) : null;
-					subElems[progCounter].classList.remove("empty");
+					subElems[progCounter].classList.remove("loading-bar__container__progress-block--empty");
 				}
 			}
 		}
@@ -448,12 +493,12 @@ const createGifsSection = (() => {
 			clearInterval(interval);
 			progress = 0;
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		function clearProgress() {
 			subElems.forEach(elem => {
-				elem.classList.add("empty");
+				elem.classList.add("loading-bar__container__progress-block--empty");
 			});
 		}
 		// Public Functions
@@ -496,7 +541,10 @@ const createGifsSection = (() => {
 	$startRecording.onclick = () => {
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		hideElements($startRecording, $timerLoadingBar, $stage4);
-		showElements($stage3, $stopRecording);
+		showElements($stage3);
+		setTimeout(() => {
+			showElements($stopRecording);
+		}, 850);
 		startRecording();
 		myStopwatch.reset();
 		myStopwatch.start();
@@ -509,7 +557,9 @@ const createGifsSection = (() => {
 		totalTime = myStopwatch.stop();
 	};
 	$redoRecording.onclick = async () => {
-		showElements($stopRecording, $inputPreview);
+		setTimeout(() => {
+			showElements($stopRecording, $inputPreview);
+		}, 850);
 		hideElements($stage4, $timerLoadingBar);
 		$createGifHeader.innerText = "Capturando tu Guifo";
 		await initiateWebcam();
@@ -545,8 +595,9 @@ const createGifsSection = (() => {
 				showElements($stage7);
 				hideElements($stage5);
 				uploadLoadingBar.reset();
-				const errorGif = await fetch(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
-				let errorData = await errorGif.json();
+				const errorData = await fetchURL(`https://api.giphy.com/v1/gifs/random?api_key=${APIkey}&tag=fail`);
+				// const errorGif = await fetch();
+				// let errorData = await errorGif.json();
 				$errorImg.src = await errorData.data.image_url;
 				$errorMsg.innerText = `${e.name}\n${e.message}`;
 			}
@@ -574,7 +625,7 @@ const createGifsSection = (() => {
 	}
 	function unmount() {
 		hideElements($createGifSection, $stage1, $stage2, $stage3, $stage4, $stage5, $stage6, $stage7);
-		showElements(document.querySelector(".nav-item-container"));
+		showElements(document.querySelector(".navbar__options"));
 	}
 	function handlePlayBar(loadingBar) {
 		if (playing) {
@@ -588,8 +639,7 @@ const createGifsSection = (() => {
 		}
 	}
 	async function saveGifToLocalStorage(gif) {
-		const generatedGif = await fetch(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
-		const response = await generatedGif.json();
+		const response = await fetchURL(`https://api.giphy.com/v1/gifs/${gif}?api_key=${APIkey}`);
 		const data = response.data;
 		const gifID = data.id;
 		const stringifiedData = JSON.stringify(data);
@@ -603,6 +653,14 @@ const createGifsSection = (() => {
 		document.body.appendChild(tempElement);
 		tempElement.select();
 		document.execCommand("copy");
+		const popupContent = {
+			header: "Éxito!",
+			title: "Enlace copiado al portapapeles!",
+			body: `Se ha copiado el enlace ${tempElement.value} al portapapeles`,
+			hasOptions: false,
+			icon: "success"
+		};
+		events.emit("newPopupDeleteGif", popupContent);
 		console.log("Copied data to clipboard!");
 		document.body.removeChild(tempElement);
 	}
@@ -681,13 +739,12 @@ const createGifsSection = (() => {
 		formData.append("file", gifSrc, "myGif.gif");
 		// const postUrl = `https://giphy.com/v1/gifs?api_key=${APIkey}`; //Fake url for testing upload fail
 		// const postUrl = "https://upload.giphy.com/v1/gifs?api_key=KvIjm5FP877DsfhGk2lLnXDTViwRJP7f"; // test fake api_key
-		const postUrl = `https://upload.giphy.com/v1/gifs?api_key=${APIkey}`;
-		const response = await fetch(postUrl, {
+		const params = {
 			method: "POST",
 			body: formData,
 			json: true
-		});
-		const data = await response.json();
+		};
+		const data = await fetchURL(`https://upload.giphy.com/v1/gifs?api_key=${APIkey}`, params);
 		console.log(await data);
 		console.log("***Upload ended***");
 		return await data;
@@ -700,7 +757,7 @@ const myGifsSection = (() => {
 	// Cache DOM
 	const $myGifsSection = document.querySelector("#my-gifs-section");
 	const $gifsGrid = document.querySelector("#my-gifs-grid");
-	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+	let $removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 	// Bind events
 	events.on("myGifs", mount);
@@ -747,12 +804,12 @@ const myGifsSection = (() => {
 		}
 	}
 	function parseDeleteButtons() {
-		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .remove-element");
+		$removeGifButtons = document.querySelectorAll("#my-gifs-grid .gif-simple__header__close-btn");
 
 		// Gets gif ID through the (closest) image URL
 		$removeGifButtons.forEach(removeGifButton => {
 			const localGifElementURL = removeGifButton
-				.closest(".trend-item")
+				.closest(".gif-simple")
 				.querySelector("img")
 				.getAttribute("data-src");
 			const localStorageGifID = localGifElementURL.split("/")[4];
@@ -857,9 +914,38 @@ const popupWindow = (() => {
 			case "warning":
 				$popupIcon.classList.add("warning");
 				break;
+			case "success":
+				$popupIcon.classList.add("success");
 			default:
 				break;
 		}
+	}
+})();
+const infiniteScrolling = (() => {
+	// Local Variables
+	let sectionData = {};
+	// DOM Cache
+	const $body = document.querySelector("body");
+	// Events
+	events.on("addScrollListener", addScrollListener);
+	events.on("removeScrollListener", removeScrollListener);
+
+	// Methods / functions
+	function scrollListener() {
+		if (window.innerHeight + window.scrollY >= $body.clientHeight) {
+			events.emit(`loadMoreItems-${sectionData.section}`, sectionData.keywords);
+		}
+	}
+	function addScrollListener({ section: section, keywords: keywords = "" }) {
+		// Adds timeout to move event triggering to bottom of queue and prevent removing the last event before adding the new one
+		setTimeout(() => {
+			sectionData = { section, keywords };
+			document.addEventListener("scroll", scrollListener);
+		}, 0);
+	}
+	function removeScrollListener({ section: section, keywords: keywords = "" }) {
+		sectionData = { section, keywords };
+		document.removeEventListener("scroll", scrollListener);
 	}
 })();
 const giphyEndpoints = (keywords, limit, gifOffset) => {
@@ -889,24 +975,24 @@ async function fetchURL(url, params = null) {
 		return error;
 	}
 }
-function newElement(type, element, ratio = "") {
+function newElement(type, element = "", ratio = "") {
 	element.title === "" ? (element.title = "&emsp;") : null;
 	const $container = document.createElement("div");
 	switch (type) {
-		case "window":
-			$container.innerHTML = `<div class="window-item ${ratio}">
-			<div class="wi-header">
+		case "gif-options":
+			$container.innerHTML = `<div class="gif-options ${ratio}">
+			<div class="gif-options__header">
 					${element.title}
-				<button class="remove-element"></button>
+				<button class="gif-options__header__close-btn"></button>
 			</div>
-			<div class="img-container">
-			<img 
-				class="lazy img-element loading-animation" 
-				src="" 
-				data-src="${element.images.original.url}"
-				data-srcset="${element.images.original.url}"
-				alt="${element.title}" /> 	
-				<a href="${element.bitly_url}" target="_blank" type="button" class="btn-primary btn-tag"><span class="btn-text-container" >Ver más...</span></a>
+			<div class="gif-options__content">
+				<img 
+					class="lazy gif-options__content__img loading-animation" 
+					src="" 
+					data-src="${element.images.original.url}"
+					data-srcset="${element.images.original.url}"
+					alt="${element.title}" /> 	
+					<a href="${element.bitly_url}" target="_blank" type="button" class="btn btn--tag gif-options__content__action"><span class="btn__text-container gif-options__content__action__inner" >Ver más...</span></a>
 			</div>
 		</div>`;
 			return $container.firstChild;
@@ -917,17 +1003,17 @@ function newElement(type, element, ratio = "") {
 			titleToArray.forEach(word => {
 				titleArrayToTags += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
 						/>
 					</a>
-					<div class="trend-header">
+					<div class="gif-simple__header">
 						${titleArrayToTags}
 					</div>
 			</div>
@@ -940,31 +1026,33 @@ function newElement(type, element, ratio = "") {
 			titleToArray2.forEach(word => {
 				titleArrayToTags2 += `#${word} `;
 			});
-			$container.innerHTML = `<div class="trend-item ${ratio}">
+			$container.innerHTML = `<div class="gif-simple ${ratio}">
 				<a href="${element.bitly_url}" target="_blank">
 					<img 
 						src="" 
 						data-src="${element.images.original.url}"
 						data-srcset="${element.images.original.url}"
 						alt="${element.title}" 
-						class="lazy img-element loading-animation" 
+						class="lazy gif-simple__content__img loading-animation" 
 					/>
 				</a>
-				<div class="trend-header">						
-					<button class="remove-element"></button>
+				<div class="gif-simple__header">						
+					<button class="gif-simple__header__close-btn"></button>
 					${titleArrayToTags2}
 				</div>
 			</div>
 		</div>`;
 			return $container.firstChild;
-
 		case "searchTitle":
-			$container.innerHTML = `<button class="search-element btn-search-suggestion">
-		<span>${element.title}</span>
+			$container.innerHTML = `<button class="search-element btn btn--search-suggestion">
+		<span class="btn__text-container">${element.title}</span>
 		</button>`;
 			return $container.firstChild;
 		case "tag":
-			$container.innerHTML = `<button type="button" class="btn-primary btn-tag search-tag"><span class="btn-text-container">${element.title}</span></button>`;
+			$container.innerHTML = `<button type="button" class="btn btn--tag search-tag"><span class="btn__text-container">${element.title}</span></button>`;
+			return $container.firstChild;
+		case "separator":
+			$container.innerHTML = `<div class="separator"><img class="separator__loading-img" src="../assets/img/loading-hourglass.gif" alt="loading hourglass"></div>`;
 			return $container.firstChild;
 	}
 }
