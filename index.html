@@ -43,7 +43,7 @@
 			</h1>
 		</header>
 		<nav class="navbar container">
-			<button class="navbar__brand-container close-window" id="home-button">
+			<div class="navbar__brand-container close-window" id="home-button">
 				<div class="navbar__brand-container__brand"></div>
 				<img
 					class="navbar__brand-container__return-arrow hidden"
@@ -51,7 +51,7 @@
 					alt="go back"
 					id="return-arrow"
 				/>
-			</button>
+			</div>
 			<div class="navbar__options" id="navbar-items">
 				<button class="navbar__options__item btn btn--primary" id="btn-create-gif">
 					<span class="btn__text-container">Crear Guifos</span>
@@ -65,7 +65,7 @@
 						<a href="#" class="dropdown__list__item color-theme-option">Sailor Night</a>
 					</div>
 				</div>
-				<button href="#" class="navbar__options__item btn btn--link" id="btn-my-gifs">
+				<button class="navbar__options__item btn btn--link" id="btn-my-gifs">
 					<span class="underline">M</span>is Guifos
 				</button>
 			</div>
@@ -74,9 +74,9 @@
 			<section class="search hidden" id="search-section">
 				<div class="search__box">
 					<form class="search__box__form" name="searchform">
-						<div class="search__box__form__header">
+						<h2 class="search__box__form__header">
 							Buscar
-						</div>
+						</h2>
 						<div class="search__box__form__bar-container">
 							<input
 								class="input-bar input-bar--lg"
@@ -95,28 +95,30 @@
 				<div class="search__tags hidden" id="search-tags"></div>
 			</section>
 			<section class="search-results hidden" id="search-results-section">
-				<div class="input-bar" id="search-results-input">Resultados de búsqueda:</div>
+				<h2 class="input-bar" id="search-results-input">Resultados de búsqueda:</h2>
 				<div class="gif-grid--large" id="search-result-container"></div>
 			</section>
 			<section class="suggestions hidden" id="suggestions-section">
-				<div class="input-bar">Hoy te sugerimos:</div>
+				<h2 class="input-bar">Hoy te sugerimos:</h2>
 				<div class="gif-grid--small" id="suggested-container"></div>
 			</section>
 			<section class="trends hidden" id="trends-section">
-				<div class="input-bar">Tendencias:</div>
+				<h2 class="input-bar">Tendencias:</h2>
 				<div class="gif-grid--large" id="trend-grid"></div>
 			</section>
 			<section class="create-gif-section hidden" id="create-gif-section">
 				<div class="window-element window-element--md" id="stage1">
-					<div class="window-element__header">
-						Crear Guifos
+					<div class="window-element__header-container">
+						<h2 class="window-element__header-container__header">
+							Crear Guifos
+						</h2>
 					</div>
 					<div class="window-element__content">
 						<div class="window-element__content--split">
 							<img class="window-element__content--split__img" src="./assets/icons/window_img.png" alt="Window" />
 							<div class="window-element__content--split__text">
-								<h2>Aquí podrás crear tus propios guifos</h2>
-								<p>
+								<p class="window-element__content--split__text__header">Aquí podrás crear tus propios guifos</p>
+								<p class="window-element__content--split__text__body">
 									Crear tu <strong><em>guifo</em></strong> es muy fácil, graba cualquier imagen con tu cámara y obtén
 									guifos personalizados. Los pasos para crear tu guifo son:
 								</p>
@@ -142,11 +144,11 @@
 					</div>
 				</div>
 				<div class="window-element window-element--lg hidden" id="stage2">
-					<div class="window-element__header">
-						<span id="create-gif-section-header">
+					<div class="window-element__header-container">
+						<h3 class="window-element__header-container__header" id="create-gif-section-header">
 							Un Chequeo Antes de Empezar
-						</span>
-						<button class="window-element__header__close-btn close-window"></button>
+						</h3>
+						<button class="window-element__header-container__close-btn close-window"></button>
 					</div>
 					<div class="window-element__content">
 						<video class="window-element__content__video-element" id="video-box"></video>
@@ -233,13 +235,13 @@
 					</div>
 				</div>
 				<div class="window-element window-element--lg hidden" id="stage5">
-					<div class="window-element__header">
-						Subiendo Guifo
-						<button class="window-element__header__close-btn close-window"></button>
+					<div class="window-element__header-container">
+						<h3 class="window-element__header-container__header">Subiendo Guifo</h3>
+						<button class="window-element__header-container__close-btn close-window"></button>
 					</div>
-					<div class="window-element__content gif-creation--stage5" id="stage5">
+					<div class="window-element__content gif-creation--stage5">
 						<img class="gif-creation--stage5__img" src="./assets/img/globe_img.png" alt="Globe" />
-						<h2 class="gif-creation--stage5__title">Estamos subiendo tu guifo...</h2>
+						<p class="gif-creation--stage5__title">Estamos subiendo tu guifo...</p>
 						<div class="loading-bar">
 							<div class="loading-bar__container" id="upload-loading-bar">
 								<span
@@ -310,22 +312,24 @@
 								></span>
 							</div>
 						</div>
-						<h3>Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos</h3>
+						<p class="gif-creation--stage5__body">
+							Tiempo restante: <span class="strikethrough">38 años</span> algunos minutos
+						</p>
 					</div>
 				</div>
 				<div class="window-element window-element--md hidden" id="stage6">
-					<div class="window-element__header">
-						Guifo Subido con Éxito
-						<button class="window-element__header__close-btn close-window"></button>
+					<div class="window-element__header-container">
+						<h3 class="window-element__header-container__header">Guifo Subido con Éxito</h3>
+						<button class="window-element__header-container__close-btn close-window"></button>
 					</div>
-					<div class="window-element__content gif-creation--stage6" id="stage6">
+					<div class="window-element__content gif-creation--stage6">
 						<div class="window-element__content--split gif-creation--stage6--split">
 							<div class="img-container">
-								<img src="" alt="" id="gif-preview" class="video-preview-img" />
+								<img src="./assets/img/loading-img.jpg" alt="Tu Gif" id="gif-preview" class="video-preview-img" />
 							</div>
 							<div>
 								<div class="gif-creation--stage6__options-container">
-									<h2>Guifo creado con éxito</h2>
+									<p class="gif-creation--stage6__options-container__header">Guifo creado con éxito</p>
 									<button class="btn btn--secondary btn--full-width" id="copy-link">
 										<span class="btn__text-container">Copiar Enlace Guifo</span>
 									</button>
@@ -343,17 +347,17 @@
 					</div>
 				</div>
 				<div class="window-element window-element--md hidden" id="stage7">
-					<div class="window-element__header">
-						Algo Salió Mal
-						<button class="window-element__header__close-btn close-window"></button>
+					<div class="window-element__header-container">
+						<h3 class="window-element__header-container__header">Algo Salió Mal</h3>
+						<button class="window-element__header-container__close-btn close-window"></button>
 					</div>
 					<div class="window-element__content gif-creation--stage7">
 						<div class="img-container">
 							<img src="./assets/img/oops.jpg" alt="Error, algo salió mal" id="error-img" />
 						</div>
-						<h2>Tu Guifo no pudo ser creado</h2>
-						<p id="error-msg"></p>
-						<div class="">
+						<p class="gif-creation--stage7__header">Tu Guifo no pudo ser creado</p>
+						<p class="gif-creation--stage7__error-msg" id="error-msg"></p>
+						<div class="gif-creation--stage7__options">
 							<button class="btn btn--secondary gif-upload" id="retry-upload">
 								<span class="btn__text-container">Reintentar</span>
 							</button>
@@ -365,23 +369,23 @@
 				</div>
 			</section>
 			<section class="my-gifs hidden" id="my-gifs-section">
-				<div class="input-bar">Mis guifos:</div>
+				<h2 class="input-bar">Mis guifos:</h2>
 				<div class="gif-grid--large" id="my-gifs-grid"></div>
 			</section>
 		</main>
 		<aside class="popup hidden" id="popup-window">
-			<dialog class="popup__window window-element ">
-				<div class="popup__header window-element__header" id="popup-header">
-					<button class="window-element__header__close-btn close-window" id="popup-close"></button>
-					<span id="popup-header-text">Fatal Error!</span>
+			<div class="popup__window window-element ">
+				<div class="popup__header window-element__header-container" id="popup-header">
+					<h2 class="window-element__header-container__header" id="popup-header-text">Fatal Error!</h2>
+					<button class="window-element__header-container__close-btn close-window" id="popup-close"></button>
 				</div>
 				<div class="popup__window__content window-element__content">
 					<div class="popup__window__content__main ">
 						<div class="popup__window__content__main__popup-icon" id="popup-icon"></div>
 						<div class="popup__window__content__main__text-content">
-							<h2 class="popup__window__content__main__text-content__header" id="popup-title">
+							<p class="popup__window__content__main__text-content__header" id="popup-title">
 								gifOS has failed miserably!
-							</h2>
+							</p>
 							<p class="popup__window__content__main__text-content__body" id="popup-message">
 								Because js is the Lorem ipsum dolor sit, amet consectetur adipisicing elit. Et, culpa. Lorem ipsum dolor
 								sit amet, consectetur adipisicing elit. Perspiciatis culpa eaque est. Reiciendis quidem molestias
@@ -398,7 +402,7 @@
 						</button>
 					</div>
 				</div>
-			</dialog>
+			</div>
 		</aside>
 		<script src="./js/main.js"></script>
 		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
