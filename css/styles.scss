@@ -36,7 +36,6 @@ section {
 }
 
 /* Objects */
-// btn--tag container grid
 .gif-grid {
 	&--small {
 		display: grid;
@@ -79,7 +78,7 @@ section {
 }
 .window-element {
 	padding: 2px;
-	margin: 4.75rem auto 9.5rem auto;
+	margin: 2rem auto 4rem auto;
 	&__header {
 		padding: 0.375rem;
 		padding-right: 2rem;
@@ -103,7 +102,7 @@ section {
 	}
 	&__content {
 		&__options {
-			@include flexCenter(row wrap);
+			@include flexCenter();
 			justify-content: flex-end;
 			width: 100%;
 			.btn--secondary {
@@ -148,7 +147,7 @@ section {
 	&--md {
 		max-width: 700px;
 		.window-element__content {
-			margin: 2rem;
+			margin: 1rem;
 		}
 	}
 	&--lg {
@@ -157,8 +156,15 @@ section {
 			margin: 0.875rem;
 		}
 	}
+	@media screen and(min-width: 576px) {
+		margin: 4.75rem auto 9.5rem auto;
+		&--md {
+			.window-element__content {
+				margin: 2rem;
+			}
+		}
+	}
 }
-// window-element__content__options
 /* Components */
 .btn {
 	display: inline-block;
@@ -392,7 +398,7 @@ section {
 			padding: 1rem;
 			&__main {
 				margin-bottom: 1rem;
-				@include flexCenter(row, nowrap);
+				@include flexCenter();
 				justify-content: flex-start;
 				&__popup-icon {
 					margin-right: 1rem;
@@ -532,7 +538,7 @@ section {
 	}
 }
 .separator {
-	@include flexCenter(column nowrap);
+	@include flexCenter(column, nowrap);
 	&__loading-img {
 		margin: 6rem 0;
 		max-width: 5rem;
@@ -540,14 +546,28 @@ section {
 }
 .gif-creation {
 	&--stage3 {
-		@include flexCenter(row wrap);
-		justify-content: space-between;
+		@include flexCenter(column, wrap);
+		align-items: center;
+		justify-content: center;
 		&__timer-container {
-			@include flexCenter(row wrap);
+			@include flexCenter(column, wrap);
 			justify-content: flex-start;
+			width: 100%;
 		}
 		&__timer {
-			margin-right: 1.5rem;
+			margin-right: 0;
+			margin-bottom: 1rem;
+		}
+		.loading-bar {
+			margin-bottom: 1rem;
+		}
+	}
+	&--stage4 {
+		@include flexCenter(column, wrap);
+		width: 100%;
+		.btn {
+			margin-bottom: 1rem;
+			margin-right: 0;
 		}
 	}
 	&--stage5 {
@@ -611,12 +631,50 @@ section {
 			margin-right: 1rem;
 		}
 	}
+	@media screen and(min-width: 576px) {
+		&--stage3 {
+			@include flexCenter();
+			align-items: flex-start;
+			justify-content: space-between;
+			&__timer-container {
+				@include flexCenter();
+				width: auto;
+				margin-bottom: 1rem;
+			}
+			&__timer {
+				margin-bottom: 0;
+				margin-right: 1rem;
+			}
+			.loading-bar {
+				margin-bottom: 0;
+			}
+		}
+		&--stage4 {
+			display: block;
+			width: auto;
+			.btn {
+				margin-bottom: 0;
+				&:first-child {
+					margin-right: 1.5rem;
+				}
+			}
+		}
+	}
+	@media screen and(min-width: 992px) {
+		&--stage3 {
+			align-items: center;
+
+			&__timer-container {
+				margin-bottom: 0;
+			}
+		}
+	}
 }
 
 /* Utilities */
 .container {
 	max-width: 1600px;
-	padding: 0 2rem;
+	padding: 0 1rem;
 	margin-left: auto;
 	margin-right: auto;
 	@media screen and (min-width: 576px) {
