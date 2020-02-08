@@ -57,7 +57,7 @@ button {
 .window-element {
 	background: $bgElement;
 	box-shadow: $shadowElement;
-	&__header {
+	&__header-container {
 		background: $gradient;
 		color: $textWhite;
 	}
