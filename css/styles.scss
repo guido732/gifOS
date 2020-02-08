@@ -247,8 +247,13 @@ section {
 		margin-right: 0.5rem;
 		margin-bottom: 0.5rem;
 		font-size: 0.875rem;
+		max-width: 100%;
 		.btn__text-container {
 			padding: 0.25rem;
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 	&--secondary {
@@ -546,6 +551,7 @@ section {
 	}
 	&__tags {
 		margin-top: 0.75rem;
+		overflow-x: hidden;
 	}
 	@media screen and (min-width: 768px) {
 		&__box {
